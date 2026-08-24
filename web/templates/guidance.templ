@@ -1,0 +1,65 @@
+package templates
+
+templ GuidancePage(p Page) {
+	@Layout(p) {
+		<h1 class="font-serif text-4xl tracking-tight">Category-level guidance</h1>
+		<p class="mt-2 max-w-2xl text-ink/65 dark:text-zinc-400">A sleeve mix across index categories. Never a stock, fund, AMC, or ticker.</p>
+		<form class="mt-8 grid gap-8 lg:grid-cols-12" hx-post="/guidance" hx-target="#guidance-result" hx-swap="innerHTML" hx-indicator="#guide-ind">
+			<div class="space-y-5 lg:col-span-5">
+				<label class="block text-sm">
+					<span class="mb-1 block text-ink/60">Age</span>
+					<input type="number" name="age" value="30" min="18" max="90" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5"/>
+				</label>
+				<label class="block text-sm">
+					<span class="mb-1 block text-ink/60">Horizon (years)</span>
+					<input type="number" name="horizon" value="10" min="1" max="50" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5"/>
+				</label>
+				<fieldset class="text-sm">
+					<legend class="mb-2 text-ink/60">Risk stance</legend>
+					<label class="mr-4"><input type="radio" name="risk" value="conservative" class="mr-1"/> Conservative</label>
+					<label class="mr-4"><input type="radio" name="risk" value="moderate" checked class="mr-1"/> Moderate</label>
+					<label><input type="radio" name="risk" value="aggressive" class="mr-1"/> Aggressive</label>
+				</fieldset>
+				<label class="block text-sm">
+					<span class="mb-1 block text-ink/60">Monthly investable (₹)</span>
+					<input type="number" name="monthly_investable" value="25000" min="0" step="500" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5"/>
+				</label>
+				<label class="block text-sm">
+					<span class="mb-1 block text-ink/60">Goals</span>
+					<textarea name="goals" rows="4" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5" placeholder="Independence, a home, children’s education — in your words."></textarea>
+				</label>
+				<button type="submit" class="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white">Show mix</button>
+				<span id="guide-ind" class="htmx-indicator ml-2 text-sm text-ink/60">Working…</span>
+			</div>
+			<div class="lg:col-span-7">
+				<div id="guidance-result" class="rounded-2xl border border-dashed border-black/10 p-6 text-sm text-ink/50 dark:border-white/15">
+					Submit the form to see a category mix and donut. Sliders elsewhere stay on-device; this post is the one network call.
+				</div>
+			</div>
+		</form>
+	}
+}
+
+templ GuidanceResult(v GuidanceResultView) {
+	<div class="rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5" data-donut-labels={ v.Labels } data-donut-values={ v.Values }>
+		if v.Warning != "" {
+			<p class="mb-4 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:bg-amber-950/40 dark:text-amber-100">{ v.Warning }</p>
+		}
+		<div class="flex items-center justify-between gap-3">
+			<h2 class="font-serif text-2xl">Suggested sleeves</h2>
+			<span class="rounded-full bg-black/5 px-3 py-1 text-xs dark:bg-white/10">{ v.Source }</span>
+		</div>
+		<div class="mx-auto mt-4 max-w-xs">
+			<canvas id="guidance-donut"></canvas>
+		</div>
+		<ul class="mt-6 space-y-2 text-sm">
+			for _, s := range v.Sleeves {
+				<li class="flex justify-between border-b border-black/5 py-2 dark:border-white/10">
+					<span>{ s.Category }</span>
+					<span class="font-serif tabular-nums">{ s.Percent }%</span>
+				</li>
+			}
+		</ul>
+		<p class="mt-6 text-sm leading-relaxed text-ink/70 dark:text-zinc-300">{ v.Rationale }</p>
+	</div>
+}

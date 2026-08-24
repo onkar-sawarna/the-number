@@ -6,7 +6,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 
 - Know the FIRE corpus (“the number”) and years until independence.
 - Live sliders: maths and charts update in the browser with **no server round-trip**.
-- Numbers stay in the browser. Login, save, and dashboard are parked for now.
+- Numbers stay in the browser. No accounts, no database.
 - Optional category-level allocation guidance (never product names).
 
 Calculators and guidance are public. There is no account.
@@ -22,8 +22,7 @@ Calculators and guidance are public. There is no account.
 | Client reactivity | Alpine.js 3 (CDN) |
 | CSS | Tailwind CSS 3.4 CLI (`darkMode: 'class'`), scan `.templ` |
 | Charts | Chart.js 4 (CDN) |
-| DB | SQLite via GORM + `glebarez/sqlite` |
-| Auth | `gorilla/sessions` + `echo-contrib/session`; bcrypt cost 12 |
+| DB | none |
 | Module | `github.com/thenumber/app` |
 
 CDNs: htmx 2.0.4, alpinejs 3.14.8, chart.js 4.4.6.
@@ -47,19 +46,9 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 
 Bind `0.0.0.0:$PORT`, default **47321**.
 
-## Auth
+## Auth and data
 
-Disabled for now. Handler code remains in the repo but routes are not registered.
-
-## Data
-
-**users:** id, email unique, password_hash, created_at
-
-**scenarios:** id, user_id, kind (`fire|sip|emi|emergency|budget`), title, inputs JSON, outputs JSON, created_at
-
-On save, the server re-runs Go calc from posted form fields and stores both inputs and outputs.
-
-GORM AutoMigrate on boot; `migrations/001_init.sql` kept in sync.
+No accounts. Nothing is written except an optional theme cookie (`theme=dark|light`).
 
 ## Calculation rules
 

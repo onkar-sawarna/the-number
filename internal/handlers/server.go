@@ -1,26 +1,19 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
-	"github.com/thenumber/app/internal/models"
-	"github.com/thenumber/app/internal/session"
 	"github.com/thenumber/app/web/templates"
-	"gorm.io/gorm"
 )
 
-type Server struct {
-	DB *gorm.DB
-}
+type Server struct{}
 
-func New(db *gorm.DB) *Server {
-	return &Server{DB: db}
+func New() *Server {
+	return &Server{}
 }
 
 func (s *Server) Register(e *echo.Echo) {
@@ -55,34 +48,6 @@ func (s *Server) page(c echo.Context, title string) templates.Page {
 func themeDark(c echo.Context) bool {
 	ck, err := c.Cookie("theme")
 	return err == nil && ck.Value == "dark"
-}
-
-func (s *Server) currentUser(c echo.Context) *models.User {
-	id, ok := session.UserID(c)
-	if !ok {
-		return nil
-	}
-	var u models.User
-	if err := s.DB.First(&u, id).Error; err != nil {
-		return nil
-	}
-	return &u
-}
-
-func (s *Server) requireUser(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		if s.currentUser(c) == nil {
-			if c.Request().Header.Get("HX-Request") == "true" {
-				return c.HTML(http.StatusUnauthorized, `<p>Please log in to save.</p>`)
-			}
-			next := session.SafeNext(c.Request().URL.RequestURI())
-			if next == "" {
-				next = "/dashboard"
-			}
-			return c.Redirect(http.StatusSeeOther, "/login?next="+url.QueryEscape(next))
-		}
-		return next(c)
-	}
 }
 
 func (s *Server) landing(c echo.Context) error {
@@ -130,55 +95,4 @@ func parseInt(c echo.Context, name string, def int) int {
 		return def
 	}
 	return v
-}
-
-func titleOr(c echo.Context, fallback string) string {
-	t := strings.TrimSpace(c.FormValue("title"))
-	if t == "" {
-		return fallback
-	}
-	return t
-}
-
-func mustJSON(v any) string {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return "{}"
-	}
-	return string(b)
-}
-
-func (s *Server) saveScenario(c echo.Context, kind, title string, in any, out any) error {
-	u := s.currentUser(c)
-	if u == nil {
-		return render(c, http.StatusUnauthorized, templates.LoginToSave())
-	}
-	sc := models.Scenario{
-		UserID:  u.ID,
-		Kind:    kind,
-		Title:   title,
-		Inputs:  mustJSON(in),
-		Outputs: mustJSON(out),
-	}
-	if err := s.DB.Create(&sc).Error; err != nil {
-		return c.HTML(http.StatusInternalServerError, `<p>Could not save.</p>`)
-	}
-	return render(c, http.StatusOK, templates.SaveOK())
-}
-
-func kindLabel(kind string) string {
-	switch kind {
-	case "fire":
-		return "FIRE"
-	case "sip":
-		return "SIP"
-	case "emi":
-		return "EMI"
-	case "emergency":
-		return "Emergency"
-	case "budget":
-		return "Budget"
-	default:
-		return kind
-	}
 }

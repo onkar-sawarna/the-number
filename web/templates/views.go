@@ -1,44 +1,11 @@
 package templates
 
-import (
-	"strconv"
-	"strings"
-)
+import "strings"
 
 type Page struct {
-	Title    string
-	Dark     bool
-	LoggedIn bool
-	Email    string
-	Path     string
-}
-
-type AuthView struct {
-	Page
-	Error string
-	Value string
-	Next  string
-}
-
-type ScenarioVM struct {
-	ID         uint
-	Date       string
-	Kind       string
-	KindLabel  string
-	Title      string
-	DeletePath string
-}
-
-type KV struct {
-	Label string
-	Value string
-}
-
-type CompareCard struct {
 	Title string
-	Kind  string
-	Date  string
-	Rows  []KV
+	Dark  bool
+	Path  string
 }
 
 type SleeveVM struct {
@@ -65,10 +32,6 @@ func MainNavClass(path, href string) string {
 		return base + "bg-ink text-paper dark:bg-zinc-100 dark:text-night"
 	}
 	return base + "text-ink/70 hover:text-ink dark:text-zinc-300 dark:hover:text-white"
-}
-
-func uintStr(id uint) string {
-	return strconv.FormatUint(uint64(id), 10)
 }
 
 func TabClass(path, href string) string {

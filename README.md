@@ -36,8 +36,6 @@ go test ./internal/calc ./internal/ai
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `PORT` | `47321` | HTTP, bound to `0.0.0.0` |
-| `DATABASE_PATH` | `data/thenumber.db` | SQLite |
-| `SESSION_SECRET` | `dev-only-the-number-session-secret-change-me` | Cookie signing — **change this in any shared environment** |
 | `OPENAI_API_KEY` | empty | Guidance model (JSON mode) |
 | `OPENAI_MODEL` | `gpt-4o-mini` | |
 | `ANTHROPIC_API_KEY` | empty | Used only if OpenAI is unset |
@@ -51,19 +49,16 @@ No API keys are hardcoded. Without keys, guidance uses the on-device heuristic.
 cmd/server/main.go          # entrypoint
 internal/calc/              # PURE maths + unit tests
 internal/handlers/          # Echo handlers (no FIRE/SIP/EMI formulas)
-internal/models/            # User, Scenario, SQLite Open + AutoMigrate
-internal/session/           # cookie store helpers
 internal/ai/                # OpenAI / Anthropic + JSON sanitiser
 web/templates/              # templ views
 web/static/                 # CSS, calc.js, app.js, theme-boot.js
-migrations/001_init.sql     # schema source of truth
 ```
 
 Module path: `github.com/thenumber/app`.
 
 ## Stack
 
-Go 1.22+, Echo v4, templ, HTMX 2, Alpine.js 3, Tailwind 3.4 (`darkMode: 'class'`), Chart.js 4, SQLite via GORM + `glebarez/sqlite`, `gorilla/sessions`.
+Go 1.22+, Echo v4, templ, HTMX 2, Alpine.js 3, Tailwind 3.4 (`darkMode: 'class'`), Chart.js 4. No database.
 
 Theme is a cookie (`theme=dark|light`), never `localStorage`. `theme-boot.js` runs in `<head>` to avoid a flash of the wrong theme.
 
