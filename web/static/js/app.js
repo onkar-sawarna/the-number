@@ -86,7 +86,7 @@
     opts.scales.y.stacked = false;
     opts.plugins.tooltip.callbacks = {
       label: function (ctx) {
-        return ctx.label + ": " + window.fmtINR(ctx.parsed.y);
+        return ctx.dataset.label + ": " + window.fmtINR(ctx.parsed.y);
       },
     };
     return opts;
@@ -570,6 +570,12 @@
         if (!this.result.reachesFire) return this.t("never_indep");
         return this.t("fi_line", { year: this.fiYear(), age: this.result.fiAge });
       },
+      numberLaterCopy: function () {
+        return this.t("number_later", { amount: window.fmtINR(this.result.fireNumberLater) });
+      },
+      yearsStickyCopy: function () {
+        return this.yearsCopy() + " · " + this.numberLaterCopy();
+      },
       hookLine: function () {
         if (this.result.reachesFire && this.result.years === 0) return this.t("already_there");
         if (!this.result.reachesFire) return this.t("not_80");
@@ -616,25 +622,17 @@
       potLaterPoint: function () {
         var chart = (this.result && this.result.chart) || [];
         if (!chart.length) return null;
-        if (this.result.reachesFire && this.result.years === 0) {
-          var keep = (Number(this.age) || 0) + 10;
-          for (var i = 0; i < chart.length; i++) {
-            if (chart[i].age >= keep) return chart[i];
-          }
-          return chart[chart.length - 1];
-        }
-        if (this.result.reachesFire) {
-          var fi = this.result.fiAge;
-          for (var j = 0; j < chart.length; j++) {
-            if (chart[j].age >= fi) return chart[j];
-          }
+        for (var i = 0; i < chart.length; i++) {
+          if ((Number(chart[i].year) || 0) >= 20) return chart[i];
         }
         return chart[chart.length - 1];
       },
       potLaterLabel: function () {
-        if (this.result.reachesFire && this.result.years === 0) return this.t("pots_later_keep");
-        if (this.result.reachesFire) return this.t("pots_later_fi", { age: this.result.fiAge });
-        return this.t("pots_later_far");
+        var later = this.potLaterPoint();
+        var y = later ? Number(later.year) || 0 : 0;
+        if (y >= 20) return this.t("pots_later_20");
+        if (y > 0) return this.t("pots_later_years", { years: y });
+        return this.t("pots_today");
       },
       potsLead: function () {
         var live = this.livePots();
@@ -643,16 +641,23 @@
         if (!live.length || !chart[0] || !later) return "";
         var today = chart[0];
         var best = live[0];
-        var gain = -1;
+        var bestLater = -1;
         live.forEach(function (d) {
-          var g = (Number(later[d.key]) || 0) - (Number(today[d.key]) || 0);
-          if (g > gain) {
-            gain = g;
+          var b = Number(later[d.key]) || 0;
+          if (b > bestLater) {
+            bestLater = b;
             best = d;
           }
         });
-        if (gain <= 1) return this.t("pots_lead_flat");
-        return this.t("pots_lead", { pot: this.t(best.label), amount: window.fmtINR(gain) });
+        var a = Number(today[best.key]) || 0;
+        var b = Number(later[best.key]) || 0;
+        if (b <= 1 && a <= 1) return this.t("pots_lead_flat");
+        return this.t("pots_lead", {
+          pot: this.t(best.label),
+          today: window.fmtINR(a),
+          later: window.fmtINR(b),
+          when: this.potLaterLabel(),
+        });
       },
       potRows: function () {
         var live = this.livePots();
@@ -698,17 +703,21 @@
         var later = this.potLaterPoint();
         if (!live.length || !today || !later) return;
         var self = this;
-        var rows = live.map(function (d, i) {
-          var gain = Math.max(0, (Number(later[d.key]) || 0) - (Number(today[d.key]) || 0));
-          return { d: d, gain: gain, color: potStroke(i) };
-        }).filter(function (r) { return r.gain > 1; });
-        if (!rows.length) return;
-        this._potsChart = upsertBar(el, this._potsChart, rows.map(function (r) { return self.t(r.d.label); }), [{
-          label: this.t("pots_grows"),
-          data: rows.map(function (r) { return r.gain; }),
-          backgroundColor: rows.map(function (r) { return r.color; }),
-          borderWidth: 0,
-        }]);
+        var labels = live.map(function (d) { return self.t(d.label); });
+        this._potsChart = upsertBar(el, this._potsChart, labels, [
+          {
+            label: this.t("pots_today"),
+            data: live.map(function (d) { return Number(today[d.key]) || 0; }),
+            backgroundColor: isDark() ? "#64748b" : "#94a3b8",
+            borderWidth: 0,
+          },
+          {
+            label: this.potLaterLabel(),
+            data: live.map(function (d) { return Number(later[d.key]) || 0; }),
+            backgroundColor: isDark() ? "#7dd3fc" : "#1d4ed8",
+            borderWidth: 0,
+          },
+        ]);
       },
     });
   };

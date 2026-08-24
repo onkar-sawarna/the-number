@@ -27,6 +27,16 @@
     color-scheme: dark;
   }
 
+  html.dark .text-ink\/30,
+  html.dark .text-ink\/50,
+  html.dark .text-ink\/55,
+  html.dark .text-ink\/60,
+  html.dark .text-ink\/65,
+  html.dark .text-ink\/70,
+  html.dark .text-ink\/80 {
+    color: #d4d4d8;
+  }
+
   html[data-region="us"] .currency-in {
     display: none !important;
   }

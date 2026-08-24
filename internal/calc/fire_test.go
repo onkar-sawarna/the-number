@@ -1,6 +1,9 @@
 package calc
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 func TestFIRENumberLeanFat(t *testing.T) {
 	expenses := 1_200_000.0
@@ -12,6 +15,19 @@ func TestFIRENumberLeanFat(t *testing.T) {
 	out := FIRE(FIREInput{AnnualExpenses: expenses, SWR: swr, Age: 30})
 	if out.Lean != n*0.5 || out.Fat != n*2 || out.Regular != n {
 		t.Fatalf("lean/regular/fat: %+v", out)
+	}
+}
+
+func TestLifestyleLaterInflatesTwentyYears(t *testing.T) {
+	in := DefaultFIRE()
+	in.Housing = "own"
+	out := FIRE(in)
+	want := out.Lifestyle * math.Pow(1+in.Inflation/100, 20)
+	if math.Abs(out.LifestyleLater-want) > 1 {
+		t.Fatalf("lifestyle later=%v want %v", out.LifestyleLater, want)
+	}
+	if math.Abs(out.FireNumberLater-out.FireNumber*math.Pow(1+in.Inflation/100, 20)) > 1 {
+		t.Fatalf("number later=%v", out.FireNumberLater)
 	}
 }
 
@@ -314,5 +330,15 @@ func TestFireChartSplitsPots(t *testing.T) {
 	last := out.Chart[len(out.Chart)-1]
 	if last.Invested <= p0.Invested {
 		t.Fatalf("invested SIP pot should grow: start=%v end=%v", p0.Invested, last.Invested)
+	}
+	var y20 *FIREPoint
+	for i := range out.Chart {
+		if out.Chart[i].Year == 20 {
+			y20 = &out.Chart[i]
+			break
+		}
+	}
+	if y20 == nil {
+		t.Fatalf("expected a year-20 snapshot, last year=%v", last.Year)
 	}
 }

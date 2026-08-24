@@ -90,7 +90,7 @@ Lean 0.5× lifestyle + house, Regular = total, Fat 2× lifestyle + house.
 
 Monthly contributions add to the matching pot. Optional yearly SIP step-up raises every monthly pot by that % after each completed year (PPF capped at ₹1.5L/year). Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s number.
 
-Chart: yearly snapshots until ~FIRE+5 years (min 15, max 50; 40 if never).
+Chart: yearly snapshots until ~FIRE+5 years (min 20, max 50; 40 if never).
 
 India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 12%, inflation 6%, SWR 3.5% (~29× expenses), yearly SIP step-up 10%, city tier 1, housing rent, other pots 0. The US 4% / 25× rule is not the India default.
 

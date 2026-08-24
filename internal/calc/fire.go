@@ -79,9 +79,11 @@ type FIREPoint struct {
 }
 
 type FIREOutput struct {
-	FireNumber     float64     `json:"fire_number"`
-	Lifestyle      float64     `json:"lifestyle"`
-	HouseAdd       float64     `json:"house_add"`
+	FireNumber      float64     `json:"fire_number"`
+	FireNumberLater float64     `json:"fire_number_later"`
+	Lifestyle       float64     `json:"lifestyle"`
+	LifestyleLater  float64     `json:"lifestyle_later"`
+	HouseAdd        float64     `json:"house_add"`
 	StartingCorpus float64     `json:"starting_corpus"`
 	Jewellery      float64     `json:"jewellery"`
 	JewelleryLater float64     `json:"jewellery_later"`
@@ -211,11 +213,14 @@ func FIRE(in FIREInput) FIREOutput {
 	lifestyle := FIRENumber(in.AnnualExpenses, swr)
 	house := HouseAdd(in)
 	fireNum := lifestyle + house
+	grow := math.Pow(1+in.Inflation/100.0, 20)
 	pots := startPots(in)
 	out := FIREOutput{
-		FireNumber:     fireNum,
-		Lifestyle:      lifestyle,
-		HouseAdd:       house,
+		FireNumber:      fireNum,
+		FireNumberLater: fireNum * grow,
+		Lifestyle:       lifestyle,
+		LifestyleLater:  lifestyle * grow,
+		HouseAdd:        house,
 		StartingCorpus: pots.total(),
 		Jewellery:      pots.jewellery,
 		JewelleryLater: pots.jewellery,
@@ -271,8 +276,8 @@ func fireChart(in FIREInput, swr, years float64, reaches bool) []FIREPoint {
 	horizon := 40
 	if reaches {
 		horizon = int(math.Ceil(years)) + 5
-		if horizon < 15 {
-			horizon = 15
+		if horizon < 20 {
+			horizon = 20
 		}
 		if horizon > 50 {
 			horizon = 50

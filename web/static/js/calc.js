@@ -150,7 +150,7 @@
     var horizon = 40;
     if (reaches) {
       horizon = Math.ceil(years) + 5;
-      if (horizon < 15) horizon = 15;
+      if (horizon < 20) horizon = 20;
       if (horizon > 50) horizon = 50;
     }
     var rmLiq = monthlyEffective(RATE_LIQUID);
@@ -194,10 +194,13 @@
     var lifestyle = fireNumber(nz(input.annualExpenses), swr);
     var house = houseAdd(input);
     var n = lifestyle + house;
+    var grow = Math.pow(1 + (Number(input.inflation) || 0) / 100, 20);
     var pots = startPots(input);
     var out = {
       fireNumber: n,
+      fireNumberLater: n * grow,
       lifestyle: lifestyle,
+      lifestyleLater: lifestyle * grow,
       houseAdd: house,
       startingCorpus: potsTotal(pots),
       jewellery: pots.jewellery,
