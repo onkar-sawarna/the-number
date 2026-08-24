@@ -225,7 +225,7 @@ func CalcNav(path string) templ.Component {
 			templ_7745c5c3_Var13 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-6 flex items-center gap-2\"><nav class=\"-mx-4 min-w-0 flex-1 overflow-x-auto px-4 pb-1 no-scrollbar sm:mx-0 sm:overflow-visible sm:px-0\"><div class=\"flex gap-2 sm:flex-wrap\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mb-6 flex flex-col gap-3 sm:flex-row sm:items-center\"><nav class=\"-mx-4 min-w-0 overflow-x-auto px-4 pb-1 no-scrollbar sm:mx-0 sm:flex-1 sm:overflow-visible sm:px-0\"><div class=\"flex w-max gap-2 sm:w-auto sm:flex-wrap\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

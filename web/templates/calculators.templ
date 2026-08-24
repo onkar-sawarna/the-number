@@ -6,8 +6,8 @@ templ FIREPage(p Page) {
 			@CalcNav(p.Path)
 			@mobileStickyStat("The number today", "fmtINR(result.fireNumber)", "yearsCopy()")
 			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">FIRE number</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isIN()">Parked cash at ~6%. Gold at ~8%. Invested SIPs — old ones still in funds, plus SIPs still running — at your expected return. Then NPS, EPF, PPF, foreign stocks, and housing.</p>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isUS()" x-cloak>Parked cash at ~6%. Gold at ~8%. Invested pots at your expected return. Then a retirement account and housing. Amounts are in dollars.</p>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isIN()">Parked cash at ~6%. Gold funds at ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, invested SIPs, foreign stocks, and housing.</p>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isUS()" x-cloak>Parked cash at ~6%. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then invested pots, a retirement account, and housing. Amounts are in dollars.</p>
 			<div class="mt-4 flex flex-wrap gap-2">
 				<button type="button" class="preset-chip" x-on:click="applyPreset('start')">Just starting</button>
 				<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">Saving hard</button>
@@ -74,37 +74,33 @@ templ FIREPage(p Page) {
 						@moneyRange("current_savings_us", "Cash & savings till now", "currentSavings")
 					</div>
 					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="parkedCopy()"></p>
-					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gold · ~8%</p>
-					@moneyRange("gold_now", "Gold till now", "goldNow")
-					@moneyRange("gold_monthly", "Gold monthly", "goldMonthly")
+					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gold funds · ~8%</p>
+					@moneyPair("gold_now", "Till now", "goldNow", "gold_monthly", "Monthly", "goldMonthly")
 					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="goldCopy()"></p>
+					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Jewellery · kept · ~8%</p>
+					@moneyRange("jewellery_now", "Jewellery (you would not sell)", "jewelleryNow")
+					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="jewelleryCopy()"></p>
 					<div x-show="isIN()">
 						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">NPS · EPF · PPF</p>
-						@moneyRange("nps_now", "NPS till now", "npsNow")
-						@moneyRange("nps_monthly", "NPS monthly contribution", "npsMonthly")
-						@moneyRange("epf_now", "EPF till now", "epfNow")
-						@moneyRange("epf_monthly", "EPF monthly contribution", "epfMonthly")
-						@moneyRange("ppf_now", "PPF till now", "ppfNow")
-						@moneyRange("ppf_monthly", "PPF monthly contribution", "ppfMonthly")
+						@moneyPair("nps_now", "NPS till now", "npsNow", "nps_monthly", "NPS monthly", "npsMonthly")
+						@moneyPair("epf_now", "EPF till now", "epfNow", "epf_monthly", "EPF monthly", "epfMonthly")
+						@moneyPair("ppf_now", "PPF till now", "ppfNow", "ppf_monthly", "PPF monthly", "ppfMonthly")
 						<p class="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand">Foreign stocks</p>
-						@moneyRange("foreign_now", "Foreign stocks till now", "foreignNow")
-						@moneyRange("foreign_monthly", "Foreign stocks monthly", "foreignMonthly")
+						@moneyPair("foreign_now", "Till now", "foreignNow", "foreign_monthly", "Monthly", "foreignMonthly")
 					</div>
 					<div x-show="isUS()" x-cloak>
 						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Retirement account</p>
-						@moneyRange("nps_now_us", "Retirement account till now", "npsNow")
-						@moneyRange("nps_monthly_us", "Retirement account monthly", "npsMonthly")
+						@moneyPair("nps_now_us", "Till now", "npsNow", "nps_monthly_us", "Monthly", "npsMonthly")
 					</div>
 					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Invested · expected return</p>
 					<div x-show="isIN()">
-						@moneyRange("stopped_now", "Already invested (old SIPs still in funds)", "stoppedNow")
-						@moneyRange("monthly_savings", "Monthly SIPs still running", "monthlySavings")
+						@moneyPair("stopped_now", "Till now (old SIPs)", "stoppedNow", "monthly_savings", "Monthly SIPs", "monthlySavings")
 					</div>
 					<div x-show="isUS()" x-cloak>
-						@moneyRange("stopped_now_us", "Already invested", "stoppedNow")
-						@moneyRange("monthly_savings_us", "Monthly contributions still running", "monthlySavings")
+						@moneyPair("stopped_now_us", "Till now", "stoppedNow", "monthly_savings_us", "Monthly", "monthlySavings")
 					</div>
 					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="investedCopy()"></p>
+					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
 					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
@@ -126,6 +122,11 @@ templ FIREPage(p Page) {
 								<p class="text-xs text-ink/50">Monthly going in</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
 							</div>
+							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
+								<p class="text-xs text-ink/50">Jewellery (kept)</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.jewellery)"></p>
+								<p class="mt-1 text-[11px] text-ink/45" x-show="result.jewelleryLater > result.jewellery" x-cloak>Later <span class="tabular-nums" x-text="fmtINR(result.jewelleryLater)"></span></p>
+							</div>
 						</div>
 						<div class="mt-4 grid grid-cols-3 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
 							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
@@ -146,6 +147,7 @@ templ FIREPage(p Page) {
 						</div>
 					</div>
 				</div>
+				@phoneEndCalc()
 			</form>
 		</div>
 	}
@@ -164,6 +166,7 @@ templ SIPPage(p Page) {
 					@inrRange("existing", "Existing corpus", "existing", "0", "50000000", "10000")
 					@labeledRange("expected_return", "Expected return %", "expectedReturn", "0", "20", "0.1")
 					@labeledRange("years", "Years", "years", "1", "40", "1")
+					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
 					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
@@ -183,6 +186,7 @@ templ SIPPage(p Page) {
 						</div>
 					</div>
 				</div>
+				@phoneEndCalc()
 			</form>
 		</div>
 	}
@@ -202,6 +206,7 @@ templ EMIPage(p Page) {
 					@labeledRange("years", "Years", "years", "1", "30", "1")
 					@inrRange("extra_monthly", "Extra monthly", "extraMonthly", "0", "200000", "500")
 					@inrRange("lump", "Day-one lump", "lump", "0", "10000000", "10000")
+					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
 					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
@@ -229,6 +234,7 @@ templ EMIPage(p Page) {
 						</div>
 					</div>
 				</div>
+				@phoneEndCalc()
 			</form>
 		</div>
 	}
@@ -248,6 +254,7 @@ templ EmergencyPage(p Page) {
 					@inrRange("current_buffer", "Current buffer", "currentBuffer", "0", "10000000", "5000")
 					@inrRange("monthly_topup", "Monthly top-up", "monthlyTopup", "0", "500000", "500")
 					@labeledRange("parking_return", "Parking return %", "parkingReturn", "0", "12", "0.1")
+					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
 					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
@@ -267,6 +274,7 @@ templ EmergencyPage(p Page) {
 						</div>
 					</div>
 				</div>
+				@phoneEndCalc()
 			</form>
 		</div>
 	}
@@ -285,6 +293,7 @@ templ BudgetPage(p Page) {
 					@inrRange("needs", "Needs (actual)", "needs", "0", "5000000", "1000")
 					@inrRange("wants", "Wants (actual)", "wants", "0", "5000000", "1000")
 					@inrRange("savings", "Savings (actual)", "savings", "0", "5000000", "1000")
+					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
 					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
@@ -308,6 +317,7 @@ templ BudgetPage(p Page) {
 						</div>
 					</div>
 				</div>
+				@phoneEndCalc()
 			</form>
 		</div>
 	}
@@ -357,8 +367,19 @@ templ inrRange(name, label, model, min, max, step string) {
 			<span class="shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtINR(" + model + ")" }></span>
 		</span>
 		<input type="range" x-model.number={ model } min={ min } max={ max } step={ step } class="w-full"/>
-		<input type="number" inputmode="decimal" name={ name } x-model.number={ model } min={ min } max={ max } step={ step } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
+		@moneyText(name, model)
 	</label>
+}
+
+templ moneyPair(nowName, nowLabel, nowModel, monthName, monthLabel, monthModel string) {
+	<div class="grid grid-cols-2 gap-2 sm:gap-3">
+		<div class="min-w-0">
+			@moneyRange(nowName, nowLabel, nowModel)
+		</div>
+		<div class="min-w-0">
+			@moneyRange(monthName, monthLabel, monthModel)
+		</div>
+	</div>
 }
 
 templ moneyRange(name, label, model string) {
@@ -368,6 +389,10 @@ templ moneyRange(name, label, model string) {
 			<span class="shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtINR(" + model + ")" }></span>
 		</span>
 		<input type="range" x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } class="w-full"/>
-		<input type="number" inputmode="decimal" name={ name } x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
+		@moneyText(name, model)
 	</label>
+}
+
+templ moneyText(name, model string) {
+	<input type="text" inputmode="text" autocomplete="off" name={ name } x-bind:placeholder="moneyHint()" x-effect={ "if (_moneyFocus !== '" + model + "') $el.value = moneyBox('" + model + "')" } x-on:focus={ "_moneyFocus = '" + model + "'; $event.target.select()" } x-on:input.stop="" x-on:change={ "commitMoney('" + model + "', $event)" } x-on:blur={ "commitMoney('" + model + "', $event)" } x-on:keydown.enter.prevent={ "commitMoney('" + model + "', $event)" } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
 }

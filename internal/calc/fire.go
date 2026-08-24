@@ -3,7 +3,7 @@ package calc
 import "math"
 
 // Educational sleeve rates for Indian pots. Parked cash uses RateLiquid.
-// Gold uses RateGold. Invested money (old SIPs still in funds, monthly SIPs, foreign stocks) uses ExpectedReturn.
+// Gold funds use RateGold. Jewellery also grows at RateGold as a kept net-worth asset; it is not spendable for FIRE.
 const (
 	RateNPS    = 9.0  // blended NPS
 	RatePPF    = 7.1  // current PPF-like rate
@@ -42,6 +42,7 @@ type FIREInput struct {
 	StoppedNow     float64 `json:"stopped_now"`
 	GoldNow        float64 `json:"gold_now"`
 	GoldMonthly    float64 `json:"gold_monthly"`
+	JewelleryNow   float64 `json:"jewellery_now"`
 
 	CityTier int    `json:"city_tier"` // 1, 2, or 3
 	Housing  string `json:"housing"`   // own | rent | buy
@@ -49,18 +50,23 @@ type FIREInput struct {
 }
 
 type firePots struct {
-	general, nps, ppf, epf, foreign, stopped, gold float64
+	general, nps, ppf, epf, foreign, stopped, gold, jewellery float64
 }
 
-func (p firePots) total() float64 {
+func (p firePots) spendable() float64 {
 	return p.general + p.nps + p.ppf + p.epf + p.foreign + p.stopped + p.gold
 }
 
+func (p firePots) total() float64 {
+	return p.spendable() + p.jewellery
+}
+
 type FIREPoint struct {
-	Year   int     `json:"year"`
-	Age    int     `json:"age"`
-	Corpus float64 `json:"corpus"`
-	Target float64 `json:"target"`
+	Year     int     `json:"year"`
+	Age      int     `json:"age"`
+	Corpus   float64 `json:"corpus"`
+	NetWorth float64 `json:"net_worth"`
+	Target   float64 `json:"target"`
 }
 
 type FIREOutput struct {
@@ -68,6 +74,8 @@ type FIREOutput struct {
 	Lifestyle      float64     `json:"lifestyle"`
 	HouseAdd       float64     `json:"house_add"`
 	StartingCorpus float64     `json:"starting_corpus"`
+	Jewellery      float64     `json:"jewellery"`
+	JewelleryLater float64     `json:"jewellery_later"`
 	MonthlyIn      float64     `json:"monthly_in"`
 	Lean           float64     `json:"lean"`
 	Regular        float64     `json:"regular"`
@@ -140,7 +148,8 @@ func startPots(in FIREInput) firePots {
 		epf:     nz(in.EPFNow),
 		foreign: nz(in.ForeignNow),
 		stopped: nz(in.StoppedNow),
-		gold:    nz(in.GoldNow),
+		gold:      nz(in.GoldNow),
+		jewellery: nz(in.JewelleryNow),
 	}
 }
 
@@ -163,6 +172,7 @@ func stepPots(p firePots, in FIREInput, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold
 	p.foreign = p.foreign*(1+rmEq) + nz(in.ForeignMonthly)
 	p.stopped = p.stopped*(1+rmEq) + nz(in.MonthlySavings)
 	p.gold = p.gold*(1+rmGold) + nz(in.GoldMonthly)
+	p.jewellery = p.jewellery * (1 + rmGold)
 	return p
 }
 
@@ -180,6 +190,8 @@ func FIRE(in FIREInput) FIREOutput {
 		Lifestyle:      lifestyle,
 		HouseAdd:       house,
 		StartingCorpus: pots.total(),
+		Jewellery:      pots.jewellery,
+		JewelleryLater: pots.jewellery,
 		MonthlyIn:      monthlyIn(in),
 		Lean:           lifestyle*0.5 + house,
 		Regular:        fireNum,
@@ -187,7 +199,7 @@ func FIRE(in FIREInput) FIREOutput {
 		FIAge:          in.Age,
 	}
 
-	if pots.total() >= fireNum {
+	if pots.spendable() >= fireNum {
 		out.Years = 0
 		out.ReachesFire = true
 		out.Chart = fireChart(in, swr, 0, true)
@@ -212,16 +224,18 @@ func FIRE(in FIREInput) FIREOutput {
 		expenses = expenses * (1 + im)
 		houseNow = houseNow * (1 + im)
 		target := FIRENumber(expenses, swr) + houseNow
-		if pots.total() >= target {
+		if pots.spendable() >= target {
 			out.ReachesFire = true
 			out.Years = float64(m) / 12.0
 			out.FIAge = in.Age + int(math.Round(out.Years))
+			out.JewelleryLater = pots.jewellery
 			out.Chart = fireChart(in, swr, out.Years, true)
 			return out
 		}
 	}
 	out.ReachesFire = false
 	out.Years = 0
+	out.JewelleryLater = pots.jewellery
 	out.Chart = fireChart(in, swr, 0, false)
 	return out
 }
@@ -255,8 +269,9 @@ func fireChart(in FIREInput, swr, years float64, reaches bool) []FIREPoint {
 		pts = append(pts, FIREPoint{
 			Year:   y,
 			Age:    in.Age + y,
-			Corpus: pots.total(),
-			Target: FIRENumber(expenses, swr) + house,
+			Corpus:   pots.spendable(),
+			NetWorth: pots.total(),
+			Target:   FIRENumber(expenses, swr) + house,
 		})
 		for m := 0; m < 12; m++ {
 			pots = stepPots(pots, in, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)

@@ -48,10 +48,54 @@
     };
   }
 
+  function parseCompactMoney(raw) {
+    var s = String(raw || "").trim().replace(/,/g, "").replace(/[₹$]/g, "");
+    if (!s) return 0;
+    var m = s.match(/^(-?\d*\.?\d+)\s*(crores?|crs?|lakhs?|lacs?|l|k|m)?$/i);
+    if (!m) {
+      var fallback = parseFloat(s);
+      return isFinite(fallback) ? fallback : NaN;
+    }
+    var n = parseFloat(m[1]);
+    if (!isFinite(n)) return NaN;
+    var u = (m[2] || "").toLowerCase();
+    if (u.indexOf("cr") === 0) return n * 1e7;
+    if (u === "l" || u.indexOf("lac") === 0 || u.indexOf("lakh") === 0) return n * 1e5;
+    if (u === "k") return n * 1e3;
+    if (u === "m") return n * 1e6;
+    return n;
+  }
+
   function addDirty(ctl) {
     ctl.dirty = false;
+    ctl._moneyFocus = "";
     ctl.markDirty = function () {
       this.dirty = true;
+    };
+    ctl.moneyBox = function (field) {
+      var n = Math.round(Number(this[field]) || 0);
+      if (n < 0) n = 0;
+      return String(n);
+    };
+    ctl.moneyHint = function () {
+      return this.region === "us" ? "50000 or 50k" : "50000 or 50k";
+    };
+    ctl.commitMoney = function (field, ev) {
+      var n = parseCompactMoney(ev.target.value);
+      if (!isFinite(n) || n < 0) n = 0;
+      var min = this.rangeMin ? this.rangeMin(field) : 0;
+      var max = this.rangeMax ? this.rangeMax(field) : 1e12;
+      var range = ev.target.parentElement && ev.target.parentElement.querySelector("input[type=range]");
+      if (range) {
+        if (!this.rangeMin && range.min !== "") min = Number(range.min);
+        if (!this.rangeMax && range.max !== "") max = Number(range.max);
+      }
+      if (n < min) n = min;
+      if (n > max) n = max;
+      this[field] = n;
+      this._moneyFocus = "";
+      ev.target.value = this.moneyBox(field);
+      this.markDirty();
     };
     var recalc = ctl.recalc;
     ctl.recalc = function () {
@@ -162,6 +206,7 @@
       stoppedNow: 0,
       goldNow: 0,
       goldMonthly: 0,
+      jewelleryNow: 0,
       cityTier: 1,
       housing: "rent",
       region: "in",
@@ -208,6 +253,7 @@
           this.stoppedNow = 0;
           this.goldNow = 0;
           this.goldMonthly = 0;
+          this.jewelleryNow = 0;
           this.cityTier = 1;
           this.housing = "rent";
           this.expectedReturn = 8;
@@ -230,6 +276,7 @@
         this.stoppedNow = 0;
         this.goldNow = 0;
         this.goldMonthly = 0;
+        this.jewelleryNow = 0;
         this.cityTier = 1;
         this.housing = "rent";
         this.expectedReturn = 11;
@@ -246,7 +293,7 @@
         if (field === "monthlySavings") return us ? 30000 : 1000000;
         if (field === "annualExpenses") return us ? 400000 : 20000000;
         if (field === "currentSavings") return us ? 5000000 : 100000000;
-        if (field === "npsNow" || field === "stoppedNow" || field === "goldNow") return us ? 3000000 : 50000000;
+        if (field === "npsNow" || field === "stoppedNow" || field === "goldNow" || field === "jewelleryNow") return us ? 3000000 : 50000000;
         if (field === "npsMonthly" || field === "goldMonthly") return us ? 15000 : 150000;
         if (field === "epfNow" || field === "foreignNow") return 50000000;
         if (field === "epfMonthly") return 200000;
@@ -259,7 +306,7 @@
         var us = this.region === "us";
         if (field === "monthlySavings" || field === "npsMonthly" || field === "goldMonthly") return us ? 50 : 500;
         if (field === "annualExpenses") return us ? 1000 : 10000;
-        if (field === "currentSavings" || field === "npsNow" || field === "stoppedNow" || field === "goldNow") return us ? 1000 : 10000;
+        if (field === "currentSavings" || field === "npsNow" || field === "stoppedNow" || field === "goldNow" || field === "jewelleryNow") return us ? 1000 : 10000;
         return us ? 100 : 500;
       },
       fireInput: function () {
@@ -282,6 +329,7 @@
           stoppedNow: Number(this.stoppedNow) || 0,
           goldNow: Number(this.goldNow) || 0,
           goldMonthly: Number(this.goldMonthly) || 0,
+          jewelleryNow: Number(this.jewelleryNow) || 0,
           cityTier: Number(this.cityTier) || 1,
           housing: this.housing || "rent",
           region: this.region || currentRegion(),
@@ -321,6 +369,7 @@
         this.stoppedNow = 0;
         this.goldNow = 0;
         this.goldMonthly = 0;
+        this.jewelleryNow = 0;
         this.cityTier = 1;
         this.housing = "rent";
         if (name === "start") {
@@ -358,7 +407,10 @@
         return "Educational parking rate 6% (cash, FDs, liquid funds). No monthly SIP here. Old SIPs still sitting in funds go under Invested.";
       },
       goldCopy: function () {
-        return "Educational ~8%. Physical gold you could sell. Skip jewellery you wouldn’t.";
+        return "Educational ~8%. Gold funds and coins you could sell. Not jewellery.";
+      },
+      jewelleryCopy: function () {
+        return "Grows at ~8% like gold, so net worth rises. You keep it — it does not shorten years-to-FIRE.";
       },
       investedCopy: function () {
         var r = Number(this.expectedReturn) || 0;
@@ -400,10 +452,14 @@
       draw: function () {
         var el = document.getElementById("fire-chart");
         var labels = this.result.chart.map(function (p) { return String(p.age); });
-        this._chart = upsertLine(el, this._chart, labels, [
-          { label: "Corpus", data: this.result.chart.map(function (p) { return p.corpus; }), borderColor: "#2b6cef", backgroundColor: "rgba(43,108,239,0.14)", fill: true, tension: 0.25 },
-          { label: "FIRE number", data: this.result.chart.map(function (p) { return p.target; }), borderColor: ink(), borderDash: [6, 4], tension: 0.2, pointRadius: 0 },
-        ]);
+        var sets = [
+          { label: "Spendable", data: this.result.chart.map(function (p) { return p.corpus; }), borderColor: "#2b6cef", backgroundColor: "rgba(43,108,239,0.14)", fill: true, tension: 0.25 },
+        ];
+        if ((Number(this.jewelleryNow) || 0) > 0) {
+          sets.push({ label: "Net worth", data: this.result.chart.map(function (p) { return p.netWorth; }), borderColor: "#38bdf8", tension: 0.25, pointRadius: 0 });
+        }
+        sets.push({ label: "FIRE number", data: this.result.chart.map(function (p) { return p.target; }), borderColor: ink(), borderDash: [6, 4], tension: 0.2, pointRadius: 0 });
+        this._chart = upsertLine(el, this._chart, labels, sets);
       },
     });
   };

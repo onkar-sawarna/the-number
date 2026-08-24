@@ -60,13 +60,15 @@ India (`region=in`):
 
 - ≥ 1 crore (1e7): `₹X.XX Cr` (trim trailing zeros)
 - ≥ 1 lakh (1e5): `₹X.XX L`
-- else Indian grouping: `₹12,345`
+- ≥ 1 thousand (1e3): `₹X.XX k`
+- else Indian grouping: `₹500`
+- Amount boxes show full digits (`50000`). They also accept `50k`, `2L`, `1.5Cr`, and `2M`.
 
 World (`region=us`):
 
 - ≥ 1 million: `$X.XXM`
-- ≥ 10,000: `$X.XXk`
-- else Western grouping: `$1,234`
+- ≥ 1,000: `$X.XXk`
+- else Western grouping: `$500`
 
 ### FIRE
 
@@ -82,9 +84,9 @@ India house: tier 1 ₹2 Cr, tier 2 ₹90 L, tier 3 ₹45 L. World: high-cost $8
 
 Lean 0.5× lifestyle + house, Regular = total, Fat 2× lifestyle + house.
 
-**India pots:** Starting corpus = parked + gold + NPS + EPF + PPF + foreign stocks + invested. Parked (cash, FDs, liquid funds) grows at ~6% and takes **no** monthly SIP. Gold ~8% (physical gold you could sell). Invested = old SIPs still in funds + monthly SIPs still running, at expected return (same as foreign stocks). NPS ~9%, EPF ~8.25%, PPF ~7.1% (educational).
+**India pots:** Starting corpus = parked + gold funds + jewellery + NPS + EPF + PPF + foreign stocks + invested. Parked (cash, FDs, liquid funds) grows at ~6% and takes **no** monthly SIP. Gold funds ~8% (sellable). Jewellery grows at ~8% in net worth; you keep it, so it is ignored for years-to-FIRE. Invested = old SIPs still in funds + monthly SIPs still running, at expected return (same as foreign stocks). NPS ~9%, EPF ~8.25%, PPF ~7.1% (educational).
 
-**World pots:** parked + gold + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
+**World pots:** parked + gold funds + jewellery + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
 
 Monthly contributions add to the matching pot. Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s number.
 

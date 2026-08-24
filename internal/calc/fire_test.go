@@ -220,6 +220,47 @@ func TestGoldCountsAndBeatsParked(t *testing.T) {
 	}
 }
 
+func TestJewelleryIsAssetNotSpendable(t *testing.T) {
+	base := FIREInput{
+		Age:            30,
+		AnnualExpenses: 120_000,
+		ExpectedReturn: 8,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	jew := base
+	jew.JewelleryNow = 1_500_000
+	gold := base
+	gold.GoldNow = 1_500_000
+	a := FIRE(base)
+	j := FIRE(jew)
+	g := FIRE(gold)
+	if j.StartingCorpus != 1_500_000 {
+		t.Fatalf("jewellery should count as an asset: starting=%v", j.StartingCorpus)
+	}
+	if j.Jewellery != 1_500_000 {
+		t.Fatalf("jewellery field=%v want 1500000", j.Jewellery)
+	}
+	if j.ReachesFire != a.ReachesFire || j.Years != a.Years {
+		t.Fatalf("jewellery you keep should not change years-to-FIRE: base years=%v jew years=%v", a.Years, j.Years)
+	}
+	growing := DefaultFIRE()
+	growing.JewelleryNow = 1_000_000
+	grown := FIRE(growing)
+	if grown.JewelleryLater <= grown.Jewellery {
+		t.Fatalf("jewellery should grow in net worth: now=%v later=%v", grown.Jewellery, grown.JewelleryLater)
+	}
+	plain := DefaultFIRE()
+	plainYears := FIRE(plain)
+	if grown.Years != plainYears.Years {
+		t.Fatalf("growing jewellery must not change FIRE years: %v vs %v", grown.Years, plainYears.Years)
+	}
+	if !g.ReachesFire {
+		t.Fatal("sellable gold should help reach FIRE")
+	}
+}
+
 func TestZeroSavingsZeroReturnNever(t *testing.T) {
 	in := FIREInput{
 		Age:            30,

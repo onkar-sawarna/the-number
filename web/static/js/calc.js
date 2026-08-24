@@ -32,6 +32,7 @@
     n = Math.abs(n);
     if (n >= 1e7) return sign + "₹" + trimZeros(n / 1e7) + " Cr";
     if (n >= 1e5) return sign + "₹" + trimZeros(n / 1e5) + " L";
+    if (n >= 1e3) return sign + "₹" + trimZeros(n / 1e3) + " k";
     return sign + "₹" + indianGroup(n);
   }
 
@@ -51,7 +52,7 @@
     var sign = n < 0 ? "-" : "";
     n = Math.abs(n);
     if (n >= 1e6) return sign + "$" + trimZeros(n / 1e6) + "M";
-    if (n >= 1e4) return sign + "$" + trimZeros(n / 1e3) + "k";
+    if (n >= 1e3) return sign + "$" + trimZeros(n / 1e3) + "k";
     return sign + "$" + westernGroup(n);
   }
 
@@ -104,11 +105,16 @@
       foreign: nz(input.foreignNow),
       stopped: nz(input.stoppedNow),
       gold: nz(input.goldNow),
+      jewellery: nz(input.jewelleryNow),
     };
   }
 
-  function potsTotal(p) {
+  function potsSpendable(p) {
     return p.general + p.nps + p.ppf + p.epf + p.foreign + p.stopped + p.gold;
+  }
+
+  function potsTotal(p) {
+    return potsSpendable(p) + p.jewellery;
   }
 
   function monthlyIn(input) {
@@ -123,6 +129,7 @@
     p.foreign = p.foreign * (1 + rmEq) + nz(input.foreignMonthly);
     p.stopped = p.stopped * (1 + rmEq) + nz(input.monthlySavings);
     p.gold = p.gold * (1 + rmGold) + nz(input.goldMonthly);
+    p.jewellery = p.jewellery * (1 + rmGold);
     return p;
   }
 
@@ -148,7 +155,8 @@
       pts.push({
         year: y,
         age: input.age + y,
-        corpus: potsTotal(pots),
+        corpus: potsSpendable(pots),
+        netWorth: potsTotal(pots),
         target: fireNumber(expenses, swr) + house,
       });
       for (var m = 0; m < 12; m++) {
@@ -171,6 +179,8 @@
       lifestyle: lifestyle,
       houseAdd: house,
       startingCorpus: potsTotal(pots),
+      jewellery: pots.jewellery,
+      jewelleryLater: pots.jewellery,
       monthlyIn: monthlyIn(input),
       lean: lifestyle * 0.5 + house,
       regular: n,
@@ -180,7 +190,7 @@
       fiAge: input.age,
       chart: [],
     };
-    if (potsTotal(pots) >= n) {
+    if (potsSpendable(pots) >= n) {
       out.reachesFire = true;
       out.chart = fireChart(input, swr, 0, true);
       return out;
@@ -199,14 +209,16 @@
       pots = stepPots(pots, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
       expenses = expenses * (1 + im);
       houseNow = houseNow * (1 + im);
-      if (potsTotal(pots) >= fireNumber(expenses, swr) + houseNow) {
+      if (potsSpendable(pots) >= fireNumber(expenses, swr) + houseNow) {
         out.reachesFire = true;
         out.years = m / 12;
         out.fiAge = input.age + Math.round(out.years);
+        out.jewelleryLater = pots.jewellery;
         out.chart = fireChart(input, swr, out.years, true);
         return out;
       }
     }
+    out.jewelleryLater = pots.jewellery;
     out.chart = fireChart(input, swr, 0, false);
     return out;
   }

@@ -73,6 +73,9 @@ templ playRange(label, model string, money bool) {
 			}
 		</span>
 		<input type="range" x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } class="w-full max-w-full"/>
+		if money {
+			@moneyText("", model)
+		}
 	</label>
 }
 
@@ -80,6 +83,18 @@ templ calcButton() {
 	<div>
 		<button type="button" class="btn-primary w-full sm:w-auto" x-bind:class="dirty ? '' : 'opacity-80'" x-on:click="recalc()">Calculate</button>
 		<p class="mt-1.5 text-xs font-medium text-brand" x-show="dirty" x-cloak>Inputs changed — calculate to refresh.</p>
+	</div>
+}
+
+templ deskColCalc() {
+	<div class="hidden lg:block">
+		@calcButton()
+	</div>
+}
+
+templ phoneEndCalc() {
+	<div class="col-span-full lg:hidden">
+		@calcButton()
 	</div>
 }
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	"github.com/thenumber/app/internal/calc"
 	"github.com/thenumber/app/web/templates"
 )
 
@@ -74,12 +75,12 @@ func (s *Server) theme(c echo.Context) error {
 }
 
 func parseFloat(c echo.Context, name string, def float64) float64 {
-	s := strings.TrimSpace(strings.ReplaceAll(c.FormValue(name), ",", ""))
+	s := strings.TrimSpace(c.FormValue(name))
 	if s == "" {
 		return def
 	}
-	v, err := strconv.ParseFloat(s, 64)
-	if err != nil {
+	v, ok := calc.ParseCompactMoney(s)
+	if !ok {
 		return def
 	}
 	return v
