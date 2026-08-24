@@ -1,0 +1,16 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "./tmp/server"
+  cmd = "go run github.com/a-h/templ/cmd/templ@v0.2.793 generate && go build -o ./tmp/server ./cmd/server"
+  include_ext = ["go", "templ", "js", "css"]
+  exclude_dir = ["tmp", "node_modules", "data"]
+  delay = 400
+  stop_on_error = true
+
+[log]
+  time = false
+
+[misc]
+  clean_on_exit = true

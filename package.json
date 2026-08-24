@@ -1,0 +1,12 @@
+{
+  "name": "the-number",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "css": "tailwindcss -i web/static/css/input.css -o web/static/css/app.css --minify",
+    "css:watch": "tailwindcss -i web/static/css/input.css -o web/static/css/app.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  input[type="range"] {
+    accent-color: #0f766e;
+  }
+
+  [x-cloak] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .htmx-indicator {
+    display: none;
+  }
+
+  .htmx-request.htmx-indicator,
+  .htmx-request .htmx-indicator {
+    display: inline;
+  }
+}

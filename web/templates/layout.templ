@@ -1,0 +1,92 @@
+package templates
+
+templ Layout(p Page) {
+	<!DOCTYPE html>
+	<html lang="en" class={ templ.KV("dark", p.Dark) }>
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<title>{ p.Title } · the number</title>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+			<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet"/>
+			<link rel="stylesheet" href="/static/css/app.css"/>
+			<script src="/static/js/theme-boot.js"></script>
+			<script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+			<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
+			<script src="/static/js/calc.js" defer></script>
+			<script src="/static/js/app.js" defer></script>
+			<script src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
+		</head>
+		<body class="min-h-screen bg-paper text-ink font-sans dark:bg-night dark:text-zinc-100">
+			<div class="border-b border-brand/20 bg-teal-50/80 px-4 py-2 text-center text-xs leading-relaxed text-teal-950 dark:border-teal-900/40 dark:bg-teal-950/40 dark:text-teal-100">
+				Educational information only, not personalized financial advice. Consult a SEBI-registered investment advisor before investing.
+			</div>
+			<header class="sticky top-0 z-20 border-b border-black/5 bg-paper/85 backdrop-blur dark:border-white/10 dark:bg-night/85">
+				<div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+					<a href="/" class="group flex items-baseline gap-2">
+						<span class="font-serif text-2xl lowercase tracking-tight">the number</span>
+						<span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">FIRE</span>
+					</a>
+					<nav class="hidden items-center gap-1 md:flex">
+						<a href="/calculators/fire" class={ MainNavClass(p.Path, "/calculators/fire") }>Calculators</a>
+						<a href="/guidance" class={ MainNavClass(p.Path, "/guidance") }>Guidance</a>
+					</nav>
+					<button type="button" class="rounded-full border border-black/10 px-3 py-1.5 text-xs dark:border-white/15" x-data="themeCtl()" x-on:click="toggle()" aria-label="Toggle theme">Theme</button>
+				</div>
+				<nav class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 pb-3 md:hidden">
+					<a href="/calculators/fire" class={ MainNavClass(p.Path, "/calculators/fire") }>Calculators</a>
+					<a href="/guidance" class={ MainNavClass(p.Path, "/guidance") }>Guidance</a>
+				</nav>
+			</header>
+			<main class="mx-auto w-full max-w-6xl px-4 py-10">
+				{ children... }
+			</main>
+			<footer class="mt-16 border-t border-black/5 px-4 py-8 text-center text-sm text-ink/60 dark:border-white/10 dark:text-zinc-400">
+				<p>Not registered investment advice. For educational purposes only. <a href="/disclaimer" class="underline decoration-brand/40 underline-offset-2 hover:text-brand">Disclaimer</a></p>
+			</footer>
+		</body>
+	</html>
+}
+
+templ CalcNav(path string) {
+	<nav class="mb-8 flex flex-wrap gap-2">
+		<a href="/calculators/fire" class={ TabClass(path, "/calculators/fire") }>FIRE</a>
+		<a href="/calculators/sip" class={ TabClass(path, "/calculators/sip") }>SIP</a>
+		<a href="/calculators/emi" class={ TabClass(path, "/calculators/emi") }>EMI</a>
+		<a href="/calculators/emergency" class={ TabClass(path, "/calculators/emergency") }>Emergency</a>
+		<a href="/calculators/budget" class={ TabClass(path, "/calculators/budget") }>Budget</a>
+	</nav>
+}
+
+templ SaveBar(loggedIn bool, action, next string) {
+	<div class="mt-8 flex flex-col gap-3 border-t border-black/5 pt-6 dark:border-white/10 sm:flex-row sm:items-end">
+		if loggedIn {
+			<label class="flex-1 text-sm">
+				<span class="mb-1 block text-ink/60 dark:text-zinc-400">Scenario title</span>
+				<input type="text" name="title" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5" placeholder="Optional title"/>
+			</label>
+			<button
+				type="button"
+				class="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white"
+				hx-post={ action }
+				hx-include="closest form"
+				hx-target="#save-status"
+				hx-swap="innerHTML"
+				hx-indicator="#save-ind"
+			>Save scenario</button>
+			<span id="save-ind" class="htmx-indicator text-sm text-ink/60">Saving…</span>
+		} else {
+			<a href={ templ.SafeURL("/login?next=" + next) } class="text-sm text-brand underline underline-offset-2">Log in to save this scenario</a>
+		}
+	</div>
+	<div id="save-status" class="mt-3 text-sm"></div>
+}
+
+templ SaveOK() {
+	<p class="text-brand">Saved. <a href="/dashboard" class="underline underline-offset-2">View on your dashboard</a>.</p>
+}
+
+templ LoginToSave() {
+	<p>Please log in to save.</p>
+}
