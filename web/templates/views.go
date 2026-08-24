@@ -3,9 +3,10 @@ package templates
 import "strings"
 
 type Page struct {
-	Title string
-	Dark  bool
-	Path  string
+	Title    string
+	TitleKey string
+	Dark     bool
+	Path     string
 }
 
 type SleeveVM struct {

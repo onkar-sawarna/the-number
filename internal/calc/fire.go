@@ -43,6 +43,7 @@ type FIREInput struct {
 	GoldNow        float64 `json:"gold_now"`
 	GoldMonthly    float64 `json:"gold_monthly"`
 	JewelleryNow   float64 `json:"jewellery_now"`
+	StepUp         float64 `json:"step_up"` // yearly % rise in monthly SIPs
 
 	CityTier int    `json:"city_tier"` // 1, 2, or 3
 	Housing  string `json:"housing"`   // own | rent | buy
@@ -62,11 +63,19 @@ func (p firePots) total() float64 {
 }
 
 type FIREPoint struct {
-	Year     int     `json:"year"`
-	Age      int     `json:"age"`
-	Corpus   float64 `json:"corpus"`
-	NetWorth float64 `json:"net_worth"`
-	Target   float64 `json:"target"`
+	Year      int     `json:"year"`
+	Age       int     `json:"age"`
+	Corpus    float64 `json:"corpus"`
+	NetWorth  float64 `json:"net_worth"`
+	Target    float64 `json:"target"`
+	Parked    float64 `json:"parked"`
+	NPS       float64 `json:"nps"`
+	PPF       float64 `json:"ppf"`
+	EPF       float64 `json:"epf"`
+	Foreign   float64 `json:"foreign"`
+	Invested  float64 `json:"invested"`
+	Gold      float64 `json:"gold"`
+	Jewellery float64 `json:"jewellery"`
 }
 
 type FIREOutput struct {
@@ -92,9 +101,10 @@ func DefaultFIRE() FIREInput {
 		AnnualExpenses: 1_200_000,
 		CurrentSavings: 1_500_000,
 		MonthlySavings: 50_000,
-		ExpectedReturn: 11,
+		ExpectedReturn: 12,
 		Inflation:      6,
-		SWR:            4,
+		SWR:            3.5,
+		StepUp:         10,
 		CityTier:       1,
 		Housing:        "rent",
 		Region:         "in",
@@ -164,14 +174,31 @@ func monthlyIn(in FIREInput) float64 {
 	return nz(in.MonthlySavings) + nz(in.NPSMonthly) + nz(in.PPFMonthly) + nz(in.EPFMonthly) + nz(in.ForeignMonthly) + nz(in.GoldMonthly)
 }
 
-func stepPots(p firePots, in FIREInput, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold float64) firePots {
+func steppedMonthly(base, stepUpPct float64, month int) float64 {
+	base = nz(base)
+	if base == 0 || stepUpPct <= 0 || month <= 12 {
+		return base
+	}
+	years := (month - 1) / 12
+	return base * math.Pow(1+stepUpPct/100.0, float64(years))
+}
+
+func ppfAt(in FIREInput, month int) float64 {
+	v := steppedMonthly(in.PPFMonthly, in.StepUp, month)
+	if !IsUSD(in.Region) && v > 12_500 {
+		return 12_500
+	}
+	return v
+}
+
+func stepPots(p firePots, in FIREInput, month int, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold float64) firePots {
 	p.general = p.general * (1 + rmLiq)
-	p.nps = p.nps*(1+rmNPS) + nz(in.NPSMonthly)
-	p.ppf = p.ppf*(1+rmPPF) + nz(in.PPFMonthly)
-	p.epf = p.epf*(1+rmEPF) + nz(in.EPFMonthly)
-	p.foreign = p.foreign*(1+rmEq) + nz(in.ForeignMonthly)
-	p.stopped = p.stopped*(1+rmEq) + nz(in.MonthlySavings)
-	p.gold = p.gold*(1+rmGold) + nz(in.GoldMonthly)
+	p.nps = p.nps*(1+rmNPS) + steppedMonthly(in.NPSMonthly, in.StepUp, month)
+	p.ppf = p.ppf*(1+rmPPF) + ppfAt(in, month)
+	p.epf = p.epf*(1+rmEPF) + steppedMonthly(in.EPFMonthly, in.StepUp, month)
+	p.foreign = p.foreign*(1+rmEq) + steppedMonthly(in.ForeignMonthly, in.StepUp, month)
+	p.stopped = p.stopped*(1+rmEq) + steppedMonthly(in.MonthlySavings, in.StepUp, month)
+	p.gold = p.gold*(1+rmGold) + steppedMonthly(in.GoldMonthly, in.StepUp, month)
 	p.jewellery = p.jewellery * (1 + rmGold)
 	return p
 }
@@ -220,7 +247,7 @@ func FIRE(in FIREInput) FIREOutput {
 	houseNow := house
 	const maxMonths = 80 * 12
 	for m := 1; m <= maxMonths; m++ {
-		pots = stepPots(pots, in, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
+		pots = stepPots(pots, in, m, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
 		expenses = expenses * (1 + im)
 		houseNow = houseNow * (1 + im)
 		target := FIRENumber(expenses, swr) + houseNow
@@ -267,14 +294,22 @@ func fireChart(in FIREInput, swr, years float64, reaches bool) []FIREPoint {
 	pts := make([]FIREPoint, 0, horizon+1)
 	for y := 0; y <= horizon; y++ {
 		pts = append(pts, FIREPoint{
-			Year:   y,
-			Age:    in.Age + y,
-			Corpus:   pots.spendable(),
-			NetWorth: pots.total(),
-			Target:   FIRENumber(expenses, swr) + house,
+			Year:      y,
+			Age:       in.Age + y,
+			Corpus:    pots.spendable(),
+			NetWorth:  pots.total(),
+			Target:    FIRENumber(expenses, swr) + house,
+			Parked:    pots.general,
+			NPS:       pots.nps,
+			PPF:       pots.ppf,
+			EPF:       pots.epf,
+			Foreign:   pots.foreign,
+			Invested:  pots.stopped,
+			Gold:      pots.gold,
+			Jewellery: pots.jewellery,
 		})
 		for m := 0; m < 12; m++ {
-			pots = stepPots(pots, in, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
+			pots = stepPots(pots, in, y*12+m+1, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
 		}
 		expenses *= (1 + inf)
 		house *= (1 + inf)

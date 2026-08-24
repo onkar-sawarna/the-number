@@ -5,84 +5,126 @@ templ Landing(p Page) {
 		<section class="relative overflow-hidden pb-2 sm:pb-4">
 			<div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand/25 blur-3xl dark:bg-brand/40 md:h-80 md:w-80"></div>
 			<div class="pointer-events-none absolute -left-20 top-32 h-40 w-40 rounded-full bg-sky/30 blur-3xl dark:bg-sky/20"></div>
-			<p class="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">FIRE first — India or the world</p>
-			<h1 class="relative mt-3 max-w-full font-serif text-[1.85rem] leading-[1.15] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl">Know <em class="not-italic text-brand">the number</em> that lets you stop.</h1>
-			<p class="relative mt-4 max-w-xl text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg dark:text-zinc-300">India in rupees, everywhere else in dollars. Set the sliders. Hit calculate. No login, no lecture, no “buy this fund.”</p>
+			<p class="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("hero_kicker")</p>
+			<h1 class="relative mt-3 max-w-full font-serif text-[1.85rem] leading-[1.15] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl">@Tx("hero_before")<em class="not-italic text-brand">the number</em>@Tx("hero_after")</h1>
+			<p class="relative mt-4 max-w-xl text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg dark:text-zinc-300">@Tx("hero_sub")</p>
 			<div class="relative mt-5 hidden flex-wrap gap-2 sm:flex">
-				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">FIRE is the product</span>
-				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">Runs in your browser</span>
-				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">Never a ticker</span>
+				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">@Tx("chip_product")</span>
+				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">@Tx("chip_browser")</span>
+				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">@Tx("chip_ticker")</span>
 			</div>
 			<div class="relative mt-6 sm:mt-8">
-				<a href="#try-fire" class="btn-primary w-full sm:w-auto">Try it below</a>
+				<a href="#try-fire" class="btn-primary w-full sm:w-auto">@Tx("hero_cta")</a>
 			</div>
 			<p class="currency-in pointer-events-none absolute -right-6 top-8 hidden select-none font-serif text-[10rem] leading-none text-brand/10 md:block">₹</p>
 			<p class="currency-us pointer-events-none absolute -right-6 top-8 hidden select-none font-serif text-[10rem] leading-none text-brand/10 md:block">$</p>
 		</section>
 		<section id="try-fire" class="relative mt-8 scroll-mt-28 sm:mt-12" x-data="fireCalc()">
-			<form class="min-w-0 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
+			<form class="min-w-0 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5" x-on:input="markDirty()" x-on:submit.prevent>
 				<div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-center">
 					<div class="min-w-0 lg:col-span-5">
 						<div class="flex items-start justify-between gap-3">
-							<p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand">Try it — right here</p>
+							<p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand">@Tx("try_kicker")</p>
 							@RegionToggle()
 						</div>
 						<p class="mt-2 font-serif text-4xl tabular-nums tracking-tight sm:text-5xl" x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookLine()"></p>
 						<p class="mt-2 text-sm text-ink/60 dark:text-zinc-400" x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookSub()"></p>
 						<div class="mt-4 flex flex-wrap gap-2">
-							<button type="button" class="preset-chip" x-on:click="applyPreset('start')">Just starting</button>
-							<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">Saving hard</button>
-							<button type="button" class="preset-chip" x-on:click="applyPreset('ahead')">Already a stash</button>
+							<button type="button" class="preset-chip" x-on:click="applyPreset('start')">@Tx("preset_start")</button>
+							<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">@Tx("preset_mid")</button>
+							<button type="button" class="preset-chip" x-on:click="applyPreset('ahead')">@Tx("preset_ahead")</button>
 						</div>
 					</div>
 					<div class="min-w-0 space-y-5 lg:col-span-7">
-						@playRange("Monthly SIPs", "monthlySavings", true)
-						@playRange("Annual spend", "annualExpenses", true)
-						@playRange("Parked cash", "currentSavings", true)
+						@labeledRange("age_home", "age_yours", "age", "18", "70", "1")
+						@playRange("monthly_sips", "monthlySavings", true)
+						@labeledRange("step_up_home", "step_up", "stepUp", "0", "20", "1")
+						@playRange("annual_spend", "annualExpenses", true)
+						@playRange("parked_cash", "currentSavings", true)
 						@calcButton()
 					</div>
 				</div>
-				<div class="mt-8 flex flex-col gap-3 border-t border-brand/15 pt-5 sm:flex-row sm:items-center sm:justify-between">
-					<div class="min-w-0">
-						<p class="text-sm font-medium text-ink dark:text-zinc-100">Want the detailed number?</p>
-						<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isIN()">This is the short version. Gold, NPS, EPF, PPF, housing, and every pot live in the full calculator.</p>
-						<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isUS()" x-cloak>This is the short version. Gold, retirement, housing, and every pot live in the full calculator.</p>
+				<div id="calc-result" class="mt-8 scroll-mt-28 border-t border-brand/15 pt-6" x-show="revealed" x-cloak>
+					<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-bind:class="dirty ? 'opacity-50' : ''">
+						<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
+						<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl" x-text="fmtINR(result.fireNumber)"></p>
+						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text="yearsCopy()"></p>
+						<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
+							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lifestyle)"></p>
+							</div>
+							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.startingCorpus)"></p>
+							</div>
+							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("monthly_in")</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
+							</div>
+							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("youll_be")</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.reachesFire ? result.fiAge : '—'"></p>
+							</div>
+						</div>
+						<div class="mt-4 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 dark:bg-zinc-900">
+							<canvas id="fire-chart"></canvas>
+						</div>
 					</div>
-					<a href="/calculators/fire" class="btn-primary w-full shrink-0 sm:w-auto">Open the full FIRE calculator</a>
+					<div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+						<div class="min-w-0">
+							<p class="text-sm font-medium text-ink dark:text-zinc-100">@Tx("want_detail")</p>
+							<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isIN()">@Tx("want_detail_in")</p>
+							<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("want_detail_us")</p>
+						</div>
+						<a href="/calculators/fire" class="btn-primary w-full shrink-0 sm:w-auto">@Tx("open_full")</a>
+					</div>
 				</div>
 			</form>
 		</section>
 		<section class="mt-10 grid gap-3 sm:mt-16 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-			@featureCard("/calculators/fire", "FIRE", "The full calculator", "Parked cash, gold, NPS, EPF, PPF, invested SIPs, housing — every pot, not just three sliders.", true)
-			@featureCard("/calculators/sip", "SIP", "What does a monthly plan become?", "Leave a contribution running. See the future value, not a brochure.", false)
-			@featureCard("/calculators/emi", "EMI", "What if you prepay?", "The EMI, then extra monthly or a lump — interest and months you get back.", false)
-			@featureCard("/calculators/emergency", "Runway", "How many months of buffer?", "Essentials × cover, the gap, and how long a top-up takes to close it.", false)
-			@featureCard("/calculators/budget", "50/30/20", "Is this month overspent?", "Needs, wants, savings against take-home. A yes/no, not a lecture.", false)
+			@featureCard("/calculators/fire", "FIRE", "card_fire_title", "card_fire_body", true)
+			@featureCard("/calculators/sip", "SIP", "card_sip_title", "card_sip_body", false)
+			@featureCard("/calculators/emi", "EMI", "card_emi_title", "card_emi_body", false)
+			@featureCard("/calculators/emergency", "Runway", "card_run_title", "card_run_body", false)
+			@featureCard("/calculators/budget", "50/30/20", "card_bud_title", "card_bud_body", false)
 		</section>
 	}
 }
 
-templ playRange(label, model string, money bool) {
+templ potMoneyRows() {
+	<ul class="mt-2 space-y-1 text-sm">
+		<template x-for="row in potRows()" x-bind:key="row.name">
+			<li class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-ink/80 dark:text-zinc-200">
+				<span class="font-medium" x-text="row.name"></span>
+				<span class="tabular-nums" x-text="row.line"></span>
+			</li>
+		</template>
+	</ul>
+}
+
+templ playRange(labelKey, model string, money bool) {
 	<label class="block">
 		<span class="mb-1 flex items-center justify-between gap-3 text-sm text-ink/60 dark:text-zinc-400">
-			<span class="min-w-0">{ label }</span>
+			<span class="min-w-0">@Tx(labelKey)</span>
 			if money {
 				<span class="shrink-0 font-serif text-base tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtINR(" + model + ")" }></span>
 			} else {
 				<span class="shrink-0 font-serif text-base tabular-nums text-ink dark:text-zinc-100" x-text={ model }></span>
 			}
 		</span>
-		<input type="range" x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } class="w-full max-w-full"/>
 		if money {
 			@moneyText("", model)
+		} else {
+			<input type="number" inputmode="decimal" x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } x-on:blur="recalc()" x-on:keydown.enter.prevent="$event.target.blur()" class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
 		}
 	</label>
 }
 
 templ calcButton() {
 	<div>
-		<button type="button" class="btn-primary w-full sm:w-auto" x-bind:class="dirty ? '' : 'opacity-80'" x-on:click="recalc()">Calculate</button>
-		<p class="mt-1.5 text-xs font-medium text-brand" x-show="dirty" x-cloak>Inputs changed — calculate to refresh.</p>
+		<button type="button" class="btn-primary w-full sm:w-auto" x-bind:class="dirty ? '' : 'opacity-80'" x-on:click="recalc(true)">@Tx("calculate")</button>
+		<p class="mt-1.5 text-xs font-medium text-brand" x-show="dirty" x-cloak>@Tx("dirty_hint")</p>
 	</div>
 }
 
@@ -98,28 +140,28 @@ templ phoneEndCalc() {
 	</div>
 }
 
-templ featureCard(href, kicker, title, body string, wide bool) {
+templ featureCard(href, kicker, titleKey, bodyKey string, wide bool) {
 	<a href={ templ.SafeURL(href) } class={ "hover-lift group rounded-2xl border border-black/5 bg-white/80 p-5 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5", templ.KV("sm:col-span-2", wide) }>
 		<p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">{ kicker }</p>
-		<h2 class="mt-2 font-serif text-lg sm:text-xl">{ title }</h2>
-		<p class="mt-2 text-sm leading-relaxed text-ink/65 dark:text-zinc-400">{ body }</p>
-		<p class="mt-3 text-sm font-medium text-brand opacity-80 group-hover:opacity-100">Open →</p>
+		<h2 class="mt-2 font-serif text-lg sm:text-xl">@Tx(titleKey)</h2>
+		<p class="mt-2 text-sm leading-relaxed text-ink/65 dark:text-zinc-400">@Tx(bodyKey)</p>
+		<p class="mt-3 text-sm font-medium text-brand opacity-80 group-hover:opacity-100">@Tx("open")</p>
 	</a>
 }
 
 templ Disclaimer(p Page) {
 	@Layout(p) {
 		<article class="prose-disclaimer mx-auto max-w-2xl">
-			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">Disclaimer</h1>
-			<p class="mt-6 leading-relaxed text-ink/80 dark:text-zinc-300">the number is an educational workshop. It is not a SEBI-registered investment advisor, research analyst, or broker. Nothing here is registered investment advice, a solicitation, or a recommendation to buy or sell any security.</p>
-			<h2 class="mt-10 font-serif text-2xl">The maths is yours</h2>
-			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Every calculator is arithmetic on the assumptions you type. Change the return, inflation, or withdrawal rate and the “number” moves. The popular 4% safe-withdrawal rule can fail in long poor markets. Past returns do not predict future ones.</p>
-			<h2 class="mt-10 font-serif text-2xl">What we omit</h2>
-			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Taxes, exit loads, expense ratios, insurance, currency risk, and sequence-of-returns risk are omitted. EPF, NPS, and PPF lock-ins and annuity rules are ignored so the pots can sit in one number. House prices are a modest indicative corpus, not a quote. Real life is messier than a slider.</p>
-			<h2 class="mt-10 font-serif text-2xl">Guidance stays at category level</h2>
-			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Optional allocation guidance names only asset-class sleeves (for example large-cap index or gold). It never names stocks, funds, AMCs, or tickers. If a language model is configured, its output is sanitised the same way. On failure we fall back to an on-device heuristic.</p>
-			<h2 class="mt-10 font-serif text-2xl">What we store</h2>
-			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (<span class="font-medium">theme=dark</span> or <span class="font-medium">light</span>) remembers appearance. A region cookie (<span class="font-medium">region=in</span> or <span class="font-medium">us</span>) remembers India ₹ vs World $. There is no localStorage.</p>
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("disc_h1")</h1>
+			<p class="mt-6 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("disc_p1")</p>
+			<h2 class="mt-10 font-serif text-2xl">@Tx("disc_h2")</h2>
+			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("disc_p2")</p>
+			<h2 class="mt-10 font-serif text-2xl">@Tx("disc_h3")</h2>
+			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("disc_p3")</p>
+			<h2 class="mt-10 font-serif text-2xl">@Tx("disc_h4")</h2>
+			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("disc_p4")</p>
+			<h2 class="mt-10 font-serif text-2xl">@Tx("disc_h5")</h2>
+			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("disc_p5")</p>
 			<p class="mt-8 text-sm text-ink/60 dark:text-zinc-400">Not registered investment advice. For educational purposes only.</p>
 		</article>
 	}

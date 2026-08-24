@@ -5,7 +5,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 ## Product
 
 - Know the FIRE corpus (“the number”) and years until independence.
-- Live sliders: maths and charts update in the browser with **no server round-trip**.
+- Live inputs: maths and charts update in the browser with **no server round-trip**.
 - Numbers stay in the browser. No accounts, no database.
 - Optional category-level allocation guidance (never product names).
 
@@ -88,11 +88,11 @@ Lean 0.5× lifestyle + house, Regular = total, Fat 2× lifestyle + house.
 
 **World pots:** parked + gold funds + jewellery + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
 
-Monthly contributions add to the matching pot. Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s number.
+Monthly contributions add to the matching pot. Optional yearly SIP step-up raises every monthly pot by that % after each completed year (PPF capped at ₹1.5L/year). Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s number.
 
 Chart: yearly snapshots until ~FIRE+5 years (min 15, max 50; 40 if never).
 
-India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 11%, inflation 6%, SWR 4%, city tier 1, housing rent, other pots 0.
+India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 12%, inflation 6%, SWR 3.5% (~29× expenses), yearly SIP step-up 10%, city tier 1, housing rent, other pots 0. The US 4% / 25× rule is not the India default.
 
 ### SIP
 
@@ -134,10 +134,10 @@ Sleeves sum to 100. Categories only.
 
 ## HTMX vs Alpine
 
-- **Alpine + Chart.js:** sliders (labels update live), Calculate button for results and charts, dark toggle.
+- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for results and charts, dark toggle.
 - **HTMX:** guidance POST.
 
-Do not POST on every slider drag.
+Do not POST on every keystroke.
 
 ## Copy constraints
 

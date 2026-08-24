@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Server) guidanceGet(c echo.Context) error {
-	return render(c, http.StatusOK, templates.GuidancePage(s.page(c, "Guidance")))
+	return render(c, http.StatusOK, templates.GuidancePage(s.page(c, "Guidance", "title_guidance")))
 }
 
 func (s *Server) guidancePost(c echo.Context) error {

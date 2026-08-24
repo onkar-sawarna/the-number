@@ -8,21 +8,21 @@ import (
 )
 
 func (s *Server) firePage(c echo.Context) error {
-	return render(c, http.StatusOK, templates.FIREPage(s.page(c, "FIRE calculator")))
+	return render(c, http.StatusOK, templates.FIREPage(s.page(c, "FIRE calculator", "title_fire")))
 }
 
 func (s *Server) sipPage(c echo.Context) error {
-	return render(c, http.StatusOK, templates.SIPPage(s.page(c, "SIP calculator")))
+	return render(c, http.StatusOK, templates.SIPPage(s.page(c, "SIP calculator", "title_sip")))
 }
 
 func (s *Server) emiPage(c echo.Context) error {
-	return render(c, http.StatusOK, templates.EMIPage(s.page(c, "EMI calculator")))
+	return render(c, http.StatusOK, templates.EMIPage(s.page(c, "EMI calculator", "title_emi")))
 }
 
 func (s *Server) emergencyPage(c echo.Context) error {
-	return render(c, http.StatusOK, templates.EmergencyPage(s.page(c, "Emergency fund")))
+	return render(c, http.StatusOK, templates.EmergencyPage(s.page(c, "Emergency fund", "title_emergency")))
 }
 
 func (s *Server) budgetPage(c echo.Context) error {
-	return render(c, http.StatusOK, templates.BudgetPage(s.page(c, "50/30/20 budget")))
+	return render(c, http.StatusOK, templates.BudgetPage(s.page(c, "50/30/20 budget", "title_budget")))
 }

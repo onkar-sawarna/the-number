@@ -38,11 +38,12 @@ func render(c echo.Context, status int, t templ.Component) error {
 	return t.Render(c.Request().Context(), c.Response())
 }
 
-func (s *Server) page(c echo.Context, title string) templates.Page {
+func (s *Server) page(c echo.Context, title, titleKey string) templates.Page {
 	return templates.Page{
-		Title: title,
-		Dark:  themeDark(c),
-		Path:  c.Request().URL.Path,
+		Title:    title,
+		TitleKey: titleKey,
+		Dark:     themeDark(c),
+		Path:     c.Request().URL.Path,
 	}
 }
 
@@ -52,11 +53,11 @@ func themeDark(c echo.Context) bool {
 }
 
 func (s *Server) landing(c echo.Context) error {
-	return render(c, http.StatusOK, templates.Landing(s.page(c, "Home")))
+	return render(c, http.StatusOK, templates.Landing(s.page(c, "Home", "title_home")))
 }
 
 func (s *Server) disclaimer(c echo.Context) error {
-	return render(c, http.StatusOK, templates.Disclaimer(s.page(c, "Disclaimer")))
+	return render(c, http.StatusOK, templates.Disclaimer(s.page(c, "Disclaimer", "title_disclaimer")))
 }
 
 func (s *Server) theme(c echo.Context) error {

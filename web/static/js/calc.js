@@ -121,14 +121,27 @@
     return nz(input.monthlySavings) + nz(input.npsMonthly) + nz(input.ppfMonthly) + nz(input.epfMonthly) + nz(input.foreignMonthly) + nz(input.goldMonthly);
   }
 
-  function stepPots(p, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold) {
+  function steppedMonthly(base, stepUpPct, month) {
+    base = nz(base);
+    if (base === 0 || stepUpPct <= 0 || month <= 12) return base;
+    var years = Math.floor((month - 1) / 12);
+    return base * Math.pow(1 + stepUpPct / 100, years);
+  }
+
+  function ppfAt(input, month) {
+    var v = steppedMonthly(input.ppfMonthly, input.stepUp, month);
+    if (!isUSD(input.region) && v > 12500) return 12500;
+    return v;
+  }
+
+  function stepPots(p, input, month, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold) {
     p.general = p.general * (1 + rmLiq);
-    p.nps = p.nps * (1 + rmNPS) + nz(input.npsMonthly);
-    p.ppf = p.ppf * (1 + rmPPF) + nz(input.ppfMonthly);
-    p.epf = p.epf * (1 + rmEPF) + nz(input.epfMonthly);
-    p.foreign = p.foreign * (1 + rmEq) + nz(input.foreignMonthly);
-    p.stopped = p.stopped * (1 + rmEq) + nz(input.monthlySavings);
-    p.gold = p.gold * (1 + rmGold) + nz(input.goldMonthly);
+    p.nps = p.nps * (1 + rmNPS) + steppedMonthly(input.npsMonthly, input.stepUp, month);
+    p.ppf = p.ppf * (1 + rmPPF) + ppfAt(input, month);
+    p.epf = p.epf * (1 + rmEPF) + steppedMonthly(input.epfMonthly, input.stepUp, month);
+    p.foreign = p.foreign * (1 + rmEq) + steppedMonthly(input.foreignMonthly, input.stepUp, month);
+    p.stopped = p.stopped * (1 + rmEq) + steppedMonthly(input.monthlySavings, input.stepUp, month);
+    p.gold = p.gold * (1 + rmGold) + steppedMonthly(input.goldMonthly, input.stepUp, month);
     p.jewellery = p.jewellery * (1 + rmGold);
     return p;
   }
@@ -158,9 +171,17 @@
         corpus: potsSpendable(pots),
         netWorth: potsTotal(pots),
         target: fireNumber(expenses, swr) + house,
+        parked: pots.general,
+        nps: pots.nps,
+        ppf: pots.ppf,
+        epf: pots.epf,
+        foreign: pots.foreign,
+        invested: pots.stopped,
+        gold: pots.gold,
+        jewellery: pots.jewellery,
       });
       for (var m = 0; m < 12; m++) {
-        pots = stepPots(pots, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
+        pots = stepPots(pots, input, y * 12 + m + 1, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
       }
       expenses *= 1 + inf;
       house *= 1 + inf;
@@ -206,7 +227,7 @@
     var houseNow = house;
     var maxMonths = 80 * 12;
     for (var m = 1; m <= maxMonths; m++) {
-      pots = stepPots(pots, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
+      pots = stepPots(pots, input, m, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
       expenses = expenses * (1 + im);
       houseNow = houseNow * (1 + im);
       if (potsSpendable(pots) >= fireNumber(expenses, swr) + houseNow) {

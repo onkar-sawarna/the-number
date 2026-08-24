@@ -4,146 +4,165 @@ templ FIREPage(p Page) {
 	@Layout(p) {
 		<div x-data="fireCalc()">
 			@CalcNav(p.Path)
-			@mobileStickyStat("The number today", "fmtINR(result.fireNumber)", "yearsCopy()")
-			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">FIRE number</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isIN()">Parked cash at ~6%. Gold funds at ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, invested SIPs, foreign stocks, and housing.</p>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isUS()" x-cloak>Parked cash at ~6%. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then invested pots, a retirement account, and housing. Amounts are in dollars.</p>
+			@mobileStickyStat("number_today", "fmtINR(result.fireNumber)", "yearsCopy()")
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("fire_h1")</h1>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isIN()">@Tx("fire_intro_in")</p>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("fire_intro_us")</p>
 			<div class="mt-4 flex flex-wrap gap-2">
-				<button type="button" class="preset-chip" x-on:click="applyPreset('start')">Just starting</button>
-				<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">Saving hard</button>
-				<button type="button" class="preset-chip" x-on:click="applyPreset('ahead')">Already a stash</button>
+				<button type="button" class="preset-chip" x-on:click="applyPreset('start')">@Tx("preset_start")</button>
+				<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">@Tx("preset_mid")</button>
+				<button type="button" class="preset-chip" x-on:click="applyPreset('ahead')">@Tx("preset_ahead")</button>
 			</div>
-			<form id="fire-form" class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
+			<form id="fire-form" class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent>
 				<div class="min-w-0 space-y-6 lg:col-span-5">
-					@labeledRange("age", "Age", "age", "18", "70", "1")
-					@moneyRange("annual_expenses", "Annual expenses (include rent if you rent)", "annualExpenses")
+					@labeledRange("age", "age", "age", "18", "70", "1")
+					@moneyRange("annual_expenses", "annual_exp", "annualExpenses")
 					<div>
-						<p class="mb-2 text-sm text-ink/60 dark:text-zinc-400">City</p>
+						<p class="mb-2 text-sm text-ink/60 dark:text-zinc-400">@Tx("city")</p>
 						<div class="grid grid-cols-3 gap-2">
-							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 1 ? 'is-on' : ''" x-on:click="cityTier = 1; markDirty()">
-								<span class="block text-sm font-medium" x-show="isIN()">Tier 1</span>
-								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>High cost</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50" x-show="isIN()">Metro</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50" x-show="isUS()" x-cloak>Coast / capital</span>
+							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 1 ? 'is-on' : ''" x-on:click="cityTier = 1; recalc()">
+								<span class="block text-sm font-medium" x-show="isIN()">@Tx("tier1")</span>
+								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>@Tx("high_cost")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier1_sub")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("high_cost_sub")</span>
 							</button>
-							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 2 ? 'is-on' : ''" x-on:click="cityTier = 2; markDirty()">
-								<span class="block text-sm font-medium" x-show="isIN()">Tier 2</span>
-								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>Mid cost</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50" x-show="isIN()">Big town</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50" x-show="isUS()" x-cloak>Regional city</span>
+							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 2 ? 'is-on' : ''" x-on:click="cityTier = 2; recalc()">
+								<span class="block text-sm font-medium" x-show="isIN()">@Tx("tier2")</span>
+								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>@Tx("mid_cost")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier2_sub")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("mid_cost_sub")</span>
 							</button>
-							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 3 ? 'is-on' : ''" x-on:click="cityTier = 3; markDirty()">
-								<span class="block text-sm font-medium" x-show="isIN()">Tier 3</span>
-								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>Lower cost</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50" x-show="isIN()">Smaller city</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50" x-show="isUS()" x-cloak>Smaller city</span>
+							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 3 ? 'is-on' : ''" x-on:click="cityTier = 3; recalc()">
+								<span class="block text-sm font-medium" x-show="isIN()">@Tx("tier3")</span>
+								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>@Tx("low_cost")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier3_sub")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("low_cost_sub")</span>
 							</button>
 						</div>
 					</div>
 					<div>
-						<p class="mb-2 text-sm text-ink/60 dark:text-zinc-400">House</p>
+						<p class="mb-2 text-sm text-ink/60 dark:text-zinc-400">@Tx("house")</p>
 						<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
-							<button type="button" class="risk-card text-left" x-bind:class="housing === 'own' ? 'is-on' : ''" x-on:click="housing = 'own'; markDirty()">
-								<span class="block text-sm font-medium">I own</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50">No extra corpus</span>
+							<button type="button" class="risk-card text-left" x-bind:class="housing === 'own' ? 'is-on' : ''" x-on:click="housing = 'own'; recalc()">
+								<span class="block text-sm font-medium">@Tx("own")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400">@Tx("own_sub")</span>
 							</button>
-							<button type="button" class="risk-card text-left" x-bind:class="housing === 'rent' ? 'is-on' : ''" x-on:click="housing = 'rent'; markDirty()">
-								<span class="block text-sm font-medium">I’ll keep renting</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50">Rent stays in expenses</span>
+							<button type="button" class="risk-card text-left" x-bind:class="housing === 'rent' ? 'is-on' : ''" x-on:click="housing = 'rent'; recalc()">
+								<span class="block text-sm font-medium">@Tx("rent")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400">@Tx("rent_sub")</span>
 							</button>
-							<button type="button" class="risk-card text-left" x-bind:class="housing === 'buy' ? 'is-on' : ''" x-on:click="housing = 'buy'; markDirty()">
-								<span class="block text-sm font-medium">I rent, I’ll buy</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50">House added; keep rent for now</span>
+							<button type="button" class="risk-card text-left" x-bind:class="housing === 'buy' ? 'is-on' : ''" x-on:click="housing = 'buy'; recalc()">
+								<span class="block text-sm font-medium">@Tx("buy")</span>
+								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400">@Tx("buy_sub")</span>
 							</button>
 						</div>
-						<p class="mt-2 text-xs text-ink/50 dark:text-zinc-500" x-text="houseCopy()"></p>
+						<p class="mt-2 text-xs text-ink/50 dark:text-zinc-400" x-text="houseCopy()"></p>
 					</div>
 					<div x-show="isIN()">
-						@labeledRange("expected_return", "Expected return % (invested SIPs + foreign)", "expectedReturn", "0", "20", "0.1")
+						@labeledRange("expected_return", "ret_in", "expectedReturn", "0", "20", "0.1")
 					</div>
 					<div x-show="isUS()" x-cloak>
-						@labeledRange("expected_return_us", "Expected return % (invested + retirement)", "expectedReturn", "0", "20", "0.1")
+						@labeledRange("expected_return_us", "ret_us", "expectedReturn", "0", "20", "0.1")
 					</div>
-					@labeledRange("inflation", "Inflation %", "inflation", "0", "15", "0.1")
-					@labeledRange("swr", "Safe withdrawal rate %", "swr", "2", "8", "0.1")
-					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Parked · ~6%</p>
 					<div x-show="isIN()">
-						@moneyRange("current_savings", "Cash, FDs, liquid funds till now", "currentSavings")
+						@labeledRange("inflation", "inf_in", "inflation", "0", "15", "0.1")
+						@labeledRange("swr", "swr_in", "swr", "2", "8", "0.1")
 					</div>
 					<div x-show="isUS()" x-cloak>
-						@moneyRange("current_savings_us", "Cash & savings till now", "currentSavings")
+						@labeledRange("inflation_us", "inf_us", "inflation", "0", "15", "0.1")
+						@labeledRange("swr_us", "swr_us", "swr", "2", "8", "0.1")
 					</div>
-					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="parkedCopy()"></p>
-					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Gold funds · ~8%</p>
-					@moneyPair("gold_now", "Till now", "goldNow", "gold_monthly", "Monthly", "goldMonthly")
-					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="goldCopy()"></p>
-					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Jewellery · kept · ~8%</p>
-					@moneyRange("jewellery_now", "Jewellery (you would not sell)", "jewelleryNow")
-					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="jewelleryCopy()"></p>
+					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("parked_head")</p>
 					<div x-show="isIN()">
-						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">NPS · EPF · PPF</p>
-						@moneyPair("nps_now", "NPS till now", "npsNow", "nps_monthly", "NPS monthly", "npsMonthly")
-						@moneyPair("epf_now", "EPF till now", "epfNow", "epf_monthly", "EPF monthly", "epfMonthly")
-						@moneyPair("ppf_now", "PPF till now", "ppfNow", "ppf_monthly", "PPF monthly", "ppfMonthly")
-						<p class="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand">Foreign stocks</p>
-						@moneyPair("foreign_now", "Till now", "foreignNow", "foreign_monthly", "Monthly", "foreignMonthly")
+						@moneyRange("current_savings", "parked_in", "currentSavings")
 					</div>
 					<div x-show="isUS()" x-cloak>
-						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Retirement account</p>
-						@moneyPair("nps_now_us", "Till now", "npsNow", "nps_monthly_us", "Monthly", "npsMonthly")
+						@moneyRange("current_savings_us", "parked_us", "currentSavings")
 					</div>
-					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">Invested · expected return</p>
+					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400" x-text="parkedCopy()"></p>
+					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("gold_head")</p>
+					@moneyPair("gold_now", "till_now", "goldNow", "gold_monthly", "monthly", "goldMonthly")
+					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400" x-text="goldCopy()"></p>
+					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("jew_head")</p>
+					@moneyRange("jewellery_now", "jew_label", "jewelleryNow")
+					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400" x-text="jewelleryCopy()"></p>
 					<div x-show="isIN()">
-						@moneyPair("stopped_now", "Till now (old SIPs)", "stoppedNow", "monthly_savings", "Monthly SIPs", "monthlySavings")
+						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("nps_head")</p>
+						@moneyPair("nps_now", "nps_now", "npsNow", "nps_monthly", "nps_mo", "npsMonthly")
+						@moneyPair("epf_now", "epf_now", "epfNow", "epf_monthly", "epf_mo", "epfMonthly")
+						@moneyPair("ppf_now", "ppf_now", "ppfNow", "ppf_monthly", "ppf_mo", "ppfMonthly")
+						<p class="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("foreign_head")</p>
+						@moneyPair("foreign_now", "till_now", "foreignNow", "foreign_monthly", "monthly", "foreignMonthly")
 					</div>
 					<div x-show="isUS()" x-cloak>
-						@moneyPair("stopped_now_us", "Till now", "stoppedNow", "monthly_savings_us", "Monthly", "monthlySavings")
+						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("retire_head")</p>
+						@moneyPair("nps_now_us", "till_now", "npsNow", "nps_monthly_us", "monthly", "npsMonthly")
 					</div>
-					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-500" x-text="investedCopy()"></p>
+					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("invested_head")</p>
+					<div x-show="isIN()">
+						@moneyPair("stopped_now", "old_sips", "stoppedNow", "monthly_savings", "monthly_sips", "monthlySavings")
+					</div>
+					<div x-show="isUS()" x-cloak>
+						@moneyPair("stopped_now_us", "till_now", "stoppedNow", "monthly_savings_us", "monthly", "monthlySavings")
+					</div>
+					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400" x-text="investedCopy()"></p>
+					@labeledRange("step_up", "step_up", "stepUp", "0", "20", "1")
+					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400">@Tx("step_note")</p>
 					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
-					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
-						@deskHeadline("The number today", "fmtINR(result.fireNumber)", "yearsCopy()")
+					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]">
+						@deskHeadline("number_today", "fmtINR(result.fireNumber)", "yearsCopy()")
 						<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50">Lifestyle corpus</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lifestyle)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50">House add-on</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("house_add")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.houseAdd)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50">You have today</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.startingCorpus)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50">Monthly going in</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("monthly_in")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50">Jewellery (kept)</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("jew_kept")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.jewellery)"></p>
-								<p class="mt-1 text-[11px] text-ink/45" x-show="result.jewelleryLater > result.jewellery" x-cloak>Later <span class="tabular-nums" x-text="fmtINR(result.jewelleryLater)"></span></p>
+								<p class="mt-1 text-[11px] text-ink/65 dark:text-zinc-400" x-show="result.jewelleryLater > result.jewellery" x-cloak>@Tx("later")<span class="tabular-nums" x-text="fmtINR(result.jewelleryLater)"></span></p>
 							</div>
 						</div>
 						<div class="mt-4 grid grid-cols-3 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Lean</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("lean")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lean)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Regular</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("regular")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.regular)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Fat</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("fat")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.fat)"></p>
 							</div>
 						</div>
-						<div class="mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64" x-bind:class="dirty ? 'opacity-50' : ''">
+						@chartKicker("number_today", "fmtINR(result.fireNumber)")
+						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="yearsCopy()"></p>
+						<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
 							<canvas id="fire-chart"></canvas>
+						</div>
+						<div class="mt-5" x-show="hasPotLines()" x-cloak>
+							<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("pots_chart")</p>
+							<p class="mt-1 text-sm text-ink/65 dark:text-zinc-400">@Tx("pots_chart_sub")</p>
+							<p class="mt-1 text-sm font-medium text-ink dark:text-zinc-100" x-text="potsLead()"></p>
+							@potMoneyRows()
+							<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
+								<canvas id="fire-pots-chart"></canvas>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -157,31 +176,33 @@ templ SIPPage(p Page) {
 	@Layout(p) {
 		<div x-data="sipCalc()">
 			@CalcNav(p.Path)
-			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">SIP & compounding</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, no brochure.</p>
-			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
-				@mobileStickyStat("Future value", "fmtINR(result.fv)", "")
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("sip_h1")</h1>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">@Tx("sip_intro")</p>
+			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent>
+				@mobileStickyStat("future_value", "fmtINR(result.fv)", "")
 				<div class="min-w-0 space-y-5 lg:col-span-5">
-					@inrRange("monthly", "Monthly contribution", "monthly", "500", "500000", "500")
-					@inrRange("existing", "Existing corpus", "existing", "0", "50000000", "10000")
-					@labeledRange("expected_return", "Expected return %", "expectedReturn", "0", "20", "0.1")
-					@labeledRange("years", "Years", "years", "1", "40", "1")
+					@inrRange("monthly", "sip_monthly", "monthly", "500", "500000", "500")
+					@inrRange("existing", "sip_existing", "existing", "0", "50000000", "10000")
+					@labeledRange("expected_return", "expected_return", "expectedReturn", "0", "20", "0.1")
+					@labeledRange("years", "years", "years", "1", "40", "1")
 					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
-					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
-						@deskHeadline("Future value", "fmtINR(result.fv)", "")
+					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]">
+						@deskHeadline("future_value", "fmtINR(result.fv)", "")
 						<div class="grid grid-cols-2 gap-2 text-sm sm:gap-3 lg:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Invested</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("invested")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.invested)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Gain</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("gain")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.gain)"></p>
 							</div>
 						</div>
-						<div class="mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64" x-bind:class="dirty ? 'opacity-50' : ''">
+						@chartKicker("future_value", "fmtINR(result.fv)")
+						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("invested") <span class="tabular-nums" x-text="fmtINR(result.invested)"></span> · @Tx("gain") <span class="tabular-nums" x-text="fmtINR(result.gain)"></span></p>
+						<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
 							<canvas id="sip-chart"></canvas>
 						</div>
 					</div>
@@ -196,40 +217,48 @@ templ EMIPage(p Page) {
 	@Layout(p) {
 		<div x-data="emiCalc()">
 			@CalcNav(p.Path)
-			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">EMI with prepayment</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">What if you throw extra at it? Reducing-balance EMI, then extra monthly or a day-one lump.</p>
-			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
-				@mobileStickyStat("Monthly EMI", "fmtINR(result.emi)", "")
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("emi_h1")</h1>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">@Tx("emi_intro")</p>
+			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent>
+				@mobileStickyStat("emi_monthly", "fmtINR(result.emi)", "")
 				<div class="min-w-0 space-y-5 lg:col-span-5">
-					@inrRange("principal", "Principal", "principal", "100000", "100000000", "10000")
-					@labeledRange("annual_rate", "Annual rate %", "annualRate", "1", "20", "0.1")
-					@labeledRange("years", "Years", "years", "1", "30", "1")
-					@inrRange("extra_monthly", "Extra monthly", "extraMonthly", "0", "200000", "500")
-					@inrRange("lump", "Day-one lump", "lump", "0", "10000000", "10000")
+					@inrRange("principal", "principal", "principal", "100000", "100000000", "10000")
+					@labeledRange("annual_rate", "annual_rate", "annualRate", "1", "20", "0.1")
+					@labeledRange("years", "years", "years", "1", "30", "1")
+					@inrRange("extra_monthly", "extra_monthly", "extraMonthly", "0", "200000", "500")
+					@inrRange("lump", "lump", "lump", "0", "10000000", "10000")
 					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
-					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
-						@deskHeadline("Monthly EMI", "fmtINR(result.emi)", "")
+					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]">
+						@deskHeadline("emi_monthly", "fmtINR(result.emi)", "")
 						<div class="grid grid-cols-2 gap-2 text-sm sm:gap-3 lg:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Interest (schedule)</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("interest_only")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.totalInterest)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Interest saved</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("interest_saved")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.interestSaved)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Tenure</p>
-								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.months + ' mo'"></p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("tenure")</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.months + t('mo')"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Months saved</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("months_saved")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.monthsSaved"></p>
 							</div>
 						</div>
-						<div class="mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64" x-bind:class="dirty ? 'opacity-50' : ''">
+						<div class="mt-5 sm:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
+							<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("emi_monthly")</p>
+							<p class="mt-0.5 font-serif text-2xl tabular-nums tracking-tight sm:text-3xl" x-text="fmtINR(result.emi)"></p>
+							<p class="mt-2 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("you_pay")</p>
+							<p class="mt-0.5 font-serif text-xl tabular-nums tracking-tight sm:text-2xl" x-text="fmtINR(result.totalPayment)"></p>
+							<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300">@Tx("principal") <span class="tabular-nums" x-text="fmtINR(principal)"></span> · @Tx("interest") <span class="tabular-nums" x-text="fmtINR(result.totalInterest)"></span></p>
+							<p class="mt-1 text-sm text-ink/65 dark:text-zinc-400" x-show="result.interestSaved > 0" x-cloak x-text="emiAfterCopy()"></p>
+						</div>
+						<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
 							<canvas id="emi-chart"></canvas>
 						</div>
 					</div>
@@ -244,32 +273,34 @@ templ EmergencyPage(p Page) {
 	@Layout(p) {
 		<div x-data="emergencyCalc()">
 			@CalcNav(p.Path)
-			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">Emergency fund</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">How many months of runway, the gap, and how fast a top-up closes it.</p>
-			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
-				@mobileStickyStat("Target", "fmtINR(result.target)", "fillCopy()")
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("em_h1")</h1>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">@Tx("em_intro")</p>
+			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent>
+				@mobileStickyStat("target", "fmtINR(result.target)", "fillCopy()")
 				<div class="min-w-0 space-y-5 lg:col-span-5">
-					@inrRange("monthly_essentials", "Monthly essentials", "monthlyEssentials", "5000", "500000", "1000")
-					@labeledRange("months_cover", "Months of cover", "monthsCover", "1", "24", "1")
-					@inrRange("current_buffer", "Current buffer", "currentBuffer", "0", "10000000", "5000")
-					@inrRange("monthly_topup", "Monthly top-up", "monthlyTopup", "0", "500000", "500")
-					@labeledRange("parking_return", "Parking return %", "parkingReturn", "0", "12", "0.1")
+					@inrRange("monthly_essentials", "em_essentials", "monthlyEssentials", "5000", "500000", "1000")
+					@labeledRange("months_cover", "em_cover", "monthsCover", "1", "24", "1")
+					@inrRange("current_buffer", "em_buffer", "currentBuffer", "0", "10000000", "5000")
+					@inrRange("monthly_topup", "em_topup", "monthlyTopup", "0", "500000", "500")
+					@labeledRange("parking_return", "em_park", "parkingReturn", "0", "12", "0.1")
 					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
-					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
-						@deskHeadline("Target", "fmtINR(result.target)", "fillCopy()")
+					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]">
+						@deskHeadline("target", "fmtINR(result.target)", "fillCopy()")
 						<div class="grid grid-cols-2 gap-2 text-sm sm:gap-3 lg:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Gap</p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("gap")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.gap)"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Coverage now</p>
-								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.coverageNow.toFixed(1) + ' mo'"></p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("coverage_now")</p>
+								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.coverageNow.toFixed(1) + t('mo')"></p>
 							</div>
 						</div>
-						<div class="mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64" x-bind:class="dirty ? 'opacity-50' : ''">
+						@chartKicker("target", "fmtINR(result.target)")
+						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="fillCopy()"></p>
+						<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
 							<canvas id="emergency-chart"></canvas>
 						</div>
 					</div>
@@ -284,35 +315,45 @@ templ BudgetPage(p Page) {
 	@Layout(p) {
 		<div x-data="budgetCalc()">
 			@CalcNav(p.Path)
-			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">50/30/20 budget</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">Needs, wants, savings vs take-home. A yes/no on whether the month is overspent.</p>
-			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
-				@mobileStickyStat("Savings rate", "result.savingsRate.toFixed(1) + '%'", "budgetCopy()")
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("bud_h1")</h1>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400">@Tx("bud_intro")</p>
+			<p class="mt-2 max-w-2xl text-xs leading-relaxed text-ink/55 dark:text-zinc-400">@Tx("bud_hint")</p>
+			<form class="mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12" x-on:input="markDirty()" x-on:submit.prevent>
+				@mobileStickyStat("this_month", "verdict()", "savingsLine()")
 				<div class="min-w-0 space-y-5 lg:col-span-5">
-					@inrRange("income", "Take-home income", "income", "10000", "5000000", "1000")
-					@inrRange("needs", "Needs (actual)", "needs", "0", "5000000", "1000")
-					@inrRange("wants", "Wants (actual)", "wants", "0", "5000000", "1000")
-					@inrRange("savings", "Savings (actual)", "savings", "0", "5000000", "1000")
+					@inrRange("income", "take_home", "income", "10000", "5000000", "1000")
+					@inrRange("needs", "needs_in", "needs", "0", "5000000", "1000")
+					@inrRange("wants", "wants_in", "wants", "0", "5000000", "1000")
+					@inrRange("savings", "save_in", "savings", "0", "5000000", "1000")
 					@deskColCalc()
 				</div>
 				<div class="min-w-0 lg:col-span-7">
-					<div class="rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5">
-						@deskHeadline("Savings rate", "result.savingsRate.toFixed(1) + '%'", "budgetCopy()")
-						<div class="grid grid-cols-3 gap-2 text-sm sm:gap-3 lg:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Needs 50%</p>
-								<p class="font-serif text-sm tabular-nums sm:text-base" x-text="fmtINR(result.targetNeeds)"></p>
+					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]">
+						@deskHeadline("this_month", "verdict()", "savingsLine()")
+						<div class="grid grid-cols-1 gap-2 text-sm sm:grid-cols-3 sm:gap-3 lg:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs font-medium text-ink/70 dark:text-zinc-300">@Tx("needs50")</p>
+								<p class="mt-1 text-[11px] text-ink/55 dark:text-zinc-400">@Tx("cap")<span class="tabular-nums" x-text="fmtINR(result.targetNeeds)"></span></p>
+								<p class="font-serif text-lg tabular-nums" x-text="fmtINR(needs)"></p>
+								<p class="mt-1 text-[11px] leading-snug text-ink/60 dark:text-zinc-400" x-text="bucketLine('needs')"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Wants 30%</p>
-								<p class="font-serif text-sm tabular-nums sm:text-base" x-text="fmtINR(result.targetWants)"></p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs font-medium text-ink/70 dark:text-zinc-300">@Tx("wants30")</p>
+								<p class="mt-1 text-[11px] text-ink/55 dark:text-zinc-400">@Tx("cap")<span class="tabular-nums" x-text="fmtINR(result.targetWants)"></span></p>
+								<p class="font-serif text-lg tabular-nums" x-text="fmtINR(wants)"></p>
+								<p class="mt-1 text-[11px] leading-snug text-ink/60 dark:text-zinc-400" x-text="bucketLine('wants')"></p>
 							</div>
-							<div class="rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5">
-								<p class="text-xs text-ink/50 sm:text-sm">Savings 20%</p>
-								<p class="font-serif text-sm tabular-nums sm:text-base" x-text="fmtINR(result.targetSavings)"></p>
+							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+								<p class="text-xs font-medium text-ink/70 dark:text-zinc-300">@Tx("save20")</p>
+								<p class="mt-1 text-[11px] text-ink/55 dark:text-zinc-400">@Tx("aim")<span class="tabular-nums" x-text="fmtINR(result.targetSavings)"></span></p>
+								<p class="font-serif text-lg tabular-nums" x-text="fmtINR(savings)"></p>
+								<p class="mt-1 text-[11px] leading-snug text-ink/60 dark:text-zinc-400" x-text="bucketLine('savings')"></p>
 							</div>
 						</div>
-						<div class="mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64" x-bind:class="dirty ? 'opacity-50' : ''">
+						<p class="mt-3 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="budgetCopy()"></p>
+						<p class="mt-5 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("vs_typed")</p>
+						<p class="mt-1 text-sm text-ink/60 dark:text-zinc-400" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("vs_hint")</p>
+						<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
 							<canvas id="budget-chart"></canvas>
 						</div>
 					</div>
@@ -323,9 +364,9 @@ templ BudgetPage(p Page) {
 	}
 }
 
-templ mobileStickyStat(label, expr, subExpr string) {
-	<div class="sticky z-10 col-span-full -mx-4 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-night/95 lg:hidden" style="top: var(--app-header-h, 5.5rem);">
-		<p class="text-[10px] font-semibold uppercase tracking-widest text-ink/50">{ label }</p>
+templ mobileStickyStat(labelKey, expr, subExpr string) {
+	<div id="calc-sticky-stat" class="sticky z-10 col-span-full -mx-4 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-night/95 lg:hidden" style="top: var(--app-header-h, 5.5rem);">
+		<p class="text-[10px] font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx(labelKey)</p>
 		<p class="mt-0.5 font-serif text-3xl tabular-nums tracking-tight" x-bind:class="dirty ? 'opacity-50' : ''" x-text={ expr }></p>
 		if subExpr != "" {
 			<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text={ subExpr }></p>
@@ -336,12 +377,19 @@ templ mobileStickyStat(label, expr, subExpr string) {
 	</div>
 }
 
-templ deskHeadline(label, expr, subExpr string) {
+templ chartKicker(labelKey, expr string) {
+	<div class="mt-5 sm:mt-6" x-bind:class="dirty ? 'opacity-50' : ''">
+		<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx(labelKey)</p>
+		<p class="mt-0.5 font-serif text-2xl tabular-nums tracking-tight sm:text-3xl" x-text={ expr }></p>
+	</div>
+}
+
+templ deskHeadline(labelKey, expr, subExpr string) {
 	<div class="hidden lg:block">
-		<p class="text-xs uppercase tracking-widest text-ink/50">{ label }</p>
+		<p class="text-xs uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx(labelKey)</p>
 		<p class="mt-2 font-serif text-5xl tabular-nums" x-bind:class="dirty ? 'opacity-50' : ''" x-text={ expr }></p>
 		if subExpr != "" {
-			<p class="mt-2 text-sm text-ink/60" x-text={ subExpr }></p>
+			<p class="mt-2 text-sm text-ink/70 dark:text-zinc-300" x-text={ subExpr }></p>
 		}
 		<div class="mt-4 hidden lg:block">
 			@calcButton()
@@ -349,50 +397,47 @@ templ deskHeadline(label, expr, subExpr string) {
 	</div>
 }
 
-templ labeledRange(name, label, model, min, max, step string) {
+templ labeledRange(name, labelKey, model, min, max, step string) {
 	<label class="block text-sm">
 		<span class="mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400">
-			<span class="min-w-0">{ label }</span>
+			<span class="min-w-0">@Tx(labelKey)</span>
 			<span class="shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100" x-text={ model }></span>
 		</span>
-		<input type="range" x-model.number={ model } min={ min } max={ max } step={ step } class="w-full"/>
-		<input type="number" inputmode="decimal" name={ name } x-model.number={ model } min={ min } max={ max } step={ step } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
+		<input type="number" inputmode="decimal" name={ name } x-model.number={ model } min={ min } max={ max } step={ step } x-on:blur="recalc()" x-on:keydown.enter.prevent="$event.target.blur()" class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
 	</label>
 }
 
-templ inrRange(name, label, model, min, max, step string) {
+templ inrRange(name, labelKey, model, min, max, step string) {
 	<label class="block text-sm">
 		<span class="mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400">
-			<span class="min-w-0">{ label }</span>
+			<span class="min-w-0">@Tx(labelKey)</span>
 			<span class="shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtINR(" + model + ")" }></span>
 		</span>
-		<input type="range" x-model.number={ model } min={ min } max={ max } step={ step } class="w-full"/>
 		@moneyText(name, model)
 	</label>
 }
 
-templ moneyPair(nowName, nowLabel, nowModel, monthName, monthLabel, monthModel string) {
+templ moneyPair(nowName, nowLabelKey, nowModel, monthName, monthLabelKey, monthModel string) {
 	<div class="grid grid-cols-2 gap-2 sm:gap-3">
 		<div class="min-w-0">
-			@moneyRange(nowName, nowLabel, nowModel)
+			@moneyRange(nowName, nowLabelKey, nowModel)
 		</div>
 		<div class="min-w-0">
-			@moneyRange(monthName, monthLabel, monthModel)
+			@moneyRange(monthName, monthLabelKey, monthModel)
 		</div>
 	</div>
 }
 
-templ moneyRange(name, label, model string) {
+templ moneyRange(name, labelKey, model string) {
 	<label class="block text-sm">
 		<span class="mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400">
-			<span class="min-w-0">{ label }</span>
+			<span class="min-w-0">@Tx(labelKey)</span>
 			<span class="shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtINR(" + model + ")" }></span>
 		</span>
-		<input type="range" x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } class="w-full"/>
 		@moneyText(name, model)
 	</label>
 }
 
 templ moneyText(name, model string) {
-	<input type="text" inputmode="text" autocomplete="off" name={ name } x-bind:placeholder="moneyHint()" x-effect={ "if (_moneyFocus !== '" + model + "') $el.value = moneyBox('" + model + "')" } x-on:focus={ "_moneyFocus = '" + model + "'; $event.target.select()" } x-on:input.stop="" x-on:change={ "commitMoney('" + model + "', $event)" } x-on:blur={ "commitMoney('" + model + "', $event)" } x-on:keydown.enter.prevent={ "commitMoney('" + model + "', $event)" } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
+		<input type="text" inputmode="text" autocomplete="off" name={ name } x-bind:placeholder="moneyHint()" x-effect={ "if (_moneyFocus !== '" + model + "') $el.value = moneyBox('" + model + "')" } x-on:focus={ "_moneyFocus = '" + model + "'; $event.target.select()" } x-on:input.stop="" x-on:blur={ "commitMoney('" + model + "', $event)" } x-on:keydown.enter.prevent={ "commitMoney('" + model + "', $event); $event.target.blur()" } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
 }

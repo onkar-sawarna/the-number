@@ -276,3 +276,43 @@ func TestZeroSavingsZeroReturnNever(t *testing.T) {
 		t.Fatalf("should never reach, got years=%v", out.Years)
 	}
 }
+
+func TestStepUpShortensYears(t *testing.T) {
+	flat := DefaultFIRE()
+	flat.StepUp = 0
+	a := FIRE(flat)
+	up := DefaultFIRE()
+	up.StepUp = 10
+	b := FIRE(up)
+	if !a.ReachesFire || !b.ReachesFire {
+		t.Fatal("both should reach")
+	}
+	if b.Years >= a.Years {
+		t.Fatalf("10%% step-up should be faster: %v vs %v", b.Years, a.Years)
+	}
+}
+
+func TestFireChartSplitsPots(t *testing.T) {
+	in := DefaultFIRE()
+	in.StoppedNow = 400_000
+	in.GoldNow = 100_000
+	in.NPSNow = 200_000
+	out := FIRE(in)
+	if len(out.Chart) < 2 {
+		t.Fatal("expected chart points")
+	}
+	p0 := out.Chart[0]
+	if p0.Parked != in.CurrentSavings {
+		t.Fatalf("year 0 parked=%v want %v", p0.Parked, in.CurrentSavings)
+	}
+	if p0.Invested != in.StoppedNow {
+		t.Fatalf("year 0 invested=%v want %v", p0.Invested, in.StoppedNow)
+	}
+	if p0.Gold != in.GoldNow || p0.NPS != in.NPSNow {
+		t.Fatalf("year 0 gold=%v nps=%v", p0.Gold, p0.NPS)
+	}
+	last := out.Chart[len(out.Chart)-1]
+	if last.Invested <= p0.Invested {
+		t.Fatalf("invested SIP pot should grow: start=%v end=%v", p0.Invested, last.Invested)
+	}
+}

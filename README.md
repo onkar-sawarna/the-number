@@ -4,7 +4,7 @@ A calm personal-finance workshop for Indian savers. Calculate a FIRE corpus (“
 
 **Not registered investment advice. For educational purposes only.**
 
-There is no login. Calculators and guidance are public; numbers stay in the browser. Live sliders update maths and charts with no server round-trip.
+There is no login. Calculators and guidance are public; numbers stay in the browser. Typed amounts update maths and charts with no server round-trip.
 
 ## Run
 

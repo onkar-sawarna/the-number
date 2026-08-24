@@ -1,12 +1,33 @@
 (function () {
-  function ink() {
-    return document.documentElement.classList.contains("dark") ? "#e4e4e7" : "#0f1b33";
+  function isDark() {
+    return document.documentElement.classList.contains("dark");
   }
-  function muted() {
-    return document.documentElement.classList.contains("dark") ? "rgba(228,228,231,0.35)" : "rgba(20,24,31,0.15)";
+  function ink() {
+    return isDark() ? "#f4f4f5" : "#0f1b33";
   }
   function gridColor() {
-    return document.documentElement.classList.contains("dark") ? "rgba(255,255,255,0.06)" : "rgba(20,24,31,0.06)";
+    return isDark() ? "rgba(244,244,245,0.32)" : "rgba(15,27,51,0.18)";
+  }
+  function brandLine() {
+    return isDark() ? "#7dd3fc" : "#1d4ed8";
+  }
+  function brandFill() {
+    return isDark() ? "rgba(125,211,252,0.30)" : "rgba(29,78,216,0.18)";
+  }
+  function accentLine() {
+    return isDark() ? "#fbbf24" : "#b45309";
+  }
+  function compareLine() {
+    return isDark() ? "#fdba74" : "#c2410c";
+  }
+  function potStroke(i) {
+    var colors = isDark()
+      ? ["#7dd3fc", "#fdba74", "#86efac", "#c4b5fd", "#f9a8d4", "#fbbf24", "#5eead4", "#fb7185"]
+      : ["#1d4ed8", "#c2410c", "#15803d", "#7c3aed", "#be123c", "#b45309", "#0f766e", "#e11d48"];
+    return colors[i % colors.length];
+  }
+  function targetLine() {
+    return isDark() ? "#fafafa" : "#111827";
   }
 
   function isNarrow() {
@@ -19,15 +40,24 @@
 
   function lineOptions() {
     var narrow = isNarrow();
+    applyChartTheme();
     return {
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
+      color: ink(),
       interaction: { mode: "index", intersect: false },
-      elements: { point: { radius: narrow ? 0 : 2, hoverRadius: 4 } },
+      elements: { line: { borderWidth: 3 }, point: { radius: narrow ? 0 : 2, hoverRadius: 5 } },
       plugins: {
         legend: {
-          labels: { color: ink(), boxWidth: 8, font: { size: narrow ? 10 : 12 }, padding: narrow ? 8 : 12 },
+          labels: { color: ink(), boxWidth: 12, font: { size: narrow ? 11 : 13, weight: "600" }, padding: narrow ? 8 : 12 },
+        },
+        tooltip: {
+          backgroundColor: isDark() ? "#18181b" : "#ffffff",
+          titleColor: ink(),
+          bodyColor: isDark() ? "#e4e4e7" : "#1f2937",
+          borderColor: isDark() ? "rgba(255,255,255,0.25)" : "rgba(15,27,51,0.15)",
+          borderWidth: 1,
         },
       },
       scales: {
@@ -48,6 +78,20 @@
     };
   }
 
+  function groupedBarOptions() {
+    var opts = lineOptions();
+    opts.elements = { bar: { borderWidth: 0 } };
+    opts.scales.x.stacked = false;
+    opts.scales.x.grid = { display: false };
+    opts.scales.y.stacked = false;
+    opts.plugins.tooltip.callbacks = {
+      label: function (ctx) {
+        return ctx.label + ": " + window.fmtINR(ctx.parsed.y);
+      },
+    };
+    return opts;
+  }
+
   function parseCompactMoney(raw) {
     var s = String(raw || "").trim().replace(/,/g, "").replace(/[₹$]/g, "");
     if (!s) return 0;
@@ -66,6 +110,18 @@
     return n;
   }
 
+  function isBareAmount(raw) {
+    var s = String(raw || "").trim().replace(/,/g, "").replace(/[₹$]/g, "");
+    return /^-?\d*\.?\d+$/.test(s);
+  }
+
+  // India annual/corpus boxes show ₹12 L. Typing 12 (or 6, 20) means lakhs, not rupees.
+  function inferIndiaLakhs(field, n, raw) {
+    if (!isBareAmount(raw) || n <= 0 || n >= 1000) return n;
+    if (field === "annualExpenses" || field === "currentSavings") return n * 1e5;
+    return n;
+  }
+
   function addDirty(ctl) {
     ctl.dirty = false;
     ctl._moneyFocus = "";
@@ -77,32 +133,67 @@
       if (n < 0) n = 0;
       return String(n);
     };
-    ctl.moneyHint = function () {
-      return this.region === "us" ? "50000 or 50k" : "50000 or 50k";
+    ctl.lang = window.currentLang ? window.currentLang() : "en";
+    ctl.t = function (key, vars) {
+      void this.lang;
+      return window.t(key, vars);
     };
-    ctl.commitMoney = function (field, ev) {
+    ctl.moneyHint = function () {
+      return this.t(this.region === "us" ? "money_hint_us" : "money_hint_in");
+    };
+    ctl.commitMoney = function (field, ev, scroll) {
       var n = parseCompactMoney(ev.target.value);
       if (!isFinite(n) || n < 0) n = 0;
+      if (this.region !== "us") n = inferIndiaLakhs(field, n, ev.target.value);
       var min = this.rangeMin ? this.rangeMin(field) : 0;
       var max = this.rangeMax ? this.rangeMax(field) : 1e12;
-      var range = ev.target.parentElement && ev.target.parentElement.querySelector("input[type=range]");
-      if (range) {
-        if (!this.rangeMin && range.min !== "") min = Number(range.min);
-        if (!this.rangeMax && range.max !== "") max = Number(range.max);
-      }
       if (n < min) n = min;
       if (n > max) n = max;
       this[field] = n;
       this._moneyFocus = "";
       ev.target.value = this.moneyBox(field);
-      this.markDirty();
+      this.recalc(scroll);
     };
+    ctl.revealed = false;
     var recalc = ctl.recalc;
-    ctl.recalc = function () {
+    ctl.recalc = function (scroll) {
       this.dirty = false;
       recalc.call(this);
+      if (scroll) {
+        this.revealed = true;
+        var self = this;
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            if (typeof self.draw === "function") self.draw();
+            scrollToResult();
+          });
+        });
+      }
     };
     return ctl;
+  }
+
+  function scrollToResult() {
+    var el = document.getElementById("calc-result");
+    if (!el) return;
+    var header = document.getElementById("app-chrome");
+    var topChrome = (header ? header.offsetHeight : 0) + 8;
+    var stat = document.getElementById("calc-sticky-stat");
+    if (stat && stat.offsetParent !== null) topChrome += stat.offsetHeight;
+    var bottomChrome = 16;
+    var dock = document.querySelector(".dock");
+    if (dock && window.getComputedStyle(dock).display !== "none") {
+      bottomChrome += dock.offsetHeight;
+    }
+    var avail = window.innerHeight - topChrome - bottomChrome;
+    var y = el.getBoundingClientRect().top + window.scrollY;
+    var h = el.offsetHeight;
+    var target = y - topChrome;
+    if (h < avail) target = y - topChrome - Math.min(24, (avail - h) / 2);
+    window.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+    requestAnimationFrame(function () {
+      resizeCharts();
+    });
   }
 
   function scheduleDraw(self) {
@@ -119,16 +210,53 @@
     document.documentElement.style.setProperty("--app-header-h", el.offsetHeight + "px");
   }
 
+  function applyChartTheme() {
+    if (typeof Chart === "undefined") return;
+    Chart.defaults.color = ink();
+    Chart.defaults.borderColor = gridColor();
+  }
+
   function upsertLine(el, chart, labels, datasets) {
-    if (!el || typeof Chart === "undefined") return chart;
-    if (chart) {
-      chart.data.labels = labels;
-      chart.data.datasets = datasets;
-      chart.options = lineOptions();
-      chart.update("none");
-      return chart;
-    }
+    if (!el || typeof Chart === "undefined") return null;
+    var existing = (typeof Chart.getChart === "function" && Chart.getChart(el)) || chart;
+    if (existing) existing.destroy();
     return new Chart(el, { type: "line", data: { labels: labels, datasets: datasets }, options: lineOptions() });
+  }
+
+  function potsSlopeOptions() {
+    var opts = lineOptions();
+    opts.elements = { line: { borderWidth: 3 }, point: { radius: 5, hoverRadius: 7 } };
+    opts.scales.x.ticks.maxTicksLimit = 2;
+    opts.scales.x.grid = { display: false };
+    opts.plugins.tooltip.callbacks = {
+      label: function (ctx) {
+        return ctx.dataset.label + ": " + window.fmtINR(ctx.parsed.y);
+      },
+    };
+    return opts;
+  }
+
+  function upsertPotsLine(el, chart, labels, datasets) {
+    if (!el || typeof Chart === "undefined") return null;
+    var existing = (typeof Chart.getChart === "function" && Chart.getChart(el)) || chart;
+    if (existing) existing.destroy();
+    return new Chart(el, { type: "line", data: { labels: labels, datasets: datasets }, options: potsSlopeOptions() });
+  }
+
+  function upsertBar(el, chart, labels, datasets) {
+    if (!el || typeof Chart === "undefined") return null;
+    var existing = (typeof Chart.getChart === "function" && Chart.getChart(el)) || chart;
+    if (existing) existing.destroy();
+    return new Chart(el, { type: "bar", data: { labels: labels, datasets: datasets }, options: groupedBarOptions() });
+  }
+
+  function resizeCharts() {
+    if (typeof Chart === "undefined" || !Chart.getChart) return;
+    ["fire-chart", "fire-pots-chart", "sip-chart", "emi-chart", "emergency-chart", "budget-chart"].forEach(function (id) {
+      var el = document.getElementById(id);
+      var ch = el && Chart.getChart(el);
+      if (ch) ch.resize();
+    });
   }
 
   function currentRegion() {
@@ -172,6 +300,7 @@
         document.documentElement.classList.toggle("dark", this.dark);
         document.cookie = "theme=" + (this.dark ? "dark" : "light") + "; path=/; max-age=31536000; samesite=lax";
         setThemeColor(this.dark);
+        window.dispatchEvent(new Event("theme-change"));
       },
     };
   };
@@ -180,10 +309,15 @@
     self.region = currentRegion();
     window.addEventListener("region-change", function (e) {
       var r = e.detail === "us" ? "us" : "in";
+      var switched = self.region !== r;
       self.region = r;
-      if (typeof self.applyRegion === "function") self.applyRegion(r, true);
+      if (switched && typeof self.applyRegion === "function") self.applyRegion(r, true);
       self.recalc();
     });
+    window.addEventListener("theme-change", function () {
+      scheduleDraw(self);
+    });
+    self.lang = "en";
   }
 
   window.fireCalc = function () {
@@ -192,9 +326,9 @@
       annualExpenses: 1200000,
       currentSavings: 1500000,
       monthlySavings: 50000,
-      expectedReturn: 11,
+      expectedReturn: 12,
       inflation: 6,
-      swr: 4,
+      swr: 3.5,
       npsNow: 0,
       npsMonthly: 0,
       ppfNow: 0,
@@ -207,6 +341,7 @@
       goldNow: 0,
       goldMonthly: 0,
       jewelleryNow: 0,
+      stepUp: 10,
       cityTier: 1,
       housing: "rent",
       region: "in",
@@ -215,14 +350,15 @@
         annualExpenses: 1200000,
         currentSavings: 1500000,
         monthlySavings: 50000,
-        expectedReturn: 11,
+        expectedReturn: 12,
         inflation: 6,
-        swr: 4,
+        swr: 3.5,
         housing: "rent",
         cityTier: 1,
         region: "in",
       }),
       _chart: null,
+      _potsChart: null,
       init: function () {
         this.applyRegion(currentRegion(), false);
         this.recalc();
@@ -279,13 +415,12 @@
         this.jewelleryNow = 0;
         this.cityTier = 1;
         this.housing = "rent";
-        this.expectedReturn = 11;
+        this.expectedReturn = 12;
         this.inflation = 6;
-        this.swr = 4;
+        this.swr = 3.5;
+        this.stepUp = 10;
       },
-      rangeMin: function (field) {
-        var us = this.region === "us";
-        if (field === "annualExpenses") return us ? 12000 : 120000;
+      rangeMin: function () {
         return 0;
       },
       rangeMax: function (field) {
@@ -330,6 +465,7 @@
           goldNow: Number(this.goldNow) || 0,
           goldMonthly: Number(this.goldMonthly) || 0,
           jewelleryNow: Number(this.jewelleryNow) || 0,
+          stepUp: Number(this.stepUp) || 0,
           cityTier: Number(this.cityTier) || 1,
           housing: this.housing || "rent",
           region: this.region || currentRegion(),
@@ -391,9 +527,9 @@
           this.currentSavings = 1500000;
           this.monthlySavings = 50000;
         }
-        this.expectedReturn = 11;
+        this.expectedReturn = 12;
         this.inflation = 6;
-        this.swr = 4;
+        this.swr = 3.5;
         this.recalc();
       },
       recalc: function () {
@@ -401,23 +537,16 @@
         scheduleDraw(this);
       },
       parkedCopy: function () {
-        if (this.region === "us") {
-          return "Educational parking rate 6%. Cash and savings only — no monthly contribution into this pot.";
-        }
-        return "Educational parking rate 6% (cash, FDs, liquid funds). No monthly SIP here. Old SIPs still sitting in funds go under Invested.";
+        return this.t(this.region === "us" ? "parked_us_copy" : "parked_in_copy");
       },
       goldCopy: function () {
-        return "Educational ~8%. Gold funds and coins you could sell. Not jewellery.";
+        return this.t("gold_copy");
       },
       jewelleryCopy: function () {
-        return "Grows at ~8% like gold, so net worth rises. You keep it — it does not shorten years-to-FIRE.";
+        return this.t("jew_copy");
       },
       investedCopy: function () {
-        var r = Number(this.expectedReturn) || 0;
-        if (this.region === "us") {
-          return "This pot grows at " + r + "% — your expected return. Old contributions still invested, plus monthly contributions still running. Lock-ins, employer match, and tax wrappers are ignored — educational only.";
-        }
-        return "This pot grows at " + r + "% — your expected return. Old SIPs still in funds, plus SIPs still running. NPS ~9%, EPF ~8.25%, PPF ~7.1% — educational rates, lock-ins ignored. PPF cap is ₹1.5L/year.";
+        return this.t(this.region === "us" ? "inv_us" : "inv_in", { rate: Number(this.expectedReturn) || 0 });
       },
       houseCopy: function () {
         var t = Number(this.cityTier) || 1;
@@ -425,41 +554,161 @@
         var cost = us
           ? t === 3 ? 220000 : t === 2 ? 400000 : 800000
           : t === 3 ? 4500000 : t === 2 ? 9000000 : 20000000;
-        var label = us
-          ? t === 3 ? "lower-cost" : t === 2 ? "mid-cost" : "high-cost"
-          : t === 3 ? "tier-3" : t === 2 ? "tier-2" : "tier-1";
-        var line = "Indicative modest house in a " + label + " city: " + window.fmtINR(cost) + ".";
-        if (this.housing === "buy") return line + " Added to the number, then inflated with expenses. Keep today’s rent inside annual expenses until you buy; after that you can drop rent from spend.";
-        if (this.housing === "own") return line + " Not added — you already live there. Keep the mortgage out of expenses if the home is paid.";
-        return line + " Not added. You’ll keep renting, so put rent inside annual expenses.";
+        var city = us
+          ? t === 3 ? this.t("city_lo") : t === 2 ? this.t("city_mid") : this.t("city_hi")
+          : t === 3 ? this.t("city_t3") : t === 2 ? this.t("city_t2") : this.t("city_t1");
+        var line = this.t("house_line", { city: city, cost: window.fmtINR(cost) });
+        if (this.housing === "buy") return line + this.t("house_buy");
+        if (this.housing === "own") return line + this.t("house_own");
+        return line + this.t("house_rent");
+      },
+      fiYear: function () {
+        return new Date().getFullYear() + Math.round(Number(this.result.years) || 0);
       },
       yearsCopy: function () {
-        if (this.result.reachesFire && this.result.years === 0) return "Already independent on these assumptions.";
-        if (!this.result.reachesFire) return "Does not reach FIRE within 80 years.";
-        return this.result.years.toFixed(1) + " years · FI around age " + this.result.fiAge;
+        if (this.result.reachesFire && this.result.years === 0) return this.t("already_indep");
+        if (!this.result.reachesFire) return this.t("never_indep");
+        return this.t("fi_line", { year: this.fiYear(), age: this.result.fiAge });
       },
       hookLine: function () {
-        if (this.result.reachesFire && this.result.years === 0) return "Already there.";
-        if (!this.result.reachesFire) return "Not in 80 yrs";
+        if (this.result.reachesFire && this.result.years === 0) return this.t("already_there");
+        if (!this.result.reachesFire) return this.t("not_80");
         var y = this.result.years.toFixed(1);
-        return y + (Number(y) === 1 ? " year" : " years");
+        return y + this.t(Number(y) === 1 ? "year_one" : "year_many");
       },
       hookSub: function () {
-        if (this.result.reachesFire && this.result.years === 0) return "Corpus already covers the number. " + window.fmtINR(this.result.fireNumber) + ".";
-        if (!this.result.reachesFire) return "Save more, spend less, or both. Need " + window.fmtINR(this.result.fireNumber) + ".";
-        return "FI around age " + this.result.fiAge + " · need " + window.fmtINR(this.result.fireNumber);
+        var amt = window.fmtINR(this.result.fireNumber);
+        if (this.result.reachesFire && this.result.years === 0) return this.t("hook_already", { amount: amt });
+        if (!this.result.reachesFire) return this.t("hook_never", { amount: amt });
+        return this.t("hook_fi", { year: this.fiYear(), age: this.result.fiAge, amount: amt });
+      },
+      potDefs: function () {
+        var us = this.region === "us";
+        if (us) {
+          return [
+            { key: "parked", label: "chart_parked" },
+            { key: "nps", label: "chart_retire" },
+            { key: "invested", label: "chart_invested_sip" },
+            { key: "gold", label: "chart_gold" },
+            { key: "jewellery", label: "chart_jew" },
+          ];
+        }
+        return [
+          { key: "parked", label: "chart_parked" },
+          { key: "nps", label: "chart_nps" },
+          { key: "epf", label: "chart_epf" },
+          { key: "ppf", label: "chart_ppf" },
+          { key: "foreign", label: "chart_foreign" },
+          { key: "invested", label: "chart_invested_sip" },
+          { key: "gold", label: "chart_gold" },
+          { key: "jewellery", label: "chart_jew" },
+        ];
+      },
+      livePots: function () {
+        var chart = (this.result && this.result.chart) || [];
+        return this.potDefs().filter(function (d) {
+          return chart.some(function (p) { return (Number(p[d.key]) || 0) > 1; });
+        });
+      },
+      hasPotLines: function () {
+        return this.livePots().length > 0;
+      },
+      potLaterPoint: function () {
+        var chart = (this.result && this.result.chart) || [];
+        if (!chart.length) return null;
+        if (this.result.reachesFire && this.result.years === 0) {
+          var keep = (Number(this.age) || 0) + 10;
+          for (var i = 0; i < chart.length; i++) {
+            if (chart[i].age >= keep) return chart[i];
+          }
+          return chart[chart.length - 1];
+        }
+        if (this.result.reachesFire) {
+          var fi = this.result.fiAge;
+          for (var j = 0; j < chart.length; j++) {
+            if (chart[j].age >= fi) return chart[j];
+          }
+        }
+        return chart[chart.length - 1];
+      },
+      potLaterLabel: function () {
+        if (this.result.reachesFire && this.result.years === 0) return this.t("pots_later_keep");
+        if (this.result.reachesFire) return this.t("pots_later_fi", { age: this.result.fiAge });
+        return this.t("pots_later_far");
+      },
+      potsLead: function () {
+        var live = this.livePots();
+        var chart = (this.result && this.result.chart) || [];
+        var later = this.potLaterPoint();
+        if (!live.length || !chart[0] || !later) return "";
+        var today = chart[0];
+        var best = live[0];
+        var gain = -1;
+        live.forEach(function (d) {
+          var g = (Number(later[d.key]) || 0) - (Number(today[d.key]) || 0);
+          if (g > gain) {
+            gain = g;
+            best = d;
+          }
+        });
+        if (gain <= 1) return this.t("pots_lead_flat");
+        return this.t("pots_lead", { pot: this.t(best.label), amount: window.fmtINR(gain) });
+      },
+      potRows: function () {
+        var live = this.livePots();
+        var chart = (this.result && this.result.chart) || [];
+        var later = this.potLaterPoint();
+        if (!live.length || !chart[0] || !later) return [];
+        var today = chart[0];
+        var when = this.potLaterLabel();
+        var self = this;
+        return live.map(function (d) {
+          var a = Number(today[d.key]) || 0;
+          var b = Number(later[d.key]) || 0;
+          var g = Math.max(0, b - a);
+          return {
+            name: self.t(d.label),
+            line: self.t("pots_span", {
+              gain: window.fmtINR(g),
+              today: window.fmtINR(a),
+              later: window.fmtINR(b),
+              when: when,
+            }),
+          };
+        });
       },
       draw: function () {
         var el = document.getElementById("fire-chart");
         var labels = this.result.chart.map(function (p) { return String(p.age); });
         var sets = [
-          { label: "Spendable", data: this.result.chart.map(function (p) { return p.corpus; }), borderColor: "#2b6cef", backgroundColor: "rgba(43,108,239,0.14)", fill: true, tension: 0.25 },
+          { label: this.t("chart_spend"), data: this.result.chart.map(function (p) { return p.corpus; }), borderColor: brandLine(), backgroundColor: brandFill(), fill: true, tension: 0.25 },
         ];
         if ((Number(this.jewelleryNow) || 0) > 0) {
-          sets.push({ label: "Net worth", data: this.result.chart.map(function (p) { return p.netWorth; }), borderColor: "#38bdf8", tension: 0.25, pointRadius: 0 });
+          sets.push({ label: this.t("chart_nw"), data: this.result.chart.map(function (p) { return p.netWorth; }), borderColor: accentLine(), tension: 0.25, pointRadius: 0 });
         }
-        sets.push({ label: "FIRE number", data: this.result.chart.map(function (p) { return p.target; }), borderColor: ink(), borderDash: [6, 4], tension: 0.2, pointRadius: 0 });
+        sets.push({ label: this.t("chart_fire"), data: this.result.chart.map(function (p) { return p.target; }), borderColor: targetLine(), borderDash: [6, 4], tension: 0.2, pointRadius: 0 });
         this._chart = upsertLine(el, this._chart, labels, sets);
+        this.drawPots();
+      },
+      drawPots: function () {
+        var el = document.getElementById("fire-pots-chart");
+        if (!el) return;
+        var live = this.livePots();
+        var today = this.result.chart[0];
+        var later = this.potLaterPoint();
+        if (!live.length || !today || !later) return;
+        var self = this;
+        var rows = live.map(function (d, i) {
+          var gain = Math.max(0, (Number(later[d.key]) || 0) - (Number(today[d.key]) || 0));
+          return { d: d, gain: gain, color: potStroke(i) };
+        }).filter(function (r) { return r.gain > 1; });
+        if (!rows.length) return;
+        this._potsChart = upsertBar(el, this._potsChart, rows.map(function (r) { return self.t(r.d.label); }), [{
+          label: this.t("pots_grows"),
+          data: rows.map(function (r) { return r.gain; }),
+          backgroundColor: rows.map(function (r) { return r.color; }),
+          borderWidth: 0,
+        }]);
       },
     });
   };
@@ -486,9 +735,11 @@
       draw: function () {
         var el = document.getElementById("sip-chart");
         var labels = this.result.chart.map(function (p) { return "Y" + p.year; });
+        var last = labels.length - 1;
+        var endDot = labels.map(function (_, i) { return i === last ? 5 : 0; });
         this._chart = upsertLine(el, this._chart, labels, [
-          { label: "Invested", data: this.result.chart.map(function (p) { return p.invested; }), borderColor: muted(), tension: 0.2, pointRadius: 0 },
-          { label: "Future value", data: this.result.chart.map(function (p) { return p.fv; }), borderColor: "#2b6cef", backgroundColor: "rgba(43,108,239,0.14)", fill: true, tension: 0.25 },
+          { label: this.t("chart_invested"), data: this.result.chart.map(function (p) { return p.invested; }), borderColor: compareLine(), tension: 0.2, pointRadius: 0, fill: false },
+          { label: this.t("chart_fv"), data: this.result.chart.map(function (p) { return p.fv; }), borderColor: brandLine(), backgroundColor: brandFill(), fill: "-1", tension: 0.25, pointRadius: endDot, pointBackgroundColor: brandLine(), pointBorderColor: brandLine() },
         ]);
       },
     });
@@ -515,13 +766,24 @@
         });
         scheduleDraw(this);
       },
+      emiAfterCopy: function () {
+        return this.t("emi_after", {
+          interest: window.fmtINR(this.result.prepaidInterest),
+          pay: window.fmtINR((Number(this.principal) || 0) + (this.result.prepaidInterest || 0)),
+          saved: window.fmtINR(this.result.interestSaved),
+        });
+      },
       draw: function () {
         var el = document.getElementById("emi-chart");
         var labels = this.result.chart.map(function (p) { return "Y" + p.year; });
-        this._chart = upsertLine(el, this._chart, labels, [
-          { label: "Scheduled balance", data: this.result.chart.map(function (p) { return p.balance; }), borderColor: ink(), tension: 0.2, pointRadius: 0 },
-          { label: "With prepayment", data: this.result.chart.map(function (p) { return p.prepaidBalance; }), borderColor: "#2b6cef", tension: 0.2, pointRadius: 0 },
-        ]);
+        var sets = [
+          { label: this.t("chart_sched"), data: this.result.chart.map(function (p) { return p.balance; }), borderColor: compareLine(), tension: 0.2, pointRadius: 0, fill: false },
+        ];
+        var hasPrepay = (Number(this.extraMonthly) || 0) > 0 || (Number(this.lump) || 0) > 0;
+        if (hasPrepay) {
+          sets.push({ label: this.t("chart_prepay"), data: this.result.chart.map(function (p) { return p.prepaidBalance; }), borderColor: brandLine(), backgroundColor: brandFill(), fill: "-1", tension: 0.2, pointRadius: 0 });
+        }
+        this._chart = upsertLine(el, this._chart, labels, sets);
       },
     });
   };
@@ -548,16 +810,16 @@
         scheduleDraw(this);
       },
       fillCopy: function () {
-        if (this.result.gap === 0) return "Target already met.";
-        if (!this.result.reaches) return "Does not fill within 40 years on this top-up.";
-        return this.result.monthsToFill + " months to fill.";
+        if (this.result.gap === 0) return this.t("fill_met");
+        if (!this.result.reaches) return this.t("fill_never");
+        return this.t("fill_months", { n: this.result.monthsToFill });
       },
       draw: function () {
         var el = document.getElementById("emergency-chart");
         var labels = this.result.chart.map(function (p) { return "M" + p.month; });
         this._chart = upsertLine(el, this._chart, labels, [
-          { label: "Buffer", data: this.result.chart.map(function (p) { return p.balance; }), borderColor: "#2b6cef", fill: true, backgroundColor: "rgba(43,108,239,0.14)", tension: 0.2 },
-          { label: "Target", data: this.result.chart.map(function (p) { return p.target; }), borderColor: ink(), borderDash: [6, 4], pointRadius: 0 },
+          { label: this.t("chart_buffer"), data: this.result.chart.map(function (p) { return p.balance; }), borderColor: brandLine(), fill: true, backgroundColor: brandFill(), tension: 0.2 },
+          { label: this.t("chart_target"), data: this.result.chart.map(function (p) { return p.target; }), borderColor: targetLine(), borderDash: [6, 4], pointRadius: 0 },
         ]);
       },
     });
@@ -582,42 +844,74 @@
         });
         scheduleDraw(this);
       },
+      verdict: function () {
+        if (this.result.overspent) return this.t("overspent");
+        if (this.result.deltaNeeds > 1) return this.t("needs_over");
+        if (this.result.deltaWants > 1) return this.t("wants_over");
+        if (this.result.deltaSavings < -1) return this.t("save_under");
+        return this.t("on_track");
+      },
+      savingsLine: function () {
+        return this.t("save_line", {
+          pct: (this.result.savingsRate || 0).toFixed(1),
+          amount: window.fmtINR(this.result.targetSavings),
+        });
+      },
+      bucketLine: function (which) {
+        var d = which === "wants" ? this.result.deltaWants : which === "savings" ? this.result.deltaSavings : this.result.deltaNeeds;
+        if (Math.abs(d) < 1) {
+          return which === "savings" ? this.t("hit_20") : this.t("on_cap");
+        }
+        if (which === "savings") {
+          return this.t(d > 0 ? "more_20" : "short_20", { amount: window.fmtINR(Math.abs(d)) });
+        }
+        return this.t(d > 0 ? "over_cap" : "under_cap", { amount: window.fmtINR(Math.abs(d)) });
+      },
       budgetCopy: function () {
-        if (this.result.overspent) return "Overspent: actuals exceed take-home.";
-        return "Unallocated " + window.fmtINR(this.result.unallocated) + ".";
+        if (this.result.overspent) return this.t("bud_over");
+        if (this.result.unallocated > 1) return this.t("bud_left", { amount: window.fmtINR(this.result.unallocated) });
+        if (this.result.unallocated < -1) return this.t("bud_over_sum", { amount: window.fmtINR(-this.result.unallocated) });
+        return this.t("bud_ok");
       },
       draw: function () {
         var el = document.getElementById("budget-chart");
         if (!el || typeof Chart === "undefined") return;
         var data = {
-          labels: ["Needs", "Wants", "Savings"],
+          labels: [this.t("chart_needs"), this.t("chart_wants"), this.t("chart_savings")],
           datasets: [
-            { label: "Target", data: [this.result.targetNeeds, this.result.targetWants, this.result.targetSavings], backgroundColor: "rgba(43,108,239,0.35)" },
-            { label: "Actual", data: [this.needs, this.wants, this.savings], backgroundColor: "#2b6cef" },
+            { label: this.t("chart_target"), data: [this.result.targetNeeds, this.result.targetWants, this.result.targetSavings], backgroundColor: isDark() ? "#d4d4d8" : "#334155" },
+            { label: this.t("chart_actual"), data: [this.needs, this.wants, this.savings], backgroundColor: brandLine() },
           ],
+        };
+        var barOpts = {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { labels: { color: ink(), boxWidth: 10, font: { size: isNarrow() ? 11 : 13, weight: "500" } } },
+            tooltip: {
+              backgroundColor: isDark() ? "#18181b" : "#ffffff",
+              titleColor: ink(),
+              bodyColor: isDark() ? "#e4e4e7" : "#1f2937",
+              borderColor: isDark() ? "rgba(255,255,255,0.25)" : "rgba(15,27,51,0.15)",
+              borderWidth: 1,
+            },
+          },
+          scales: {
+            x: { ticks: { color: ink(), font: tickFont() }, grid: { display: false } },
+            y: {
+              ticks: { color: ink(), maxTicksLimit: isNarrow() ? 5 : 8, font: tickFont(), callback: function (v) { return window.fmtINR(v); } },
+              grid: { color: gridColor() },
+            },
+          },
         };
         if (this._chart) {
           this._chart.data = data;
+          this._chart.options = barOpts;
           this._chart.update("none");
           return;
         }
-        this._chart = new Chart(el, {
-          type: "bar",
-          data: data,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            plugins: { legend: { labels: { color: ink(), boxWidth: 8, font: { size: isNarrow() ? 10 : 12 } } } },
-            scales: {
-              x: { ticks: { color: ink(), font: tickFont() }, grid: { display: false } },
-              y: {
-                ticks: { color: ink(), maxTicksLimit: isNarrow() ? 5 : 8, font: tickFont(), callback: function (v) { return window.fmtINR(v); } },
-                grid: { color: gridColor() },
-              },
-            },
-          },
-        });
+        this._chart = new Chart(el, { type: "bar", data: data, options: barOpts });
       },
     });
   };
@@ -652,8 +946,11 @@
 
   window.renderDonut = function (canvas, labels, values) {
     if (!canvas || typeof Chart === "undefined") return;
+    applyChartTheme();
     if (canvas._chart) canvas._chart.destroy();
-    var colors = ["#2b6cef", "#38bdf8", "#1d4ed8", "#0f1b33", "#6366f1", "#7dd3fc", "#94a3b8"];
+    var colors = isDark()
+      ? ["#93c5fd", "#fbbf24", "#38bdf8", "#c4b5fd", "#f472b6", "#4ade80", "#fb923c"]
+      : ["#1d4ed8", "#0f766e", "#0369a1", "#7c3aed", "#be123c", "#15803d", "#c2410c"];
     canvas._chart = new Chart(canvas, {
       type: "doughnut",
       data: {
@@ -692,8 +989,21 @@
     }
   });
 
+  function redrawDonut() {
+    var wrap = document.querySelector("[data-donut-values]");
+    if (!wrap) return;
+    var labels = (wrap.getAttribute("data-donut-labels") || "").split("|");
+    var values = (wrap.getAttribute("data-donut-values") || "").split("|").map(Number);
+    var canvas = wrap.querySelector("#guidance-donut") || wrap.querySelector("canvas");
+    window.renderDonut(canvas, labels, values);
+  }
+  window.addEventListener("theme-change", redrawDonut);
+
   setThemeColor(document.documentElement.classList.contains("dark"));
   syncHeaderH();
-  window.addEventListener("resize", syncHeaderH);
+  window.addEventListener("resize", function () {
+    syncHeaderH();
+    resizeCharts();
+  });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncHeaderH);
 })();

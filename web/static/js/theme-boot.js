@@ -13,4 +13,6 @@
   var region = rm ? decodeURIComponent(rm[1]) : "";
   if (region !== "us" && region !== "in") region = "in";
   document.documentElement.setAttribute("data-region", region);
+  document.documentElement.setAttribute("lang", "en");
+  document.cookie = "lang=; path=/; max-age=0; samesite=lax";
 })();
