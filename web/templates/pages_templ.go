@@ -41,31 +41,55 @@ func Landing(p Page) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"relative overflow-hidden pb-8\"><p class=\"text-xs font-semibold uppercase tracking-[0.2em] text-brand\">Personal finance, without the noise</p><h1 class=\"mt-4 max-w-3xl font-serif text-5xl leading-[1.1] tracking-tight sm:text-6xl\">Know the number that lets you stop.</h1><p class=\"mt-6 max-w-xl text-lg leading-relaxed text-ink/70 dark:text-zinc-300\">Calculate FIRE, watch years collapse as you save more / spend less / earn a better return.</p><div class=\"mt-8 flex flex-wrap gap-3\"><a href=\"/calculators/fire\" class=\"rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white\">Open the FIRE calculator</a> <a href=\"/guidance\" class=\"rounded-full border border-black/10 px-5 py-2.5 text-sm dark:border-white/15\">Category guidance</a></div><p class=\"pointer-events-none absolute -right-6 top-0 hidden select-none font-serif text-[10rem] leading-none text-brand/10 sm:block\">₹</p></section><section class=\"mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"relative overflow-hidden pb-2 sm:pb-4\"><div class=\"pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand/25 blur-3xl dark:bg-brand/40 md:h-80 md:w-80\"></div><div class=\"pointer-events-none absolute -left-20 top-32 h-40 w-40 rounded-full bg-sky/30 blur-3xl dark:bg-sky/20\"></div><p class=\"relative text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs\">FIRE first — India or the world</p><h1 class=\"relative mt-3 max-w-full font-serif text-[1.85rem] leading-[1.15] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl\">Know <em class=\"not-italic text-brand\">the number</em> that lets you stop.</h1><p class=\"relative mt-4 max-w-xl text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg dark:text-zinc-300\">India in rupees, everywhere else in dollars. Set the sliders. Hit calculate. No login, no lecture, no “buy this fund.”</p><div class=\"relative mt-5 hidden flex-wrap gap-2 sm:flex\"><span class=\"rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20\">FIRE is the product</span> <span class=\"rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20\">Runs in your browser</span> <span class=\"rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20\">Never a ticker</span></div><div class=\"relative mt-6 sm:mt-8\"><a href=\"#try-fire\" class=\"btn-primary w-full sm:w-auto\">Try it below</a></div><p class=\"currency-in pointer-events-none absolute -right-6 top-8 hidden select-none font-serif text-[10rem] leading-none text-brand/10 md:block\">₹</p><p class=\"currency-us pointer-events-none absolute -right-6 top-8 hidden select-none font-serif text-[10rem] leading-none text-brand/10 md:block\">$</p></section><section id=\"try-fire\" class=\"relative mt-8 scroll-mt-28 sm:mt-12\" x-data=\"fireCalc()\"><form class=\"min-w-0 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5\" x-on:input=\"markDirty()\" x-on:submit.prevent=\"recalc()\"><div class=\"grid min-w-0 gap-8 lg:grid-cols-12 lg:items-center\"><div class=\"min-w-0 lg:col-span-5\"><div class=\"flex items-start justify-between gap-3\"><p class=\"text-[10px] font-semibold uppercase tracking-[0.2em] text-brand\">Try it — right here</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = featureCard("/calculators/fire", "FIRE number", "The corpus that covers today’s expenses at your withdrawal rate — plus years until independence.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = RegionToggle().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = featureCard("/calculators/sip", "SIP & compounding", "Month-end contributions, monthly compounding, and the future value of staying invested.").Render(ctx, templ_7745c5c3_Buffer)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><p class=\"mt-2 font-serif text-4xl tabular-nums tracking-tight sm:text-5xl\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\" x-text=\"hookLine()\"></p><p class=\"mt-2 text-sm text-ink/60 dark:text-zinc-400\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\" x-text=\"hookSub()\"></p><div class=\"mt-4 flex flex-wrap gap-2\"><button type=\"button\" class=\"preset-chip\" x-on:click=\"applyPreset(&#39;start&#39;)\">Just starting</button> <button type=\"button\" class=\"preset-chip\" x-on:click=\"applyPreset(&#39;mid&#39;)\">Saving hard</button> <button type=\"button\" class=\"preset-chip\" x-on:click=\"applyPreset(&#39;ahead&#39;)\">Already a stash</button></div></div><div class=\"min-w-0 space-y-5 lg:col-span-7\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = featureCard("/calculators/emi", "EMI with prepayment", "Reducing-balance EMI, then extra monthly or a day-one lump to see interest and months saved.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = playRange("Monthly SIPs", "monthlySavings", true).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = featureCard("/calculators/emergency", "Emergency fund", "Months of essentials, the gap to target, and how long a top-up takes to close it.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = playRange("Annual spend", "annualExpenses", true).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = featureCard("/calculators/budget", "50/30/20 budget", "Needs, wants, savings against take-home — and whether the month is overspent.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = playRange("Parked cash", "currentSavings", true).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = featureCard("/guidance", "Category-level guidance", "A sleeve mix across index categories. Never a stock, fund, AMC, or ticker.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = calcButton().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"mt-8 flex flex-col gap-3 border-t border-brand/15 pt-5 sm:flex-row sm:items-center sm:justify-between\"><div class=\"min-w-0\"><p class=\"text-sm font-medium text-ink dark:text-zinc-100\">Want the detailed number?</p><p class=\"mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400\" x-show=\"isIN()\">This is the short version. Gold, NPS, EPF, PPF, housing, and every pot live in the full calculator.</p><p class=\"mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>This is the short version. Gold, retirement, housing, and every pot live in the full calculator.</p></div><a href=\"/calculators/fire\" class=\"btn-primary w-full shrink-0 sm:w-auto\">Open the full FIRE calculator</a></div></form></section><section class=\"mt-10 grid gap-3 sm:mt-16 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = featureCard("/calculators/fire", "FIRE", "The full calculator", "Parked cash, gold, NPS, EPF, PPF, invested SIPs, housing — every pot, not just three sliders.", true).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = featureCard("/calculators/sip", "SIP", "What does a monthly plan become?", "Leave a contribution running. See the future value, not a brochure.", false).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = featureCard("/calculators/emi", "EMI", "What if you prepay?", "The EMI, then extra monthly or a lump — interest and months you get back.", false).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = featureCard("/calculators/emergency", "Runway", "How many months of buffer?", "Essentials × cover, the gap, and how long a top-up takes to close it.", false).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = featureCard("/calculators/budget", "50/30/20", "Is this month overspent?", "Needs, wants, savings against take-home. A yes/no, not a lecture.", false).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -83,7 +107,7 @@ func Landing(p Page) templ.Component {
 	})
 }
 
-func featureCard(href, title, body string) templ.Component {
+func playRange(label, model string, money bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -104,25 +128,220 @@ func featureCard(href, title, body string) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"block\"><span class=\"mb-1 flex items-center justify-between gap-3 text-sm text-ink/60 dark:text-zinc-400\"><span class=\"min-w-0\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 68, Col: 32}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if money {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"shrink-0 font-serif text-base tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var5 string
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 70, Col: 121}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></span>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"shrink-0 font-serif text-base tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 72, Col: 103}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></span>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <input type=\"range\" x-model.number=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 75, Col: 44}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:min=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMin('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 75, Col: 87}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:max=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMax('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 75, Col: 130}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:step=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var10 string
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs("rangeStep('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 75, Col: 175}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full max-w-full\"></label>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func calcButton() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><button type=\"button\" class=\"btn-primary w-full sm:w-auto\" x-bind:class=\"dirty ? &#39;&#39; : &#39;opacity-80&#39;\" x-on:click=\"recalc()\">Calculate</button><p class=\"mt-1.5 text-xs font-medium text-brand\" x-show=\"dirty\" x-cloak>Inputs changed — calculate to refresh.</p></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func featureCard(href, kicker, title, body string, wide bool) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var12 == nil {
+			templ_7745c5c3_Var12 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		var templ_7745c5c3_Var13 = []any{"hover-lift group rounded-2xl border border-black/5 bg-white/80 p-5 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5", templ.KV("sm:col-span-2", wide)}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 templ.SafeURL = templ.SafeURL(href)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var4)))
+		var templ_7745c5c3_Var14 templ.SafeURL = templ.SafeURL(href)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var14)))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card transition-colors hover:border-brand/30 dark:border-white/10 dark:bg-white/5\"><h2 class=\"font-serif text-xl\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+		var templ_7745c5c3_Var15 string
+		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(templ.CSSClasses(templ_7745c5c3_Var13).String())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 28, Col: 40}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 1, Col: 0}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><p class=\"text-[10px] font-semibold uppercase tracking-[0.18em] text-brand\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var16 string
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(kicker)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 88, Col: 86}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><h2 class=\"mt-2 font-serif text-lg sm:text-xl\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var17 string
+		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(title)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 89, Col: 56}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -130,16 +349,16 @@ func featureCard(href, title, body string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(body)
+		var templ_7745c5c3_Var18 string
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(body)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 29, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 90, Col: 79}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></a>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-3 text-sm font-medium text-brand opacity-80 group-hover:opacity-100\">Open →</p></a>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -163,12 +382,12 @@ func Disclaimer(p Page) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
+		templ_7745c5c3_Var19 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var19 == nil {
+			templ_7745c5c3_Var19 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var20 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 			if !templ_7745c5c3_IsBuffer {
@@ -180,13 +399,13 @@ func Disclaimer(p Page) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"prose-disclaimer mx-auto max-w-2xl\"><h1 class=\"font-serif text-4xl tracking-tight\">Disclaimer</h1><p class=\"mt-6 leading-relaxed text-ink/80 dark:text-zinc-300\">the number is an educational workshop. It is not a SEBI-registered investment advisor, research analyst, or broker. Nothing here is registered investment advice, a solicitation, or a recommendation to buy or sell any security.</p><h2 class=\"mt-10 font-serif text-2xl\">The maths is yours</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">Every calculator is arithmetic on the assumptions you type. Change the return, inflation, or withdrawal rate and the “number” moves. The popular 4% safe-withdrawal rule can fail in long poor markets. Past returns do not predict future ones.</p><h2 class=\"mt-10 font-serif text-2xl\">What we omit</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">Taxes, exit loads, expense ratios, insurance, currency risk, and sequence-of-returns risk are omitted. Real life is messier than a slider.</p><h2 class=\"mt-10 font-serif text-2xl\">Guidance stays at category level</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">Optional allocation guidance names only asset-class sleeves (for example large-cap index or gold). It never names stocks, funds, AMCs, or tickers. If a language model is configured, its output is sanitised the same way. On failure we fall back to an on-device heuristic.</p><h2 class=\"mt-10 font-serif text-2xl\">What we store</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (<span class=\"font-medium\">theme=dark</span> or <span class=\"font-medium\">light</span>) remembers appearance. There is no localStorage.</p><p class=\"mt-8 text-sm text-ink/60 dark:text-zinc-400\">Not registered investment advice. For educational purposes only.</p></article>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<article class=\"prose-disclaimer mx-auto max-w-2xl\"><h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">Disclaimer</h1><p class=\"mt-6 leading-relaxed text-ink/80 dark:text-zinc-300\">the number is an educational workshop. It is not a SEBI-registered investment advisor, research analyst, or broker. Nothing here is registered investment advice, a solicitation, or a recommendation to buy or sell any security.</p><h2 class=\"mt-10 font-serif text-2xl\">The maths is yours</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">Every calculator is arithmetic on the assumptions you type. Change the return, inflation, or withdrawal rate and the “number” moves. The popular 4% safe-withdrawal rule can fail in long poor markets. Past returns do not predict future ones.</p><h2 class=\"mt-10 font-serif text-2xl\">What we omit</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">Taxes, exit loads, expense ratios, insurance, currency risk, and sequence-of-returns risk are omitted. EPF, NPS, and PPF lock-ins and annuity rules are ignored so the pots can sit in one number. House prices are a modest indicative corpus, not a quote. Real life is messier than a slider.</p><h2 class=\"mt-10 font-serif text-2xl\">Guidance stays at category level</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">Optional allocation guidance names only asset-class sleeves (for example large-cap index or gold). It never names stocks, funds, AMCs, or tickers. If a language model is configured, its output is sanitised the same way. On failure we fall back to an on-device heuristic.</p><h2 class=\"mt-10 font-serif text-2xl\">What we store</h2><p class=\"mt-3 leading-relaxed text-ink/80 dark:text-zinc-300\">There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (<span class=\"font-medium\">theme=dark</span> or <span class=\"font-medium\">light</span>) remembers appearance. A region cookie (<span class=\"font-medium\">region=in</span> or <span class=\"font-medium\">us</span>) remembers India ₹ vs World $. There is no localStorage.</p><p class=\"mt-8 text-sm text-ink/60 dark:text-zinc-400\">Not registered investment advice. For educational purposes only.</p></article>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = Layout(p).Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = Layout(p).Render(templ.WithChildren(ctx, templ_7745c5c3_Var20), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

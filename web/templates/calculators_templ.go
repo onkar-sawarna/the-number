@@ -49,7 +49,11 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-4xl tracking-tight\">FIRE number</h1><p class=\"mt-2 max-w-2xl text-ink/65 dark:text-zinc-400\">The corpus that covers this year’s expenses at your withdrawal rate, and how many years of saving stand between you and it.</p><form id=\"fire-form\" class=\"mt-8 grid gap-8 lg:grid-cols-12\" x-on:input=\"recalc()\"><div class=\"space-y-5 lg:col-span-5\">")
+			templ_7745c5c3_Err = mobileStickyStat("The number today", "fmtINR(result.fireNumber)", "yearsCopy()").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">FIRE number</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\" x-show=\"isIN()\">Parked cash at ~6%. Gold at ~8%. Invested SIPs — old ones still in funds, plus SIPs still running — at your expected return. Then NPS, EPF, PPF, foreign stocks, and housing.</p><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>Parked cash at ~6%. Gold at ~8%. Invested pots at your expected return. Then a retirement account and housing. Amounts are in dollars.</p><div class=\"mt-4 flex flex-wrap gap-2\"><button type=\"button\" class=\"preset-chip\" x-on:click=\"applyPreset(&#39;start&#39;)\">Just starting</button> <button type=\"button\" class=\"preset-chip\" x-on:click=\"applyPreset(&#39;mid&#39;)\">Saving hard</button> <button type=\"button\" class=\"preset-chip\" x-on:click=\"applyPreset(&#39;ahead&#39;)\">Already a stash</button></div><form id=\"fire-form\" class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" x-on:input=\"markDirty()\" x-on:submit.prevent=\"recalc()\"><div class=\"min-w-0 space-y-6 lg:col-span-5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -57,19 +61,27 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = inrRange("annual_expenses", "Annual expenses", "annualExpenses", "120000", "20000000", "10000").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = moneyRange("annual_expenses", "Annual expenses (include rent if you rent)", "annualExpenses").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = inrRange("current_savings", "Current savings", "currentSavings", "0", "100000000", "50000").Render(ctx, templ_7745c5c3_Buffer)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><p class=\"mb-2 text-sm text-ink/60 dark:text-zinc-400\">City</p><div class=\"grid grid-cols-3 gap-2\"><button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"cityTier === 1 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 1; markDirty()\"><span class=\"block text-sm font-medium\" x-show=\"isIN()\">Tier 1</span> <span class=\"block text-sm font-medium\" x-show=\"isUS()\" x-cloak>High cost</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\" x-show=\"isIN()\">Metro</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\" x-show=\"isUS()\" x-cloak>Coast / capital</span></button> <button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"cityTier === 2 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 2; markDirty()\"><span class=\"block text-sm font-medium\" x-show=\"isIN()\">Tier 2</span> <span class=\"block text-sm font-medium\" x-show=\"isUS()\" x-cloak>Mid cost</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\" x-show=\"isIN()\">Big town</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\" x-show=\"isUS()\" x-cloak>Regional city</span></button> <button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"cityTier === 3 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 3; markDirty()\"><span class=\"block text-sm font-medium\" x-show=\"isIN()\">Tier 3</span> <span class=\"block text-sm font-medium\" x-show=\"isUS()\" x-cloak>Lower cost</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\" x-show=\"isIN()\">Smaller city</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\" x-show=\"isUS()\" x-cloak>Smaller city</span></button></div></div><div><p class=\"mb-2 text-sm text-ink/60 dark:text-zinc-400\">House</p><div class=\"grid grid-cols-1 gap-2 sm:grid-cols-3\"><button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"housing === &#39;own&#39; ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"housing = &#39;own&#39;; markDirty()\"><span class=\"block text-sm font-medium\">I own</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\">No extra corpus</span></button> <button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"housing === &#39;rent&#39; ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"housing = &#39;rent&#39;; markDirty()\"><span class=\"block text-sm font-medium\">I’ll keep renting</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\">Rent stays in expenses</span></button> <button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"housing === &#39;buy&#39; ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"housing = &#39;buy&#39;; markDirty()\"><span class=\"block text-sm font-medium\">I rent, I’ll buy</span> <span class=\"mt-0.5 block text-[11px] text-ink/50\">House added; keep rent for now</span></button></div><p class=\"mt-2 text-xs text-ink/50 dark:text-zinc-500\" x-text=\"houseCopy()\"></p></div><div x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = inrRange("monthly_savings", "Monthly savings", "monthlySavings", "0", "1000000", "1000").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = labeledRange("expected_return", "Expected return % (invested SIPs + foreign)", "expectedReturn", "0", "20", "0.1").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = labeledRange("expected_return", "Expected return %", "expectedReturn", "0", "20", "0.1").Render(ctx, templ_7745c5c3_Buffer)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div x-show=\"isUS()\" x-cloak>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = labeledRange("expected_return_us", "Expected return % (invested + retirement)", "expectedReturn", "0", "20", "0.1").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -81,7 +93,119 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5\"><p class=\"text-xs uppercase tracking-widest text-ink/50\">The number today</p><p class=\"mt-2 font-serif text-5xl tabular-nums\" x-text=\"fmtINR(result.fireNumber)\"></p><p class=\"mt-2 text-sm text-ink/60\" x-text=\"yearsCopy()\"></p><div class=\"mt-6 grid grid-cols-3 gap-3 text-sm\"><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Lean</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.lean)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Regular</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.regular)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Fat</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.fat)\"></p></div></div><div class=\"mt-6 h-56\"><canvas id=\"fire-chart\"></canvas></div></div></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-xs font-semibold uppercase tracking-[0.18em] text-brand\">Parked · ~6%</p><div x-show=\"isIN()\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("current_savings", "Cash, FDs, liquid funds till now", "currentSavings").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div x-show=\"isUS()\" x-cloak>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("current_savings_us", "Cash & savings till now", "currentSavings").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><p class=\"text-xs leading-relaxed text-ink/50 dark:text-zinc-500\" x-text=\"parkedCopy()\"></p><p class=\"text-xs font-semibold uppercase tracking-[0.18em] text-brand\">Gold · ~8%</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("gold_now", "Gold till now", "goldNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("gold_monthly", "Gold monthly", "goldMonthly").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-xs leading-relaxed text-ink/50 dark:text-zinc-500\" x-text=\"goldCopy()\"></p><div x-show=\"isIN()\"><p class=\"text-xs font-semibold uppercase tracking-[0.18em] text-brand\">NPS · EPF · PPF</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("nps_now", "NPS till now", "npsNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("nps_monthly", "NPS monthly contribution", "npsMonthly").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("epf_now", "EPF till now", "epfNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("epf_monthly", "EPF monthly contribution", "epfMonthly").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("ppf_now", "PPF till now", "ppfNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("ppf_monthly", "PPF monthly contribution", "ppfMonthly").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-brand\">Foreign stocks</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("foreign_now", "Foreign stocks till now", "foreignNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("foreign_monthly", "Foreign stocks monthly", "foreignMonthly").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div x-show=\"isUS()\" x-cloak><p class=\"text-xs font-semibold uppercase tracking-[0.18em] text-brand\">Retirement account</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("nps_now_us", "Retirement account till now", "npsNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("nps_monthly_us", "Retirement account monthly", "npsMonthly").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><p class=\"text-xs font-semibold uppercase tracking-[0.18em] text-brand\">Invested · expected return</p><div x-show=\"isIN()\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("stopped_now", "Already invested (old SIPs still in funds)", "stoppedNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("monthly_savings", "Monthly SIPs still running", "monthlySavings").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div x-show=\"isUS()\" x-cloak>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("stopped_now_us", "Already invested", "stoppedNow").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = moneyRange("monthly_savings_us", "Monthly contributions still running", "monthlySavings").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><p class=\"text-xs leading-relaxed text-ink/50 dark:text-zinc-500\" x-text=\"investedCopy()\"></p></div><div class=\"min-w-0 lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = deskHeadline("The number today", "fmtINR(result.fireNumber)", "yearsCopy()").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:gap-3\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50\">Lifestyle corpus</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.lifestyle)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50\">House add-on</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.houseAdd)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50\">You have today</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.startingCorpus)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50\">Monthly going in</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.monthlyIn)\"></p></div></div><div class=\"mt-4 grid grid-cols-3 gap-2 text-sm sm:gap-3\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Lean</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.lean)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Regular</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.regular)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Fat</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.fat)\"></p></div></div><div class=\"mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"fire-chart\"></canvas></div></div></div></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -136,7 +260,15 @@ func SIPPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-4xl tracking-tight\">SIP & compounding</h1><p class=\"mt-2 max-w-2xl text-ink/65 dark:text-zinc-400\">Ordinary annuity, contribution at month-end, monthly compounding.</p><form class=\"mt-8 grid gap-8 lg:grid-cols-12\" x-on:input=\"recalc()\"><div class=\"space-y-5 lg:col-span-5\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">SIP & compounding</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\">Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, no brochure.</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" x-on:input=\"markDirty()\" x-on:submit.prevent=\"recalc()\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = mobileStickyStat("Future value", "fmtINR(result.fv)", "").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"min-w-0 space-y-5 lg:col-span-5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -156,7 +288,15 @@ func SIPPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5\"><p class=\"text-xs uppercase tracking-widest text-ink/50\">Future value</p><p class=\"mt-2 font-serif text-5xl tabular-nums\" x-text=\"fmtINR(result.fv)\"></p><div class=\"mt-6 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Invested</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.invested)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Gain</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.gain)\"></p></div></div><div class=\"mt-6 h-56\"><canvas id=\"sip-chart\"></canvas></div></div></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"min-w-0 lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = deskHeadline("Future value", "fmtINR(result.fv)", "").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-2 gap-2 text-sm sm:gap-3 lg:mt-6\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Invested</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.invested)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Gain</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.gain)\"></p></div></div><div class=\"mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"sip-chart\"></canvas></div></div></div></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -211,7 +351,15 @@ func EMIPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-4xl tracking-tight\">EMI with prepayment</h1><p class=\"mt-2 max-w-2xl text-ink/65 dark:text-zinc-400\">Reducing-balance EMI. Optional extra monthly and a day-one lump.</p><form class=\"mt-8 grid gap-8 lg:grid-cols-12\" x-on:input=\"recalc()\"><div class=\"space-y-5 lg:col-span-5\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">EMI with prepayment</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\">What if you throw extra at it? Reducing-balance EMI, then extra monthly or a day-one lump.</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" x-on:input=\"markDirty()\" x-on:submit.prevent=\"recalc()\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = mobileStickyStat("Monthly EMI", "fmtINR(result.emi)", "").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"min-w-0 space-y-5 lg:col-span-5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -235,7 +383,15 @@ func EMIPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5\"><p class=\"text-xs uppercase tracking-widest text-ink/50\">Monthly EMI</p><p class=\"mt-2 font-serif text-5xl tabular-nums\" x-text=\"fmtINR(result.emi)\"></p><div class=\"mt-6 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Interest (schedule)</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.totalInterest)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Interest saved</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.interestSaved)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Tenure</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"result.months + &#39; mo&#39;\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Months saved</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"result.monthsSaved\"></p></div></div><div class=\"mt-6 h-56\"><canvas id=\"emi-chart\"></canvas></div></div></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"min-w-0 lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = deskHeadline("Monthly EMI", "fmtINR(result.emi)", "").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-2 gap-2 text-sm sm:gap-3 lg:mt-6\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Interest (schedule)</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.totalInterest)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Interest saved</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.interestSaved)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Tenure</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"result.months + &#39; mo&#39;\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Months saved</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"result.monthsSaved\"></p></div></div><div class=\"mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"emi-chart\"></canvas></div></div></div></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -290,7 +446,15 @@ func EmergencyPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-4xl tracking-tight\">Emergency fund</h1><p class=\"mt-2 max-w-2xl text-ink/65 dark:text-zinc-400\">Target cover, the gap, and months to fill it with a top-up.</p><form class=\"mt-8 grid gap-8 lg:grid-cols-12\" x-on:input=\"recalc()\"><div class=\"space-y-5 lg:col-span-5\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">Emergency fund</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\">How many months of runway, the gap, and how fast a top-up closes it.</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" x-on:input=\"markDirty()\" x-on:submit.prevent=\"recalc()\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = mobileStickyStat("Target", "fmtINR(result.target)", "fillCopy()").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"min-w-0 space-y-5 lg:col-span-5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -314,7 +478,15 @@ func EmergencyPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5\"><p class=\"text-xs uppercase tracking-widest text-ink/50\">Target</p><p class=\"mt-2 font-serif text-5xl tabular-nums\" x-text=\"fmtINR(result.target)\"></p><p class=\"mt-2 text-sm text-ink/60\" x-text=\"fillCopy()\"></p><div class=\"mt-6 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Gap</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"fmtINR(result.gap)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Coverage now</p><p class=\"font-serif text-lg tabular-nums\" x-text=\"result.coverageNow.toFixed(1) + &#39; mo&#39;\"></p></div></div><div class=\"mt-6 h-56\"><canvas id=\"emergency-chart\"></canvas></div></div></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"min-w-0 lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = deskHeadline("Target", "fmtINR(result.target)", "fillCopy()").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-2 gap-2 text-sm sm:gap-3 lg:mt-6\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Gap</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.gap)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Coverage now</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"result.coverageNow.toFixed(1) + &#39; mo&#39;\"></p></div></div><div class=\"mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"emergency-chart\"></canvas></div></div></div></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -369,7 +541,15 @@ func BudgetPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-4xl tracking-tight\">50/30/20 budget</h1><p class=\"mt-2 max-w-2xl text-ink/65 dark:text-zinc-400\">Needs, wants, and savings against take-home pay.</p><form class=\"mt-8 grid gap-8 lg:grid-cols-12\" x-on:input=\"recalc()\"><div class=\"space-y-5 lg:col-span-5\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">50/30/20 budget</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\">Needs, wants, savings vs take-home. A yes/no on whether the month is overspent.</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" x-on:input=\"markDirty()\" x-on:submit.prevent=\"recalc()\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = mobileStickyStat("Savings rate", "result.savingsRate.toFixed(1) + '%'", "budgetCopy()").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"min-w-0 space-y-5 lg:col-span-5\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -389,13 +569,193 @@ func BudgetPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5\"><p class=\"text-xs uppercase tracking-widest text-ink/50\">Savings rate</p><p class=\"mt-2 font-serif text-5xl tabular-nums\" x-text=\"result.savingsRate.toFixed(1) + &#39;%&#39;\"></p><p class=\"mt-2 text-sm\" x-bind:class=\"result.overspent ? &#39;text-red-700 dark:text-red-300&#39; : &#39;text-ink/60&#39;\" x-text=\"budgetCopy()\"></p><div class=\"mt-6 grid grid-cols-3 gap-3 text-sm\"><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Needs 50%</p><p class=\"font-serif tabular-nums\" x-text=\"fmtINR(result.targetNeeds)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Wants 30%</p><p class=\"font-serif tabular-nums\" x-text=\"fmtINR(result.targetWants)\"></p></div><div class=\"rounded-xl bg-black/5 p-3 dark:bg-white/5\"><p class=\"text-ink/50\">Savings 20%</p><p class=\"font-serif tabular-nums\" x-text=\"fmtINR(result.targetSavings)\"></p></div></div><div class=\"mt-6 h-56\"><canvas id=\"budget-chart\"></canvas></div></div></div></form></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"min-w-0 lg:col-span-7\"><div class=\"rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = deskHeadline("Savings rate", "result.savingsRate.toFixed(1) + '%'", "budgetCopy()").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-3 gap-2 text-sm sm:gap-3 lg:mt-6\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Needs 50%</p><p class=\"font-serif text-sm tabular-nums sm:text-base\" x-text=\"fmtINR(result.targetNeeds)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Wants 30%</p><p class=\"font-serif text-sm tabular-nums sm:text-base\" x-text=\"fmtINR(result.targetWants)\"></p></div><div class=\"rounded-xl bg-black/5 p-2.5 sm:p-3 dark:bg-white/5\"><p class=\"text-xs text-ink/50 sm:text-sm\">Savings 20%</p><p class=\"font-serif text-sm tabular-nums sm:text-base\" x-text=\"fmtINR(result.targetSavings)\"></p></div></div><div class=\"mt-5 h-48 min-w-0 overflow-hidden sm:mt-6 sm:h-56 lg:h-64\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"budget-chart\"></canvas></div></div></div></form></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
 		templ_7745c5c3_Err = Layout(p).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func mobileStickyStat(label, expr, subExpr string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"sticky z-10 col-span-full -mx-4 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-night/95 lg:hidden\" style=\"top: var(--app-header-h, 5.5rem);\"><p class=\"text-[10px] font-semibold uppercase tracking-widest text-ink/50\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var12 string
+		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 318, Col: 84}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-0.5 font-serif text-3xl tabular-nums tracking-tight\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\" x-text=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var13 string
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(expr)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 319, Col: 122}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if subExpr != "" {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-1 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(subExpr)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 321, Col: 74}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-2\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = calcButton().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func deskHeadline(label, expr, subExpr string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var15 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var15 == nil {
+			templ_7745c5c3_Var15 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"hidden lg:block\"><p class=\"text-xs uppercase tracking-widest text-ink/50\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var16 string
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 331, Col: 66}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-2 font-serif text-5xl tabular-nums\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\" x-text=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var17 string
+		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(expr)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 332, Col: 105}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if subExpr != "" {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-2 text-sm text-ink/60\" x-text=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var18 string
+			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(subExpr)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 334, Col: 55}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-4 hidden lg:block\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = calcButton().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -419,34 +779,34 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var11 == nil {
-			templ_7745c5c3_Var11 = templ.NopComponent
+		templ_7745c5c3_Var19 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var19 == nil {
+			templ_7745c5c3_Var19 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"block text-sm\"><span class=\"mb-1 flex items-center justify-between text-ink/60 dark:text-zinc-400\"><span>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"block text-sm\"><span class=\"mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400\"><span class=\"min-w-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var12 string
-		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		var templ_7745c5c3_Var20 string
+		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 215, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 345, Col: 32}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"font-serif tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var13 string
-		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 216, Col: 83}
+			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+		var templ_7745c5c3_Var21 string
+		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 346, Col: 92}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -454,12 +814,12 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		var templ_7745c5c3_Var22 string
+		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 218, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 348, Col: 44}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -467,12 +827,12 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var15 string
-		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(min)
+		var templ_7745c5c3_Var23 string
+		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(min)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 218, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 348, Col: 56}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -480,12 +840,12 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var16 string
-		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(max)
+		var templ_7745c5c3_Var24 string
+		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(max)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 218, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 348, Col: 68}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -493,25 +853,25 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var17 string
-		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(step)
+		var templ_7745c5c3_Var25 string
+		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(step)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 218, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 348, Col: 82}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full\"> <input type=\"number\" name=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var18 string
-		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full\"> <input type=\"number\" inputmode=\"decimal\" name=\"")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 219, Col: 34}
+			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
+		var templ_7745c5c3_Var26 string
+		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 349, Col: 54}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -519,12 +879,12 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var19 string
-		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		var templ_7745c5c3_Var27 string
+		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 219, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 349, Col: 79}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -532,12 +892,12 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var20 string
-		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(min)
+		var templ_7745c5c3_Var28 string
+		templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(min)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 219, Col: 71}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 349, Col: 91}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -545,12 +905,12 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var21 string
-		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(max)
+		var templ_7745c5c3_Var29 string
+		templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(max)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 219, Col: 83}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 349, Col: 103}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -558,16 +918,16 @@ func labeledRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var22 string
-		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(step)
+		var templ_7745c5c3_Var30 string
+		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(step)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 219, Col: 97}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 349, Col: 117}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2 tabular-nums dark:border-white/10 dark:bg-white/5\"></label>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5\"></label>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -591,34 +951,34 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var23 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var23 == nil {
-			templ_7745c5c3_Var23 = templ.NopComponent
+		templ_7745c5c3_Var31 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var31 == nil {
+			templ_7745c5c3_Var31 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"block text-sm\"><span class=\"mb-1 flex items-center justify-between text-ink/60 dark:text-zinc-400\"><span>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"block text-sm\"><span class=\"mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400\"><span class=\"min-w-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var24 string
-		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		var templ_7745c5c3_Var32 string
+		templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 226, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 356, Col: 32}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"font-serif tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var32))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var25 string
-		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 227, Col: 101}
+			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
+		var templ_7745c5c3_Var33 string
+		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 357, Col: 110}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -626,12 +986,12 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var26 string
-		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		var templ_7745c5c3_Var34 string
+		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 229, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 359, Col: 44}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -639,12 +999,12 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var27 string
-		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(min)
+		var templ_7745c5c3_Var35 string
+		templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.JoinStringErrs(min)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 229, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 359, Col: 56}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var35))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -652,12 +1012,12 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var28 string
-		templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(max)
+		var templ_7745c5c3_Var36 string
+		templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(max)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 229, Col: 68}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 359, Col: 68}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -665,25 +1025,25 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var29 string
-		templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(step)
+		var templ_7745c5c3_Var37 string
+		templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(step)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 229, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 359, Col: 82}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full\"> <input type=\"number\" name=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var30 string
-		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full\"> <input type=\"number\" inputmode=\"decimal\" name=\"")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 230, Col: 34}
+			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
+		var templ_7745c5c3_Var38 string
+		templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 360, Col: 54}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var38))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -691,12 +1051,12 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var31 string
-		templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		var templ_7745c5c3_Var39 string
+		templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 230, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 360, Col: 79}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var31))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var39))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -704,12 +1064,12 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var32 string
-		templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs(min)
+		var templ_7745c5c3_Var40 string
+		templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(min)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 230, Col: 71}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 360, Col: 91}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var32))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var40))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -717,12 +1077,12 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var33 string
-		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(max)
+		var templ_7745c5c3_Var41 string
+		templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.JoinStringErrs(max)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 230, Col: 83}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 360, Col: 103}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var41))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -730,16 +1090,188 @@ func inrRange(name, label, model, min, max, step string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var34 string
-		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(step)
+		var templ_7745c5c3_Var42 string
+		templ_7745c5c3_Var42, templ_7745c5c3_Err = templ.JoinStringErrs(step)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 230, Col: 97}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 360, Col: 117}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var42))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"mt-2 w-full rounded-xl border border-black/10 bg-white px-3 py-2 tabular-nums dark:border-white/10 dark:bg-white/5\"></label>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5\"></label>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func moneyRange(name, label, model string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var43 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var43 == nil {
+			templ_7745c5c3_Var43 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<label class=\"block text-sm\"><span class=\"mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400\"><span class=\"min-w-0\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var44 string
+		templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 367, Col: 32}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var44))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100\" x-text=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var45 string
+		templ_7745c5c3_Var45, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 368, Col: 110}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var45))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></span></span> <input type=\"range\" x-model.number=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var46 string
+		templ_7745c5c3_Var46, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 370, Col: 44}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var46))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:min=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var47 string
+		templ_7745c5c3_Var47, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMin('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 370, Col: 87}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var47))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:max=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var48 string
+		templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMax('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 370, Col: 130}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var48))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:step=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var49 string
+		templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.JoinStringErrs("rangeStep('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 370, Col: 175}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var49))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full\"> <input type=\"number\" inputmode=\"decimal\" name=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var50 string
+		templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 371, Col: 54}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var50))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-model.number=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var51 string
+		templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(model)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 371, Col: 79}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:min=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var52 string
+		templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMin('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 371, Col: 122}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:max=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var53 string
+		templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMax('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 371, Col: 165}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var53))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" x-bind:step=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var54 string
+		templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs("rangeStep('" + model + "')")
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/calculators.templ`, Line: 371, Col: 210}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var54))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5\"></label>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

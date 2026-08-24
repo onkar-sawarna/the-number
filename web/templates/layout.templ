@@ -2,10 +2,16 @@ package templates
 
 templ Layout(p Page) {
 	<!DOCTYPE html>
-	<html lang="en" class={ templ.KV("dark", p.Dark) }>
+	<html lang="en" class={ templ.KV("dark", p.Dark) } data-region="in">
 		<head>
 			<meta charset="utf-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+			<meta name="theme-color" content="#eef3fb"/>
+			<meta name="description" content="Know the FIRE number that lets you stop. Drag a slider, watch years drop. No login, no fund pitch — just the maths."/>
+			<meta property="og:title" content={ p.Title + " · the number" }/>
+			<meta property="og:description" content="Live FIRE, SIP, EMI, and budget calculators. Play with the assumptions. Nothing is stored."/>
+			<meta property="og:type" content="website"/>
+			<link rel="icon" href="/static/favicon.svg" type="image/svg+xml"/>
 			<title>{ p.Title } · the number</title>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
@@ -19,42 +25,95 @@ templ Layout(p Page) {
 			<script src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
 		</head>
 		<body class="min-h-screen bg-paper text-ink font-sans dark:bg-night dark:text-zinc-100">
-			<div class="border-b border-brand/20 bg-teal-50/80 px-4 py-2 text-center text-xs leading-relaxed text-teal-950 dark:border-teal-900/40 dark:bg-teal-950/40 dark:text-teal-100">
-				Educational information only, not personalized financial advice. Consult a SEBI-registered investment advisor before investing.
-			</div>
-			<header class="sticky top-0 z-20 border-b border-black/5 bg-paper/85 backdrop-blur dark:border-white/10 dark:bg-night/85">
-				<div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-					<a href="/" class="group flex items-baseline gap-2">
-						<span class="font-serif text-2xl lowercase tracking-tight">the number</span>
-						<span class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">FIRE</span>
-					</a>
-					<nav class="hidden items-center gap-1 md:flex">
-						<a href="/calculators/fire" class={ MainNavClass(p.Path, "/calculators/fire") }>Calculators</a>
-						<a href="/guidance" class={ MainNavClass(p.Path, "/guidance") }>Guidance</a>
-					</nav>
-					<button type="button" class="rounded-full border border-black/10 px-3 py-1.5 text-xs dark:border-white/15" x-data="themeCtl()" x-on:click="toggle()" aria-label="Toggle theme">Theme</button>
+			<div id="app-chrome" class="sticky top-0 z-20">
+				<div class="border-b border-brand/25 bg-sky-50/90 px-4 py-1.5 text-center text-[11px] leading-snug text-sky-950 sm:py-2 sm:text-xs sm:leading-relaxed dark:border-sky-900/40 dark:bg-sky-950/30 dark:text-sky-100">
+					Educational information only, not personalized financial advice. Consult a SEBI-registered investment advisor before investing.
 				</div>
-				<nav class="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-4 pb-3 md:hidden">
-					<a href="/calculators/fire" class={ MainNavClass(p.Path, "/calculators/fire") }>Calculators</a>
-					<a href="/guidance" class={ MainNavClass(p.Path, "/guidance") }>Guidance</a>
-				</nav>
-			</header>
-			<main class="mx-auto w-full max-w-6xl px-4 py-10">
+				<header class="border-b border-black/5 bg-paper/90 backdrop-blur dark:border-white/10 dark:bg-night/90">
+					<div class="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2 sm:py-2.5 md:flex-nowrap">
+						<a href="/" class="mr-auto flex min-w-0 shrink items-baseline gap-2">
+							<span class="font-serif text-xl lowercase tracking-tight sm:text-2xl">the number</span>
+							<span class="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-brand sm:inline">FIRE</span>
+						</a>
+						<nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+							<a href="/" class={ MainNavClass(p.Path, "/") }>Home</a>
+							<a href="/calculators/fire" class={ MainNavClass(p.Path, "/calculators/fire") }>FIRE</a>
+							<a href="/guidance" class={ MainNavClass(p.Path, "/guidance") }>Guidance</a>
+						</nav>
+						<button type="button" class="min-h-9 shrink-0 rounded-full border border-black/10 px-2.5 py-1.5 text-xs sm:min-h-10 sm:px-3 dark:border-white/15" x-data="themeCtl()" x-on:click="toggle()" aria-label="Toggle theme"><span x-text="dark ? 'Light' : 'Dark'"></span></button>
+					</div>
+				</header>
+			</div>
+			<main class="mx-auto w-full min-w-0 max-w-6xl px-4 py-6 pb-24 sm:py-10 md:pb-10">
+				@PageTrail(p)
 				{ children... }
+				@JumpRow(p.Path)
 			</main>
-			<footer class="mt-16 border-t border-black/5 px-4 py-8 text-center text-sm text-ink/60 dark:border-white/10 dark:text-zinc-400">
-				<p>Not registered investment advice. For educational purposes only. <a href="/disclaimer" class="underline decoration-brand/40 underline-offset-2 hover:text-brand">Disclaimer</a></p>
+			@Dock(p)
+			<footer class="mb-16 border-t border-black/5 px-4 py-8 text-center text-sm text-ink/60 sm:mt-16 md:mb-0 dark:border-white/10 dark:text-zinc-400">
+				<p class="font-serif text-base text-ink/80 dark:text-zinc-300">Play with the number. Don’t take it as a plan.</p>
+				<p class="mt-3">Not registered investment advice. For educational purposes only. <a href="/disclaimer" class="underline decoration-brand/40 underline-offset-2 hover:text-brand">Disclaimer</a></p>
 			</footer>
 		</body>
 	</html>
 }
 
+templ RegionToggle() {
+	<div class="flex shrink-0 rounded-full border border-black/10 p-0.5 text-[11px] font-medium dark:border-white/15" x-data="regionCtl()" role="group" aria-label="India or rest of world">
+		<button type="button" class="min-h-9 rounded-full px-2.5 py-1 sm:px-3" x-bind:class="region === 'in' ? 'bg-brand text-white' : 'text-ink/70 dark:text-zinc-300'" x-on:click="set('in')" aria-label="India rupees">India ₹</button>
+		<button type="button" class="min-h-9 rounded-full px-2.5 py-1 sm:px-3" x-bind:class="region === 'us' ? 'bg-brand text-white' : 'text-ink/70 dark:text-zinc-300'" x-on:click="set('us')" aria-label="World dollars">World $</button>
+	</div>
+}
+
 templ CalcNav(path string) {
-	<nav class="mb-8 flex flex-wrap gap-2">
-		<a href="/calculators/fire" class={ TabClass(path, "/calculators/fire") }>FIRE</a>
-		<a href="/calculators/sip" class={ TabClass(path, "/calculators/sip") }>SIP</a>
-		<a href="/calculators/emi" class={ TabClass(path, "/calculators/emi") }>EMI</a>
-		<a href="/calculators/emergency" class={ TabClass(path, "/calculators/emergency") }>Emergency</a>
-		<a href="/calculators/budget" class={ TabClass(path, "/calculators/budget") }>Budget</a>
+	<div class="mb-6 flex items-center gap-2">
+		<nav class="-mx-4 min-w-0 flex-1 overflow-x-auto px-4 pb-1 no-scrollbar sm:mx-0 sm:overflow-visible sm:px-0">
+			<div class="flex gap-2 sm:flex-wrap">
+				<a href="/calculators/fire" class={ TabClass(path, "/calculators/fire") }>FIRE</a>
+				<a href="/calculators/sip" class={ TabClass(path, "/calculators/sip") }>SIP</a>
+				<a href="/calculators/emi" class={ TabClass(path, "/calculators/emi") }>EMI</a>
+				<a href="/calculators/emergency" class={ TabClass(path, "/calculators/emergency") }>Emergency</a>
+				<a href="/calculators/budget" class={ TabClass(path, "/calculators/budget") }>Budget</a>
+			</div>
+		</nav>
+		@RegionToggle()
+	</div>
+}
+
+templ PageTrail(p Page) {
+	if p.Path != "/" {
+		<nav class="mb-5 flex flex-wrap items-center gap-2 text-sm" aria-label="Breadcrumb">
+			<a href="/" class="font-medium text-brand hover:underline">Home</a>
+			<span class="text-ink/30 dark:text-zinc-600" aria-hidden="true">/</span>
+			<span class="text-ink/70 dark:text-zinc-300">{ p.Title }</span>
+		</nav>
+	}
+}
+
+templ JumpRow(path string) {
+	if path != "/" {
+		<nav class="mt-10 hidden flex-wrap gap-2 md:flex" aria-label="Continue">
+			<a href="/" class="btn-ghost">← Home</a>
+			if !IsCalc(path) {
+				<a href="/calculators/fire" class="btn-ghost">FIRE calculator</a>
+			}
+			if path != "/guidance" {
+				<a href="/guidance" class="btn-ghost">Get a mix</a>
+			}
+		</nav>
+	}
+}
+
+templ Dock(p Page) {
+	<nav class="dock md:hidden" aria-label="App">
+		<a href="/" class={ DockClass(p.Path, "/") }>
+			<span>Home</span>
+		</a>
+		<a href="/calculators/fire" class={ DockClass(p.Path, "/calculators/fire") }>
+			<span>FIRE</span>
+		</a>
+		<a href="/guidance" class={ DockClass(p.Path, "/guidance") }>
+			<span>Mix</span>
+		</a>
 	</nav>
 }

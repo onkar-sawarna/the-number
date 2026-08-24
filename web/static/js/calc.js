@@ -35,9 +35,95 @@
     return sign + "₹" + indianGroup(n);
   }
 
+  function westernGroup(n) {
+    n = Math.round(Math.abs(n));
+    var s = String(n);
+    var out = [];
+    while (s.length > 3) {
+      out.unshift(s.slice(-3));
+      s = s.slice(0, -3);
+    }
+    if (s) out.unshift(s);
+    return out.join(",");
+  }
+
+  function formatUSD(n) {
+    var sign = n < 0 ? "-" : "";
+    n = Math.abs(n);
+    if (n >= 1e6) return sign + "$" + trimZeros(n / 1e6) + "M";
+    if (n >= 1e4) return sign + "$" + trimZeros(n / 1e3) + "k";
+    return sign + "$" + westernGroup(n);
+  }
+
+  function formatMoney(n, region) {
+    if (region === "us" || region === "usd") return formatUSD(n);
+    return formatINR(n);
+  }
+
+  function isUSD(region) {
+    return region === "us" || region === "usd";
+  }
+
   function fireNumber(annualExpenses, swr) {
     if (swr <= 0) return 0;
     return annualExpenses / (swr / 100);
+  }
+
+  var RATE_NPS = 9;
+  var RATE_PPF = 7.1;
+  var RATE_EPF = 8.25;
+  var RATE_LIQUID = 6;
+  var RATE_GOLD = 8;
+  var HOUSE_IN = { 1: 20000000, 2: 9000000, 3: 4500000 };
+  var HOUSE_US = { 1: 800000, 2: 400000, 3: 220000 };
+
+  function nz(v) {
+    v = Number(v);
+    if (!isFinite(v) || v < 0) return 0;
+    return v;
+  }
+
+  function houseCost(tier, region) {
+    var table = isUSD(region) ? HOUSE_US : HOUSE_IN;
+    if (tier === 3) return table[3];
+    if (tier === 2) return table[2];
+    return table[1];
+  }
+
+  function houseAdd(input) {
+    if (input.housing !== "buy") return 0;
+    return houseCost(Number(input.cityTier) || 1, input.region);
+  }
+
+  function startPots(input) {
+    return {
+      general: nz(input.currentSavings),
+      nps: nz(input.npsNow),
+      ppf: nz(input.ppfNow),
+      epf: nz(input.epfNow),
+      foreign: nz(input.foreignNow),
+      stopped: nz(input.stoppedNow),
+      gold: nz(input.goldNow),
+    };
+  }
+
+  function potsTotal(p) {
+    return p.general + p.nps + p.ppf + p.epf + p.foreign + p.stopped + p.gold;
+  }
+
+  function monthlyIn(input) {
+    return nz(input.monthlySavings) + nz(input.npsMonthly) + nz(input.ppfMonthly) + nz(input.epfMonthly) + nz(input.foreignMonthly) + nz(input.goldMonthly);
+  }
+
+  function stepPots(p, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold) {
+    p.general = p.general * (1 + rmLiq);
+    p.nps = p.nps * (1 + rmNPS) + nz(input.npsMonthly);
+    p.ppf = p.ppf * (1 + rmPPF) + nz(input.ppfMonthly);
+    p.epf = p.epf * (1 + rmEPF) + nz(input.epfMonthly);
+    p.foreign = p.foreign * (1 + rmEq) + nz(input.foreignMonthly);
+    p.stopped = p.stopped * (1 + rmEq) + nz(input.monthlySavings);
+    p.gold = p.gold * (1 + rmGold) + nz(input.goldMonthly);
+    return p;
   }
 
   function fireChart(input, swr, years, reaches) {
@@ -47,53 +133,73 @@
       if (horizon < 15) horizon = 15;
       if (horizon > 50) horizon = 50;
     }
-    var rm = monthlyEffective(input.expectedReturn);
+    var rmLiq = monthlyEffective(RATE_LIQUID);
+    var rmEq = monthlyEffective(input.expectedReturn);
+    var rmNPS = monthlyEffective(isUSD(input.region) ? input.expectedReturn : RATE_NPS);
+    var rmPPF = monthlyEffective(RATE_PPF);
+    var rmEPF = monthlyEffective(RATE_EPF);
+    var rmGold = monthlyEffective(RATE_GOLD);
     var inf = input.inflation / 100;
-    var corpus = input.currentSavings;
-    var expenses = input.annualExpenses;
+    var pots = startPots(input);
+    var expenses = nz(input.annualExpenses);
+    var house = houseAdd(input);
     var pts = [];
     for (var y = 0; y <= horizon; y++) {
       pts.push({
         year: y,
         age: input.age + y,
-        corpus: corpus,
-        target: fireNumber(expenses, swr),
+        corpus: potsTotal(pots),
+        target: fireNumber(expenses, swr) + house,
       });
       for (var m = 0; m < 12; m++) {
-        corpus = corpus * (1 + rm) + input.monthlySavings;
+        pots = stepPots(pots, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
       }
       expenses *= 1 + inf;
+      house *= 1 + inf;
     }
     return pts;
   }
 
   function fire(input) {
     var swr = input.swr > 0 ? input.swr : 4;
-    var n = fireNumber(input.annualExpenses, swr);
+    var lifestyle = fireNumber(nz(input.annualExpenses), swr);
+    var house = houseAdd(input);
+    var n = lifestyle + house;
+    var pots = startPots(input);
     var out = {
       fireNumber: n,
-      lean: n * 0.5,
+      lifestyle: lifestyle,
+      houseAdd: house,
+      startingCorpus: potsTotal(pots),
+      monthlyIn: monthlyIn(input),
+      lean: lifestyle * 0.5 + house,
       regular: n,
-      fat: n * 2,
+      fat: lifestyle * 2 + house,
       years: 0,
       reachesFire: false,
       fiAge: input.age,
       chart: [],
     };
-    if (input.currentSavings >= n) {
+    if (potsTotal(pots) >= n) {
       out.reachesFire = true;
       out.chart = fireChart(input, swr, 0, true);
       return out;
     }
-    var rm = monthlyEffective(input.expectedReturn);
+    var rmLiq = monthlyEffective(RATE_LIQUID);
+    var rmEq = monthlyEffective(input.expectedReturn);
+    var rmNPS = monthlyEffective(isUSD(input.region) ? input.expectedReturn : RATE_NPS);
+    var rmPPF = monthlyEffective(RATE_PPF);
+    var rmEPF = monthlyEffective(RATE_EPF);
+    var rmGold = monthlyEffective(RATE_GOLD);
     var im = monthlyEffective(input.inflation);
-    var corpus = input.currentSavings;
-    var expenses = input.annualExpenses;
+    var expenses = nz(input.annualExpenses);
+    var houseNow = house;
     var maxMonths = 80 * 12;
     for (var m = 1; m <= maxMonths; m++) {
-      corpus = corpus * (1 + rm) + input.monthlySavings;
+      pots = stepPots(pots, input, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
       expenses = expenses * (1 + im);
-      if (corpus >= fireNumber(expenses, swr)) {
+      houseNow = houseNow * (1 + im);
+      if (potsTotal(pots) >= fireNumber(expenses, swr) + houseNow) {
         out.reachesFire = true;
         out.years = m / 12;
         out.fiAge = input.age + Math.round(out.years);
@@ -279,6 +385,8 @@
 
   global.Calc = {
     formatINR: formatINR,
+    formatUSD: formatUSD,
+    formatMoney: formatMoney,
     fire: fire,
     sip: sip,
     emi: emi,

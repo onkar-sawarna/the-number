@@ -4,5 +4,13 @@
   if (t !== "dark" && t !== "light") {
     t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
-  document.documentElement.classList.toggle("dark", t === "dark");
+  var dark = t === "dark";
+  document.documentElement.classList.toggle("dark", dark);
+  var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", dark ? "#071018" : "#eef3fb");
+
+  var rm = document.cookie.match(/(?:^|; )region=([^;]*)/);
+  var region = rm ? decodeURIComponent(rm[1]) : "";
+  if (region !== "us" && region !== "in") region = "in";
+  document.documentElement.setAttribute("data-region", region);
 })();

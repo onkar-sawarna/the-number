@@ -32,12 +32,12 @@ func TestAlreadyFIZeroYears(t *testing.T) {
 }
 
 func TestZeroReturnInflationTenYears(t *testing.T) {
-	// 25k/mo vs 30L target, 0% return, 0% inflation → ~10 years
+	// 25k/mo equity vs 30L target, 0% return, 0% inflation → ~10 years
 	in := FIREInput{
 		Age:            30,
 		AnnualExpenses: 120_000, // 30L target at 4% SWR
 		CurrentSavings: 0,
-		MonthlySavings: 25_000,
+		ForeignMonthly: 25_000,
 		ExpectedReturn: 0,
 		Inflation:      0,
 		SWR:            4,
@@ -61,6 +61,162 @@ func TestHigherMonthlyFewerYears(t *testing.T) {
 	}
 	if high.Years >= low.Years {
 		t.Fatalf("higher savings should be faster: %v vs %v", high.Years, low.Years)
+	}
+}
+
+func TestPotsCountTowardStartingCorpus(t *testing.T) {
+	in := DefaultFIRE()
+	in.CurrentSavings = 0
+	in.NPSNow = 1_000_000
+	in.EPFNow = 500_000
+	in.PPFNow = 200_000
+	in.ForeignNow = 100_000
+	in.StoppedNow = 200_000
+	out := FIRE(in)
+	if out.StartingCorpus != 2_000_000 {
+		t.Fatalf("starting corpus=%v want 2000000", out.StartingCorpus)
+	}
+}
+
+func TestStoppedGrowsWithoutContribution(t *testing.T) {
+	in := FIREInput{
+		Age:            30,
+		AnnualExpenses: 120_000,
+		StoppedNow:     1_500_000,
+		ExpectedReturn: 12,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	out := FIRE(in)
+	if !out.ReachesFire {
+		t.Fatal("leftover pot should grow to the 30L target")
+	}
+	if out.MonthlyIn != 0 {
+		t.Fatalf("monthly in=%v want 0", out.MonthlyIn)
+	}
+}
+
+func TestBuyHouseTier1AddsToNumber(t *testing.T) {
+	rent := DefaultFIRE()
+	rent.Housing = "rent"
+	buy := rent
+	buy.Housing = "buy"
+	buy.CityTier = 1
+	a := FIRE(rent)
+	b := FIRE(buy)
+	if b.HouseAdd != HouseIN1 {
+		t.Fatalf("house add=%v want %v", b.HouseAdd, HouseIN1)
+	}
+	if b.FireNumber != a.Lifestyle+HouseIN1 {
+		t.Fatalf("buy number=%v want lifestyle+house %v", b.FireNumber, a.Lifestyle+HouseIN1)
+	}
+	if b.Years <= a.Years {
+		t.Fatalf("buying a house should take longer: rent %v buy %v", a.Years, b.Years)
+	}
+}
+
+func TestTier3HouseCheaperThanTier1(t *testing.T) {
+	if HouseCost(3, "in") >= HouseCost(1, "in") {
+		t.Fatalf("tier 3 should be cheaper: %v vs %v", HouseCost(3, "in"), HouseCost(1, "in"))
+	}
+	in := DefaultFIRE()
+	in.Housing = "buy"
+	in.CityTier = 1
+	t1 := FIRE(in)
+	in.CityTier = 3
+	t3 := FIRE(in)
+	if t3.FireNumber >= t1.FireNumber {
+		t.Fatalf("tier 3 number should be smaller: %v vs %v", t3.FireNumber, t1.FireNumber)
+	}
+}
+
+func TestUSDHouseUsesDollarScale(t *testing.T) {
+	in := DefaultFIRE()
+	in.Region = "us"
+	in.Housing = "buy"
+	in.CityTier = 1
+	in.AnnualExpenses = 60_000
+	out := FIRE(in)
+	if out.HouseAdd != HouseUS1 {
+		t.Fatalf("usd house=%v want %v", out.HouseAdd, HouseUS1)
+	}
+}
+
+func TestUSDRetirementGrowsAtExpectedReturn(t *testing.T) {
+	base := FIREInput{
+		Age:            30,
+		AnnualExpenses: 40_000,
+		NPSMonthly:     2_000,
+		ExpectedReturn: 12,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	in := base
+	in.Region = "in"
+	us := base
+	us.Region = "us"
+	a := FIRE(in)
+	b := FIRE(us)
+	if !a.ReachesFire || !b.ReachesFire {
+		t.Fatalf("both should reach: in=%v us=%v", a.ReachesFire, b.ReachesFire)
+	}
+	if b.Years >= a.Years {
+		t.Fatalf("USD retirement at 12%% should beat NPS 9%%: in %v us %v", a.Years, b.Years)
+	}
+}
+
+func TestLiquidGrowsAtParkingNotEquity(t *testing.T) {
+	liq := FIREInput{
+		Age:            30,
+		AnnualExpenses: 120_000,
+		CurrentSavings: 1_500_000,
+		ExpectedReturn: 12,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	eq := liq
+	eq.CurrentSavings = 0
+	eq.StoppedNow = 1_500_000
+	a := FIRE(liq)
+	b := FIRE(eq)
+	if !a.ReachesFire || !b.ReachesFire {
+		t.Fatalf("both should reach: liquid=%v equity=%v", a.ReachesFire, b.ReachesFire)
+	}
+	if b.Years >= a.Years {
+		t.Fatalf("leftover SIPs at 12%% should beat liquid parking: liquid %v leftover %v", a.Years, b.Years)
+	}
+}
+
+func TestGoldCountsAndBeatsParked(t *testing.T) {
+	in := DefaultFIRE()
+	in.CurrentSavings = 0
+	in.GoldNow = 1_000_000
+	out := FIRE(in)
+	if out.StartingCorpus != 1_000_000 {
+		t.Fatalf("gold starting corpus=%v want 1000000", out.StartingCorpus)
+	}
+	parked := FIREInput{
+		Age:            30,
+		AnnualExpenses: 120_000,
+		CurrentSavings: 1_500_000,
+		ExpectedReturn: 12,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	gold := parked
+	gold.CurrentSavings = 0
+	gold.GoldNow = 1_500_000
+	a := FIRE(parked)
+	b := FIRE(gold)
+	if !a.ReachesFire || !b.ReachesFire {
+		t.Fatalf("both should reach: parked=%v gold=%v", a.ReachesFire, b.ReachesFire)
+	}
+	if b.Years >= a.Years {
+		t.Fatalf("gold at 8%% should beat parked 6%%: parked %v gold %v", a.Years, b.Years)
 	}
 }
 

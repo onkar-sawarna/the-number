@@ -40,7 +40,7 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | GET | `/` | Landing |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |
-| GET | `/calculators/{fire,sip,emi,emergency,budget}` | Live Alpine + Chart.js |
+| GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate |
 | GET/POST | `/guidance` | Questionnaire / HTMX fragment |
 | GET | `/static/*` | `web/static` |
 
@@ -48,7 +48,7 @@ Bind `0.0.0.0:$PORT`, default **47321**.
 
 ## Auth and data
 
-No accounts. Nothing is written except an optional theme cookie (`theme=dark|light`).
+No accounts. Nothing is written except optional cookies: theme (`theme=dark|light`) and region (`region=in|us`). India is ₹; World is USD.
 
 ## Calculation rules
 
@@ -56,19 +56,41 @@ Implemented in Go and identically in `web/static/js/calc.js`.
 
 ### Currency
 
+India (`region=in`):
+
 - ≥ 1 crore (1e7): `₹X.XX Cr` (trim trailing zeros)
 - ≥ 1 lakh (1e5): `₹X.XX L`
 - else Indian grouping: `₹12,345`
 
+World (`region=us`):
+
+- ≥ 1 million: `$X.XXM`
+- ≥ 10,000: `$X.XXk`
+- else Western grouping: `$1,234`
+
 ### FIRE
 
-FIRE number today = `annualExpenses / (SWR/100)`. Lean 0.5×, Regular 1×, Fat 2×.
+FIRE is the main product. India ₹ vs World $ toggle sits on the calculator (CalcNav and the home playground), not in the site header.
 
-Monthly rate `r_m = (1 + r)^(1/12) - 1`; same for inflation. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s FIRE number → 0 years. If never: `reaches_fire = false`.
+FIRE lifestyle corpus = `annualExpenses / (SWR/100)`. Housing:
 
-Chart: yearly snapshots (12 monthly steps then inflate expenses annually) until ~FIRE+5 years (min 15, max 50; 40 if never).
+- **own:** house add-on is 0
+- **rent** (keep renting): house add-on is 0; put rent inside expenses
+- **buy** (rent now, buy later): add an indicative modest house, and keep today’s rent in expenses until you buy
 
-Defaults: age 30, expenses 12,00,000, savings 15,00,000, monthly 50,000, return 11%, inflation 6%, SWR 4%.
+India house: tier 1 ₹2 Cr, tier 2 ₹90 L, tier 3 ₹45 L. World: high-cost $800k, mid-cost $400k, lower-cost $220k.
+
+Lean 0.5× lifestyle + house, Regular = total, Fat 2× lifestyle + house.
+
+**India pots:** Starting corpus = parked + gold + NPS + EPF + PPF + foreign stocks + invested. Parked (cash, FDs, liquid funds) grows at ~6% and takes **no** monthly SIP. Gold ~8% (physical gold you could sell). Invested = old SIPs still in funds + monthly SIPs still running, at expected return (same as foreign stocks). NPS ~9%, EPF ~8.25%, PPF ~7.1% (educational).
+
+**World pots:** parked + gold + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
+
+Monthly contributions add to the matching pot. Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s number.
+
+Chart: yearly snapshots until ~FIRE+5 years (min 15, max 50; 40 if never).
+
+India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 11%, inflation 6%, SWR 4%, city tier 1, housing rent, other pots 0.
 
 ### SIP
 
@@ -110,7 +132,7 @@ Sleeves sum to 100. Categories only.
 
 ## HTMX vs Alpine
 
-- **Alpine + Chart.js:** sliders, instant maths, live charts, dark toggle.
+- **Alpine + Chart.js:** sliders (labels update live), Calculate button for results and charts, dark toggle.
 - **HTMX:** guidance POST.
 
 Do not POST on every slider drag.

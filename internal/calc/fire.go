@@ -2,6 +2,26 @@ package calc
 
 import "math"
 
+// Educational sleeve rates for Indian pots. Parked cash uses RateLiquid.
+// Gold uses RateGold. Invested money (old SIPs still in funds, monthly SIPs, foreign stocks) uses ExpectedReturn.
+const (
+	RateNPS    = 9.0  // blended NPS
+	RatePPF    = 7.1  // current PPF-like rate
+	RateEPF    = 8.25 // EPF-like rate
+	RateLiquid = 6.0  // savings / FD-like parking, not equity SIPs
+	RateGold   = 8.0  // long-run gold-like, not a forecast
+)
+
+// Indicative modest house (today’s money). Not a quote.
+const (
+	HouseIN1 = 20_000_000.0
+	HouseIN2 = 9_000_000.0
+	HouseIN3 = 4_500_000.0
+	HouseUS1 = 800_000.0
+	HouseUS2 = 400_000.0
+	HouseUS3 = 220_000.0
+)
+
 type FIREInput struct {
 	Age            int     `json:"age"`
 	AnnualExpenses float64 `json:"annual_expenses"`
@@ -10,6 +30,30 @@ type FIREInput struct {
 	ExpectedReturn float64 `json:"expected_return"`
 	Inflation      float64 `json:"inflation"`
 	SWR            float64 `json:"swr"`
+
+	NPSNow        float64 `json:"nps_now"`
+	NPSMonthly    float64 `json:"nps_monthly"`
+	PPFNow        float64 `json:"ppf_now"`
+	PPFMonthly    float64 `json:"ppf_monthly"`
+	EPFNow        float64 `json:"epf_now"`
+	EPFMonthly    float64 `json:"epf_monthly"`
+	ForeignNow     float64 `json:"foreign_now"`
+	ForeignMonthly float64 `json:"foreign_monthly"`
+	StoppedNow     float64 `json:"stopped_now"`
+	GoldNow        float64 `json:"gold_now"`
+	GoldMonthly    float64 `json:"gold_monthly"`
+
+	CityTier int    `json:"city_tier"` // 1, 2, or 3
+	Housing  string `json:"housing"`   // own | rent | buy
+	Region   string `json:"region"`    // in | us
+}
+
+type firePots struct {
+	general, nps, ppf, epf, foreign, stopped, gold float64
+}
+
+func (p firePots) total() float64 {
+	return p.general + p.nps + p.ppf + p.epf + p.foreign + p.stopped + p.gold
 }
 
 type FIREPoint struct {
@@ -20,14 +64,18 @@ type FIREPoint struct {
 }
 
 type FIREOutput struct {
-	FireNumber  float64     `json:"fire_number"`
-	Lean        float64     `json:"lean"`
-	Regular     float64 `json:"regular"`
-	Fat         float64     `json:"fat"`
-	Years       float64     `json:"years"`
-	ReachesFire bool        `json:"reaches_fire"`
-	FIAge       int         `json:"fi_age"`
-	Chart       []FIREPoint `json:"chart"`
+	FireNumber     float64     `json:"fire_number"`
+	Lifestyle      float64     `json:"lifestyle"`
+	HouseAdd       float64     `json:"house_add"`
+	StartingCorpus float64     `json:"starting_corpus"`
+	MonthlyIn      float64     `json:"monthly_in"`
+	Lean           float64     `json:"lean"`
+	Regular        float64     `json:"regular"`
+	Fat            float64     `json:"fat"`
+	Years          float64     `json:"years"`
+	ReachesFire    bool        `json:"reaches_fire"`
+	FIAge          int         `json:"fi_age"`
+	Chart          []FIREPoint `json:"chart"`
 }
 
 func DefaultFIRE() FIREInput {
@@ -39,7 +87,42 @@ func DefaultFIRE() FIREInput {
 		ExpectedReturn: 11,
 		Inflation:      6,
 		SWR:            4,
+		CityTier:       1,
+		Housing:        "rent",
+		Region:         "in",
 	}
+}
+
+func IsUSD(region string) bool {
+	return region == "us" || region == "usd"
+}
+
+func HouseCost(tier int, region string) float64 {
+	if IsUSD(region) {
+		switch tier {
+		case 3:
+			return HouseUS3
+		case 2:
+			return HouseUS2
+		default:
+			return HouseUS1
+		}
+	}
+	switch tier {
+	case 3:
+		return HouseIN3
+	case 2:
+		return HouseIN2
+	default:
+		return HouseIN1
+	}
+}
+
+func HouseAdd(in FIREInput) float64 {
+	if in.Housing != "buy" {
+		return 0
+	}
+	return HouseCost(in.CityTier, in.Region)
 }
 
 func FIRENumber(annualExpenses, swr float64) float64 {
@@ -49,37 +132,87 @@ func FIRENumber(annualExpenses, swr float64) float64 {
 	return annualExpenses / (swr / 100.0)
 }
 
+func startPots(in FIREInput) firePots {
+	return firePots{
+		general: nz(in.CurrentSavings),
+		nps:     nz(in.NPSNow),
+		ppf:     nz(in.PPFNow),
+		epf:     nz(in.EPFNow),
+		foreign: nz(in.ForeignNow),
+		stopped: nz(in.StoppedNow),
+		gold:    nz(in.GoldNow),
+	}
+}
+
+func nz(v float64) float64 {
+	if v < 0 {
+		return 0
+	}
+	return v
+}
+
+func monthlyIn(in FIREInput) float64 {
+	return nz(in.MonthlySavings) + nz(in.NPSMonthly) + nz(in.PPFMonthly) + nz(in.EPFMonthly) + nz(in.ForeignMonthly) + nz(in.GoldMonthly)
+}
+
+func stepPots(p firePots, in FIREInput, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold float64) firePots {
+	p.general = p.general * (1 + rmLiq)
+	p.nps = p.nps*(1+rmNPS) + nz(in.NPSMonthly)
+	p.ppf = p.ppf*(1+rmPPF) + nz(in.PPFMonthly)
+	p.epf = p.epf*(1+rmEPF) + nz(in.EPFMonthly)
+	p.foreign = p.foreign*(1+rmEq) + nz(in.ForeignMonthly)
+	p.stopped = p.stopped*(1+rmEq) + nz(in.MonthlySavings)
+	p.gold = p.gold*(1+rmGold) + nz(in.GoldMonthly)
+	return p
+}
+
 func FIRE(in FIREInput) FIREOutput {
 	swr := in.SWR
 	if swr <= 0 {
 		swr = 4
 	}
-	fireNum := FIRENumber(in.AnnualExpenses, swr)
+	lifestyle := FIRENumber(in.AnnualExpenses, swr)
+	house := HouseAdd(in)
+	fireNum := lifestyle + house
+	pots := startPots(in)
 	out := FIREOutput{
-		FireNumber: fireNum,
-		Lean:       fireNum * 0.5,
-		Regular:    fireNum,
-		Fat:        fireNum * 2,
-		FIAge:      in.Age,
+		FireNumber:     fireNum,
+		Lifestyle:      lifestyle,
+		HouseAdd:       house,
+		StartingCorpus: pots.total(),
+		MonthlyIn:      monthlyIn(in),
+		Lean:           lifestyle*0.5 + house,
+		Regular:        fireNum,
+		Fat:            lifestyle*2 + house,
+		FIAge:          in.Age,
 	}
 
-	if in.CurrentSavings >= fireNum {
+	if pots.total() >= fireNum {
 		out.Years = 0
 		out.ReachesFire = true
 		out.Chart = fireChart(in, swr, 0, true)
 		return out
 	}
 
-	rm := monthlyEffective(in.ExpectedReturn)
+	rmLiq := monthlyEffective(RateLiquid)
+	rmEq := monthlyEffective(in.ExpectedReturn)
+	rmNPS := monthlyEffective(RateNPS)
+	if IsUSD(in.Region) {
+		rmNPS = rmEq
+	}
+	rmPPF := monthlyEffective(RatePPF)
+	rmEPF := monthlyEffective(RateEPF)
+	rmGold := monthlyEffective(RateGold)
 	im := monthlyEffective(in.Inflation)
-	corpus := in.CurrentSavings
 	expenses := in.AnnualExpenses
+	houseNow := house
 	const maxMonths = 80 * 12
 	for m := 1; m <= maxMonths; m++ {
-		corpus = corpus*(1+rm) + in.MonthlySavings
+		pots = stepPots(pots, in, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
 		expenses = expenses * (1 + im)
-		target := FIRENumber(expenses, swr)
-		if corpus >= target {
+		houseNow = houseNow * (1 + im)
+		target := FIRENumber(expenses, swr) + houseNow
+		if pots.total() >= target {
 			out.ReachesFire = true
 			out.Years = float64(m) / 12.0
 			out.FIAge = in.Age + int(math.Round(out.Years))
@@ -104,22 +237,32 @@ func fireChart(in FIREInput, swr, years float64, reaches bool) []FIREPoint {
 			horizon = 50
 		}
 	}
-	rm := monthlyEffective(in.ExpectedReturn)
+	rmLiq := monthlyEffective(RateLiquid)
+	rmEq := monthlyEffective(in.ExpectedReturn)
+	rmNPS := monthlyEffective(RateNPS)
+	if IsUSD(in.Region) {
+		rmNPS = rmEq
+	}
+	rmPPF := monthlyEffective(RatePPF)
+	rmEPF := monthlyEffective(RateEPF)
+	rmGold := monthlyEffective(RateGold)
 	inf := in.Inflation / 100.0
-	corpus := in.CurrentSavings
+	pots := startPots(in)
 	expenses := in.AnnualExpenses
+	house := HouseAdd(in)
 	pts := make([]FIREPoint, 0, horizon+1)
 	for y := 0; y <= horizon; y++ {
 		pts = append(pts, FIREPoint{
 			Year:   y,
 			Age:    in.Age + y,
-			Corpus: corpus,
-			Target: FIRENumber(expenses, swr),
+			Corpus: pots.total(),
+			Target: FIRENumber(expenses, swr) + house,
 		})
 		for m := 0; m < 12; m++ {
-			corpus = corpus*(1+rm) + in.MonthlySavings
+			pots = stepPots(pots, in, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
 		}
 		expenses *= (1 + inf)
+		house *= (1 + inf)
 	}
 	return pts
 }

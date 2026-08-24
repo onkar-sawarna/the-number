@@ -2,47 +2,109 @@ package templates
 
 templ Landing(p Page) {
 	@Layout(p) {
-		<section class="relative overflow-hidden pb-8">
-			<p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand">Personal finance, without the noise</p>
-			<h1 class="mt-4 max-w-3xl font-serif text-5xl leading-[1.1] tracking-tight sm:text-6xl">Know the number that lets you stop.</h1>
-			<p class="mt-6 max-w-xl text-lg leading-relaxed text-ink/70 dark:text-zinc-300">Calculate FIRE, watch years collapse as you save more / spend less / earn a better return.</p>
-			<div class="mt-8 flex flex-wrap gap-3">
-				<a href="/calculators/fire" class="rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white">Open the FIRE calculator</a>
-				<a href="/guidance" class="rounded-full border border-black/10 px-5 py-2.5 text-sm dark:border-white/15">Category guidance</a>
+		<section class="relative overflow-hidden pb-2 sm:pb-4">
+			<div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-brand/25 blur-3xl dark:bg-brand/40 md:h-80 md:w-80"></div>
+			<div class="pointer-events-none absolute -left-20 top-32 h-40 w-40 rounded-full bg-sky/30 blur-3xl dark:bg-sky/20"></div>
+			<p class="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">FIRE first — India or the world</p>
+			<h1 class="relative mt-3 max-w-full font-serif text-[1.85rem] leading-[1.15] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl">Know <em class="not-italic text-brand">the number</em> that lets you stop.</h1>
+			<p class="relative mt-4 max-w-xl text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg dark:text-zinc-300">India in rupees, everywhere else in dollars. Set the sliders. Hit calculate. No login, no lecture, no “buy this fund.”</p>
+			<div class="relative mt-5 hidden flex-wrap gap-2 sm:flex">
+				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">FIRE is the product</span>
+				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">Runs in your browser</span>
+				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">Never a ticker</span>
 			</div>
-			<p class="pointer-events-none absolute -right-6 top-0 hidden select-none font-serif text-[10rem] leading-none text-brand/10 sm:block">₹</p>
+			<div class="relative mt-6 sm:mt-8">
+				<a href="#try-fire" class="btn-primary w-full sm:w-auto">Try it below</a>
+			</div>
+			<p class="currency-in pointer-events-none absolute -right-6 top-8 hidden select-none font-serif text-[10rem] leading-none text-brand/10 md:block">₹</p>
+			<p class="currency-us pointer-events-none absolute -right-6 top-8 hidden select-none font-serif text-[10rem] leading-none text-brand/10 md:block">$</p>
 		</section>
-		<section class="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			@featureCard("/calculators/fire", "FIRE number", "The corpus that covers today’s expenses at your withdrawal rate — plus years until independence.")
-			@featureCard("/calculators/sip", "SIP & compounding", "Month-end contributions, monthly compounding, and the future value of staying invested.")
-			@featureCard("/calculators/emi", "EMI with prepayment", "Reducing-balance EMI, then extra monthly or a day-one lump to see interest and months saved.")
-			@featureCard("/calculators/emergency", "Emergency fund", "Months of essentials, the gap to target, and how long a top-up takes to close it.")
-			@featureCard("/calculators/budget", "50/30/20 budget", "Needs, wants, savings against take-home — and whether the month is overspent.")
-			@featureCard("/guidance", "Category-level guidance", "A sleeve mix across index categories. Never a stock, fund, AMC, or ticker.")
+		<section id="try-fire" class="relative mt-8 scroll-mt-28 sm:mt-12" x-data="fireCalc()">
+			<form class="min-w-0 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5" x-on:input="markDirty()" x-on:submit.prevent="recalc()">
+				<div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-center">
+					<div class="min-w-0 lg:col-span-5">
+						<div class="flex items-start justify-between gap-3">
+							<p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand">Try it — right here</p>
+							@RegionToggle()
+						</div>
+						<p class="mt-2 font-serif text-4xl tabular-nums tracking-tight sm:text-5xl" x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookLine()"></p>
+						<p class="mt-2 text-sm text-ink/60 dark:text-zinc-400" x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookSub()"></p>
+						<div class="mt-4 flex flex-wrap gap-2">
+							<button type="button" class="preset-chip" x-on:click="applyPreset('start')">Just starting</button>
+							<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">Saving hard</button>
+							<button type="button" class="preset-chip" x-on:click="applyPreset('ahead')">Already a stash</button>
+						</div>
+					</div>
+					<div class="min-w-0 space-y-5 lg:col-span-7">
+						@playRange("Monthly SIPs", "monthlySavings", true)
+						@playRange("Annual spend", "annualExpenses", true)
+						@playRange("Parked cash", "currentSavings", true)
+						@calcButton()
+					</div>
+				</div>
+				<div class="mt-8 flex flex-col gap-3 border-t border-brand/15 pt-5 sm:flex-row sm:items-center sm:justify-between">
+					<div class="min-w-0">
+						<p class="text-sm font-medium text-ink dark:text-zinc-100">Want the detailed number?</p>
+						<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isIN()">This is the short version. Gold, NPS, EPF, PPF, housing, and every pot live in the full calculator.</p>
+						<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isUS()" x-cloak>This is the short version. Gold, retirement, housing, and every pot live in the full calculator.</p>
+					</div>
+					<a href="/calculators/fire" class="btn-primary w-full shrink-0 sm:w-auto">Open the full FIRE calculator</a>
+				</div>
+			</form>
+		</section>
+		<section class="mt-10 grid gap-3 sm:mt-16 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+			@featureCard("/calculators/fire", "FIRE", "The full calculator", "Parked cash, gold, NPS, EPF, PPF, invested SIPs, housing — every pot, not just three sliders.", true)
+			@featureCard("/calculators/sip", "SIP", "What does a monthly plan become?", "Leave a contribution running. See the future value, not a brochure.", false)
+			@featureCard("/calculators/emi", "EMI", "What if you prepay?", "The EMI, then extra monthly or a lump — interest and months you get back.", false)
+			@featureCard("/calculators/emergency", "Runway", "How many months of buffer?", "Essentials × cover, the gap, and how long a top-up takes to close it.", false)
+			@featureCard("/calculators/budget", "50/30/20", "Is this month overspent?", "Needs, wants, savings against take-home. A yes/no, not a lecture.", false)
 		</section>
 	}
 }
 
-templ featureCard(href, title, body string) {
-	<a href={ templ.SafeURL(href) } class="rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card transition-colors hover:border-brand/30 dark:border-white/10 dark:bg-white/5">
-		<h2 class="font-serif text-xl">{ title }</h2>
+templ playRange(label, model string, money bool) {
+	<label class="block">
+		<span class="mb-1 flex items-center justify-between gap-3 text-sm text-ink/60 dark:text-zinc-400">
+			<span class="min-w-0">{ label }</span>
+			if money {
+				<span class="shrink-0 font-serif text-base tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtINR(" + model + ")" }></span>
+			} else {
+				<span class="shrink-0 font-serif text-base tabular-nums text-ink dark:text-zinc-100" x-text={ model }></span>
+			}
+		</span>
+		<input type="range" x-model.number={ model } x-bind:min={ "rangeMin('" + model + "')" } x-bind:max={ "rangeMax('" + model + "')" } x-bind:step={ "rangeStep('" + model + "')" } class="w-full max-w-full"/>
+	</label>
+}
+
+templ calcButton() {
+	<div>
+		<button type="button" class="btn-primary w-full sm:w-auto" x-bind:class="dirty ? '' : 'opacity-80'" x-on:click="recalc()">Calculate</button>
+		<p class="mt-1.5 text-xs font-medium text-brand" x-show="dirty" x-cloak>Inputs changed — calculate to refresh.</p>
+	</div>
+}
+
+templ featureCard(href, kicker, title, body string, wide bool) {
+	<a href={ templ.SafeURL(href) } class={ "hover-lift group rounded-2xl border border-black/5 bg-white/80 p-5 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5", templ.KV("sm:col-span-2", wide) }>
+		<p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand">{ kicker }</p>
+		<h2 class="mt-2 font-serif text-lg sm:text-xl">{ title }</h2>
 		<p class="mt-2 text-sm leading-relaxed text-ink/65 dark:text-zinc-400">{ body }</p>
+		<p class="mt-3 text-sm font-medium text-brand opacity-80 group-hover:opacity-100">Open →</p>
 	</a>
 }
 
 templ Disclaimer(p Page) {
 	@Layout(p) {
 		<article class="prose-disclaimer mx-auto max-w-2xl">
-			<h1 class="font-serif text-4xl tracking-tight">Disclaimer</h1>
+			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">Disclaimer</h1>
 			<p class="mt-6 leading-relaxed text-ink/80 dark:text-zinc-300">the number is an educational workshop. It is not a SEBI-registered investment advisor, research analyst, or broker. Nothing here is registered investment advice, a solicitation, or a recommendation to buy or sell any security.</p>
 			<h2 class="mt-10 font-serif text-2xl">The maths is yours</h2>
 			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Every calculator is arithmetic on the assumptions you type. Change the return, inflation, or withdrawal rate and the “number” moves. The popular 4% safe-withdrawal rule can fail in long poor markets. Past returns do not predict future ones.</p>
 			<h2 class="mt-10 font-serif text-2xl">What we omit</h2>
-			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Taxes, exit loads, expense ratios, insurance, currency risk, and sequence-of-returns risk are omitted. Real life is messier than a slider.</p>
+			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Taxes, exit loads, expense ratios, insurance, currency risk, and sequence-of-returns risk are omitted. EPF, NPS, and PPF lock-ins and annuity rules are ignored so the pots can sit in one number. House prices are a modest indicative corpus, not a quote. Real life is messier than a slider.</p>
 			<h2 class="mt-10 font-serif text-2xl">Guidance stays at category level</h2>
 			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">Optional allocation guidance names only asset-class sleeves (for example large-cap index or gold). It never names stocks, funds, AMCs, or tickers. If a language model is configured, its output is sanitised the same way. On failure we fall back to an on-device heuristic.</p>
 			<h2 class="mt-10 font-serif text-2xl">What we store</h2>
-			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (<span class="font-medium">theme=dark</span> or <span class="font-medium">light</span>) remembers appearance. There is no localStorage.</p>
+			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (<span class="font-medium">theme=dark</span> or <span class="font-medium">light</span>) remembers appearance. A region cookie (<span class="font-medium">region=in</span> or <span class="font-medium">us</span>) remembers India ₹ vs World $. There is no localStorage.</p>
 			<p class="mt-8 text-sm text-ink/60 dark:text-zinc-400">Not registered investment advice. For educational purposes only.</p>
 		</article>
 	}

@@ -41,7 +41,7 @@ func GuidancePage(p Page) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-4xl tracking-tight\">Category-level guidance</h1><p class=\"mt-2 max-w-2xl text-ink/65 dark:text-zinc-400\">A sleeve mix across index categories. Never a stock, fund, AMC, or ticker.</p><form class=\"mt-8 grid gap-8 lg:grid-cols-12\" hx-post=\"/guidance\" hx-target=\"#guidance-result\" hx-swap=\"innerHTML\" hx-indicator=\"#guide-ind\"><div class=\"space-y-5 lg:col-span-5\"><label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60\">Age</span> <input type=\"number\" name=\"age\" value=\"30\" min=\"18\" max=\"90\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5\"></label> <label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60\">Horizon (years)</span> <input type=\"number\" name=\"horizon\" value=\"10\" min=\"1\" max=\"50\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5\"></label><fieldset class=\"text-sm\"><legend class=\"mb-2 text-ink/60\">Risk stance</legend> <label class=\"mr-4\"><input type=\"radio\" name=\"risk\" value=\"conservative\" class=\"mr-1\"> Conservative</label> <label class=\"mr-4\"><input type=\"radio\" name=\"risk\" value=\"moderate\" checked class=\"mr-1\"> Moderate</label> <label><input type=\"radio\" name=\"risk\" value=\"aggressive\" class=\"mr-1\"> Aggressive</label></fieldset><label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60\">Monthly investable (₹)</span> <input type=\"number\" name=\"monthly_investable\" value=\"25000\" min=\"0\" step=\"500\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5\"></label> <label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60\">Goals</span> <textarea name=\"goals\" rows=\"4\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2 dark:border-white/10 dark:bg-white/5\" placeholder=\"Independence, a home, children’s education — in your words.\"></textarea></label> <button type=\"submit\" class=\"rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white\">Show mix</button> <span id=\"guide-ind\" class=\"htmx-indicator ml-2 text-sm text-ink/60\">Working…</span></div><div class=\"lg:col-span-7\"><div id=\"guidance-result\" class=\"rounded-2xl border border-dashed border-black/10 p-6 text-sm text-ink/50 dark:border-white/15\">Submit the form to see a category mix and donut. Sliders elsewhere stay on-device; this post is the one network call.</div></div></form>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-serif text-3xl tracking-tight sm:text-4xl\">A mix, not a stock tip</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\">Sleeves across index categories. Never a stock, fund, AMC, or ticker.</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" hx-post=\"/guidance\" hx-target=\"#guidance-result\" hx-swap=\"innerHTML\" hx-indicator=\"#guide-ind\"><div class=\"min-w-0 space-y-5 lg:col-span-5\"><label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60 dark:text-zinc-400\">Age</span> <input type=\"number\" inputmode=\"numeric\" name=\"age\" value=\"30\" min=\"18\" max=\"90\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5\"></label> <label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60 dark:text-zinc-400\">Horizon (years)</span> <input type=\"number\" inputmode=\"numeric\" name=\"horizon\" value=\"10\" min=\"1\" max=\"50\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5\"></label><fieldset class=\"text-sm\"><legend class=\"mb-2 text-ink/60 dark:text-zinc-400\">Risk stance</legend><div class=\"grid gap-2 sm:grid-cols-3\"><label class=\"risk-card\"><input type=\"radio\" name=\"risk\" value=\"conservative\" class=\"sr-only\"> <span class=\"font-medium\">Conservative</span> <span class=\"mt-0.5 block text-xs text-ink/50 dark:text-zinc-400\">Sleep at night</span></label> <label class=\"risk-card\"><input type=\"radio\" name=\"risk\" value=\"moderate\" checked class=\"sr-only\"> <span class=\"font-medium\">Moderate</span> <span class=\"mt-0.5 block text-xs text-ink/50 dark:text-zinc-400\">Balanced mix</span></label> <label class=\"risk-card\"><input type=\"radio\" name=\"risk\" value=\"aggressive\" class=\"sr-only\"> <span class=\"font-medium\">Aggressive</span> <span class=\"mt-0.5 block text-xs text-ink/50 dark:text-zinc-400\">Long horizon</span></label></div></fieldset><label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60 dark:text-zinc-400\">Monthly investable</span> <input type=\"number\" inputmode=\"decimal\" name=\"monthly_investable\" value=\"25000\" min=\"0\" step=\"500\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5\"></label> <label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60 dark:text-zinc-400\">Goals</span> <textarea name=\"goals\" rows=\"4\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5\" placeholder=\"Independence, a home, children’s education — in your words.\"></textarea></label> <button type=\"submit\" class=\"btn-primary w-full sm:w-auto\">Show my mix</button> <span id=\"guide-ind\" class=\"htmx-indicator ml-2 text-sm text-ink/60\">Working…</span></div><div class=\"min-w-0 lg:col-span-7\"><div id=\"guidance-result\" class=\"rounded-2xl border border-dashed border-black/10 p-4 text-sm text-ink/50 sm:p-6 dark:border-white/15\">Submit to see a category mix. Calculators stay on-device; this is the one network call.</div></div></form>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -76,14 +76,14 @@ func GuidanceResult(v GuidanceResultView) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"rounded-2xl border border-black/5 bg-white/80 p-6 shadow-card dark:border-white/10 dark:bg-white/5\" data-donut-labels=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"rounded-2xl border border-black/5 bg-white/80 p-4 shadow-card sm:p-6 dark:border-white/10 dark:bg-white/5\" data-donut-labels=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(v.Labels)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 44, Col: 141}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 58, Col: 148}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -96,7 +96,7 @@ func GuidanceResult(v GuidanceResultView) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(v.Values)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 44, Col: 172}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 58, Col: 179}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -114,7 +114,7 @@ func GuidanceResult(v GuidanceResultView) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(v.Warning)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 46, Col: 127}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 60, Col: 127}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -125,14 +125,14 @@ func GuidanceResult(v GuidanceResultView) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex items-center justify-between gap-3\"><h2 class=\"font-serif text-2xl\">Suggested sleeves</h2><span class=\"rounded-full bg-black/5 px-3 py-1 text-xs dark:bg-white/10\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-wrap items-center justify-between gap-3\"><h2 class=\"font-serif text-xl sm:text-2xl\">Suggested sleeves</h2><span class=\"rounded-full bg-black/5 px-3 py-1 text-xs dark:bg-white/10\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(v.Source)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 50, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 64, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -143,27 +143,27 @@ func GuidanceResult(v GuidanceResultView) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, s := range v.Sleeves {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"flex justify-between border-b border-black/5 py-2 dark:border-white/10\"><span>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li class=\"flex justify-between gap-4 border-b border-black/5 py-2 dark:border-white/10\"><span class=\"min-w-0\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(s.Category)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 58, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 72, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"font-serif tabular-nums\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"shrink-0 font-serif tabular-nums\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(s.Percent)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 59, Col: 54}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 73, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -181,13 +181,13 @@ func GuidanceResult(v GuidanceResultView) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(v.Rationale)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 63, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/guidance.templ`, Line: 77, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-6 flex flex-wrap gap-2\"><a href=\"/\" class=\"btn-ghost\">← Home</a> <a href=\"/calculators/fire\" class=\"btn-primary\">Play with FIRE</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
