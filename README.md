@@ -25,6 +25,16 @@ Or: `PORT=47321 go run ./cmd/server` after `templ generate`.
 
 Open [http://127.0.0.1:47321](http://127.0.0.1:47321).
 
+## Deploy (Render, free)
+
+The live host is [Render](https://render.com): Docker web service, **Free** instance, no database.
+
+1. Sign in at [dashboard.render.com](https://dashboard.render.com) with GitHub (no card needed for Free).
+2. **New → Blueprint** and select `onkar-sawarna/the-number`, or **New → Web Service**, repo `onkar-sawarna/the-number`, runtime **Docker**, instance **Free**, region **Singapore**.
+3. Deploy. You get a URL like `https://the-number.onrender.com`.
+
+Free instances sleep after ~15 minutes idle; the first request after that can take 30–60 seconds. Custom domain: in Render, add `number.onkarsawarna.dev`, then on Namecheap a CNAME host `number` → the `*.onrender.com` hostname Render shows.
+
 Hot reload (optional): `make install` then `air`.
 
 ```bash
