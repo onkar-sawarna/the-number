@@ -27,6 +27,8 @@ templ Landing(p Page) {
 							<p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand">@Tx("try_kicker")</p>
 							@RegionToggle()
 						</div>
+						<p class="mt-2 font-serif text-4xl tabular-nums tracking-tight text-ink/20 sm:text-5xl dark:text-zinc-600" x-show="!revealed" x-cloak>—</p>
+						<p class="mt-2 text-sm text-ink/60 dark:text-zinc-400" x-show="!revealed" x-cloak>@Tx("calc_wait_hook")</p>
 						<p class="mt-2 font-serif text-4xl tabular-nums tracking-tight sm:text-5xl" x-show="revealed" x-cloak x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookLine()"></p>
 						<p class="mt-2 text-sm text-ink/60 dark:text-zinc-400" x-show="revealed" x-cloak x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookSub()"></p>
 						<div class="mt-4 flex flex-wrap gap-2">
@@ -44,33 +46,60 @@ templ Landing(p Page) {
 						@calcButton()
 					</div>
 				</div>
-				<div id="calc-result" class="mt-8 scroll-mt-28 border-t border-brand/15 pt-6" x-show="revealed" x-cloak>
-					<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-bind:class="dirty ? 'opacity-50' : ''">
+				<div class="mt-8 scroll-mt-28 border-t border-brand/15 pt-6">
+					<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-show="!revealed" x-cloak>
 						<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
-						<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl" x-text="fmtINR(result.fireNumber)"></p>
-						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text="yearsCopy()"></p>
-						<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-text="numberLaterCopy()"></p>
+						<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight text-ink/20 sm:text-4xl dark:text-zinc-600">—</p>
+						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300">@Tx("calc_wait")</p>
 						<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
 							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
 								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
-								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lifestyle)"></p>
-								<p class="mt-1 text-[11px] text-ink/65 dark:text-zinc-300">@Tx("later_20")<span class="tabular-nums" x-text="fmtINR(result.lifestyleLater)"></span></p>
+								<p class="font-serif text-sm tabular-nums text-ink/20 sm:text-lg dark:text-zinc-600">—</p>
 							</div>
 							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
 								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
-								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.startingCorpus)"></p>
+								<p class="font-serif text-sm tabular-nums text-ink/20 sm:text-lg dark:text-zinc-600">—</p>
 							</div>
 							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
 								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("monthly_in")</p>
-								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
+								<p class="font-serif text-sm tabular-nums text-ink/20 sm:text-lg dark:text-zinc-600">—</p>
 							</div>
 							<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
 								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("youll_be")</p>
-								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.reachesFire ? result.fiAge : '—'"></p>
+								<p class="font-serif text-sm tabular-nums text-ink/20 sm:text-lg dark:text-zinc-600">—</p>
 							</div>
 						</div>
-						<div class="mt-4 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 dark:bg-zinc-900">
-							<canvas id="fire-chart"></canvas>
+						<p class="mt-4 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("calc_wait_chart")</p>
+						<div class="chart-ghost mt-2 sm:h-56"></div>
+					</div>
+					<div id="calc-result" x-show="revealed" x-cloak>
+						<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-bind:class="dirty ? 'opacity-50' : ''">
+							<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
+							<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl" x-text="fmtINR(result.fireNumber)"></p>
+							<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text="yearsCopy()"></p>
+							<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-text="numberLaterCopy()"></p>
+							<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
+								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
+									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lifestyle)"></p>
+									<p class="mt-1 text-[11px] text-ink/65 dark:text-zinc-300">@Tx("later_20")<span class="tabular-nums" x-text="fmtINR(result.lifestyleLater)"></span></p>
+								</div>
+								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
+									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.startingCorpus)"></p>
+								</div>
+								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("monthly_in")</p>
+									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
+								</div>
+								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
+									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("youll_be")</p>
+									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.reachesFire ? result.fiAge : '—'"></p>
+								</div>
+							</div>
+							<div class="mt-4 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 dark:bg-zinc-900">
+								<canvas id="fire-chart"></canvas>
+							</div>
 						</div>
 					</div>
 					<div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -135,8 +164,29 @@ templ deskColCalc() {
 }
 
 templ calcWait() {
-	<div class="rounded-2xl border border-dashed border-black/10 p-4 text-sm text-ink/50 sm:p-6 dark:border-white/15 dark:text-zinc-400 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]" x-show="!revealed" x-cloak>
-		@Tx("calc_wait")
+	<div class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]" x-show="!revealed" x-cloak>
+		<p class="text-xs uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
+		<p class="mt-2 font-serif text-5xl tabular-nums text-ink/20 dark:text-zinc-600">—</p>
+		<p class="mt-2 text-sm text-ink/70 dark:text-zinc-300">@Tx("calc_wait")</p>
+		<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-3">
+			<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+				<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
+				<p class="font-serif text-lg tabular-nums text-ink/20 dark:text-zinc-600">—</p>
+			</div>
+			<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+				<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
+				<p class="font-serif text-lg tabular-nums text-ink/20 dark:text-zinc-600">—</p>
+			</div>
+			<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
+				<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("youll_be")</p>
+				<p class="font-serif text-lg tabular-nums text-ink/20 dark:text-zinc-600">—</p>
+			</div>
+		</div>
+		<p class="mt-5 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("calc_wait_chart")</p>
+		<div class="chart-ghost mt-2 sm:h-56 lg:h-64"></div>
+		<p class="mt-5 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("pots_chart")</p>
+		<p class="mt-1 text-sm text-ink/65 dark:text-zinc-400">@Tx("pots_chart_sub")</p>
+		<div class="chart-ghost mt-2 sm:h-56 lg:h-64"></div>
 	</div>
 }
 

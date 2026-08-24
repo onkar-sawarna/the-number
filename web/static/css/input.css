@@ -27,6 +27,7 @@
     color-scheme: dark;
   }
 
+  html.dark .text-ink\/20,
   html.dark .text-ink\/30,
   html.dark .text-ink\/50,
   html.dark .text-ink\/55,
@@ -107,6 +108,24 @@
 
   .preset-chip {
     @apply min-h-9 rounded-full border border-black/10 bg-white/80 px-3 text-xs font-medium transition hover:border-brand/40 hover:bg-brand/10 dark:border-white/15 dark:bg-white/5;
+  }
+
+  .chart-ghost {
+    position: relative;
+    height: 10rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background-color: #eef3fb;
+    background-image:
+      repeating-linear-gradient(to top, transparent 0 23px, rgba(15, 27, 51, 0.08) 23px 24px),
+      linear-gradient(160deg, rgba(43, 108, 239, 0.14), transparent 42%);
+  }
+
+  html.dark .chart-ghost {
+    background-color: #18181b;
+    background-image:
+      repeating-linear-gradient(to top, transparent 0 23px, rgba(244, 244, 245, 0.08) 23px 24px),
+      linear-gradient(160deg, rgba(125, 211, 252, 0.12), transparent 42%);
   }
 
   .risk-card {
