@@ -13,7 +13,7 @@ func TestFIRENumberLeanFat(t *testing.T) {
 		t.Fatalf("FIRE number: got %v want 30000000", n)
 	}
 	out := FIRE(FIREInput{AnnualExpenses: expenses, SWR: swr, Age: 30})
-	if out.Lean != n*0.5 || out.Fat != n*2 || out.Regular != n {
+	if out.Lean != expenses*20 || out.Fat != expenses*50 || out.Regular != n {
 		t.Fatalf("lean/regular/fat: %+v", out)
 	}
 }
@@ -47,6 +47,30 @@ func TestAlreadyFIZeroYears(t *testing.T) {
 	}
 	if !out.ReachesCrossing || out.CrossingYears != 0 {
 		t.Fatalf("stash and no SIP should already have crossed: years=%v reaches=%v", out.CrossingYears, out.ReachesCrossing)
+	}
+	if out.StillNeed != 0 {
+		t.Fatalf("already FI still-need=%v want 0", out.StillNeed)
+	}
+}
+
+func TestParkedReducesStillNeedNotTheNumber(t *testing.T) {
+	zero := DefaultFIRE()
+	zero.CurrentSavings = 0
+	a := FIRE(zero)
+	full := DefaultFIRE()
+	full.CurrentSavings = 2_500_000
+	b := FIRE(full)
+	if a.FireNumber != b.FireNumber {
+		t.Fatalf("the corpus you need must not change with parked cash: %v vs %v", a.FireNumber, b.FireNumber)
+	}
+	if b.SpendableNow != 2_500_000 {
+		t.Fatalf("spendable=%v want 2500000", b.SpendableNow)
+	}
+	if b.StillNeed != a.StillNeed-2_500_000 {
+		t.Fatalf("25L parked should cut still-to-go by 25L: zero still=%v parked still=%v", a.StillNeed, b.StillNeed)
+	}
+	if b.Years >= a.Years {
+		t.Fatalf("more parked should be fewer years: %v vs %v", b.Years, a.Years)
 	}
 }
 

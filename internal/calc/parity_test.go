@@ -187,11 +187,7 @@ func fireFixtures() []FIREInput {
 
 	already := FIREInput{Age: 40, AnnualExpenses: 1_200_000, CurrentSavings: 40_000_000, ExpectedReturn: 8, Inflation: 6, SWR: 4, Housing: "rent"}
 	never := FIREInput{Age: 30, AnnualExpenses: 1_200_000, ExpectedReturn: 0, Inflation: 0, SWR: 4, Housing: "rent"}
-	mixed := DefaultFIRE()
-	mixed.Mixed = true
-	mixed.UsdParked = 10_000
-	mixed.UsdMonthly = 500
-	return []FIREInput{DefaultFIRE(), buy, us, pots, already, never, mixed}
+	return []FIREInput{DefaultFIRE(), buy, us, pots, already, never}
 }
 
 func sipFixtures() []SIPInput {
@@ -241,10 +237,6 @@ func fireToJS(in FIREInput) map[string]any {
 		"epfNow": in.EPFNow, "epfMonthly": in.EPFMonthly, "foreignNow": in.ForeignNow, "foreignMonthly": in.ForeignMonthly,
 		"stoppedNow": in.StoppedNow, "goldNow": in.GoldNow, "goldMonthly": in.GoldMonthly, "jewelleryNow": in.JewelleryNow,
 		"stepUp": in.StepUp, "cityTier": in.CityTier, "housing": in.Housing, "region": in.Region,
-		"mixed": in.Mixed, "fxINRPerUSD": in.FxINRPerUSD,
-		"usdParked": in.UsdParked, "usdMonthly": in.UsdMonthly, "usdStopped": in.UsdStopped, "usdRetire": in.UsdRetire,
-		"indiaParked": in.IndiaParked, "indiaNpsNow": in.IndiaNPSNow, "indiaNpsMonthly": in.IndiaNPSMonthly,
-		"indiaGold": in.IndiaGold, "indiaJew": in.IndiaJew,
 		"contribScale": in.ContribScale, "pauseMonths": in.PauseMonths,
 	}
 }
@@ -256,6 +248,8 @@ type jsFIRE struct {
 	LifestyleLater  float64 `json:"lifestyleLater"`
 	HouseAdd        float64 `json:"houseAdd"`
 	StartingCorpus  float64 `json:"startingCorpus"`
+	SpendableNow    float64 `json:"spendableNow"`
+	StillNeed       float64 `json:"stillNeed"`
 	Jewellery       float64 `json:"jewellery"`
 	JewelleryLater  float64 `json:"jewelleryLater"`
 	MonthlyIn       float64 `json:"monthlyIn"`
@@ -323,6 +317,8 @@ func compareFIRE(t *testing.T, in FIREInput, js jsFIRE, goOut FIREOutput) {
 	same("lifestyle", js.Lifestyle, goOut.Lifestyle)
 	same("houseAdd", js.HouseAdd, goOut.HouseAdd)
 	same("startingCorpus", js.StartingCorpus, goOut.StartingCorpus)
+	same("spendableNow", js.SpendableNow, goOut.SpendableNow)
+	same("stillNeed", js.StillNeed, goOut.StillNeed)
 	same("jewelleryLater", js.JewelleryLater, goOut.JewelleryLater)
 	same("monthlyIn", js.MonthlyIn, goOut.MonthlyIn)
 	same("lean", js.Lean, goOut.Lean)

@@ -134,7 +134,11 @@ func Copy(key string) string {
 	case "calc_wait_4":
 		return "What moves the year, and whether a pay cut still lands"
 	case "number_today":
-		return "The number today"
+		return "Still to go"
+	case "still_need":
+		return "The corpus you need is {target} · you have {have} today"
+	case "still_need_done":
+		return "Spendable pots already cover {target}."
 	case "number_later":
 		return "{amount} in 20 years"
 	case "lifestyle":
@@ -327,38 +331,6 @@ func Copy(key string) string {
 		return "the number"
 	case "share_footer":
 		return "Educational, not advice · number.onkarsawarna.dev"
-	case "mixed_toggle":
-		return "India + elsewhere"
-	case "mixed_sub":
-		return "Salary in one currency, parents’ pots in the other. Folded at an educational rupee-per-dollar rate — not a live FX feed."
-	case "mixed_fx":
-		return "₹ per $1 (educational)"
-	case "mixed_abroad":
-		return "Elsewhere · $"
-	case "mixed_india":
-		return "India pots · ₹"
-	case "mixed_usd_parked":
-		return "Parked abroad till now"
-	case "mixed_usd_monthly":
-		return "Monthly abroad"
-	case "mixed_usd_stopped":
-		return "Invested abroad till now"
-	case "mixed_usd_retire":
-		return "Retirement abroad till now"
-	case "mixed_in_parked":
-		return "Parked in India till now"
-	case "mixed_in_nps":
-		return "NPS till now"
-	case "mixed_in_nps_mo":
-		return "NPS monthly"
-	case "mixed_in_gold":
-		return "Gold in India till now"
-	case "mixed_in_jew":
-		return "Jewellery in India"
-	case "mixed_note_in":
-		return "Dollar amounts convert to rupees at the rate above, then follow the India pots (abroad invested and retirement grow with SIPs at expected return)."
-	case "mixed_note_us":
-		return "Rupee amounts convert to dollars at the rate above. EPF, PPF, and NPS keep their educational Indian rates after conversion. PPF is still capped at ₹1.5L/year before the convert."
 	case "already_there":
 		return "Already there."
 	case "not_80":
@@ -370,9 +342,9 @@ func Copy(key string) string {
 	case "hook_already":
 		return "Corpus already covers the number. {amount}."
 	case "hook_never":
-		return "Save more, spend less, or both. Need {amount}."
+		return "Save more, spend less, or both. Still {amount}."
 	case "hook_fi":
-		return "Independent in {year}, around age {age} · need {amount}"
+		return "Independent in {year}, around age {age} · still {amount}"
 	case "money_hint_in":
 		return "12L, 50k, or 12"
 	case "money_hint_us":
@@ -380,9 +352,9 @@ func Copy(key string) string {
 	case "fire_h1":
 		return "FIRE number"
 	case "fire_intro_in":
-		return "India plan: invested SIPs at 12%, inflation 6%, withdrawal 3.5% — about 29× expenses, not the US 25× rule. Parked cash ~6%. Gold funds ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, foreign stocks, and housing. Step SIPs up 10% a year."
+		return "India plan: invested SIPs at 12%, inflation 6%, withdrawal 4% — 25× expenses. Lean is 20×, Fat is 50×. Parked cash (FDs, liquid funds) sits in the corpus at ~6% and takes no monthly SIP — put running and old SIPs in Invested, next to it. Gold funds ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, foreign stocks, and housing. Step SIPs up 10% a year."
 	case "fire_intro_us":
-		return "Parked cash at ~6%. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then invested pots, a retirement account, and housing. Amounts are in dollars."
+		return "Parked cash sits in the corpus at ~6% and takes no monthly contribution — running contributions go under Invested, next to it. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then a retirement account and housing. Amounts are in dollars."
 	case "annual_exp":
 		return "Annual expenses (include rent if you rent)"
 	case "city":
@@ -434,11 +406,11 @@ func Copy(key string) string {
 	case "inf_us":
 		return "Inflation % (World 3%)"
 	case "swr_in":
-		return "Safe withdrawal rate % (3.5% ≈ 29×)"
+		return "Safe withdrawal rate % (4% ≈ 25×)"
 	case "swr_us":
 		return "Safe withdrawal rate % (4% ≈ 25×)"
 	case "parked_head":
-		return "Parked · ~6%"
+		return "Parked · ~6% · no SIP"
 	case "parked_in":
 		return "Cash, FDs, liquid funds till now"
 	case "parked_us":
@@ -484,15 +456,15 @@ func Copy(key string) string {
 	case "later":
 		return "Later "
 	case "lean":
-		return "Lean"
+		return "Lean FIRE"
 	case "regular":
-		return "Regular"
+		return "FIRE"
 	case "fat":
-		return "Fat"
+		return "Fat FIRE"
 	case "parked_us_copy":
-		return "Educational parking rate 6%. Cash and savings only — no monthly contribution into this pot."
+		return "Counts in the corpus at an educational 6% parking rate. No monthly contribution into this pot — SIPs belong under Invested, next to parked."
 	case "parked_in_copy":
-		return "Educational parking rate 6% (cash, FDs, liquid funds). No monthly SIP here. Old SIPs still sitting in funds go under Invested."
+		return "Counts in the corpus at an educational 6% (cash, FDs, liquid funds). No monthly SIP here — that is not how parked cash works in this calculator. Old SIPs still sitting in funds, and SIPs still running, go under Invested, next to this box."
 	case "gold_copy":
 		return "Educational ~8%. Gold funds and coins you could sell. Not jewellery."
 	case "jew_copy":

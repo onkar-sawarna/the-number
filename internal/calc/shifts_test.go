@@ -62,38 +62,3 @@ func TestPayCutLengthensYears(t *testing.T) {
 		t.Fatalf("two years off should take longer: base=%v pause=%v", base.Years, pause.Years)
 	}
 }
-
-func TestMixedUSDAddsToIndiaCorpus(t *testing.T) {
-	plain := DefaultFIRE()
-	mixed := DefaultFIRE()
-	mixed.Mixed = true
-	mixed.UsdParked = 10_000
-	mixed.UsdMonthly = 500
-	a := FIRE(plain)
-	b := FIRE(mixed)
-	wantExtra := 10_000 * DefaultFxINRPerUSD
-	if b.StartingCorpus < a.StartingCorpus+wantExtra-1 {
-		t.Fatalf("mixed corpus=%v want at least %v", b.StartingCorpus, a.StartingCorpus+wantExtra)
-	}
-	if !b.ReachesFire || b.Years >= a.Years {
-		t.Fatalf("dollar sleeve should shorten years: plain=%v mixed=%v", a.Years, b.Years)
-	}
-}
-
-func TestMixedIndiaPotsAddToUSD(t *testing.T) {
-	plain := FIREInput{
-		Age: 30, AnnualExpenses: 60_000, CurrentSavings: 80_000, MonthlySavings: 2_500,
-		ExpectedReturn: 8, Inflation: 3, SWR: 4, Housing: "rent", Region: "us",
-	}
-	mixed := plain
-	mixed.Mixed = true
-	mixed.EPFNow = 8_400_000 // ₹84L → $10k at 84
-	a := FIRE(plain)
-	b := FIRE(mixed)
-	if b.StartingCorpus < a.StartingCorpus+10_000-1 {
-		t.Fatalf("mixed usd corpus=%v want +10000 vs %v", b.StartingCorpus, a.StartingCorpus)
-	}
-	if !b.ReachesFire || b.Years >= a.Years {
-		t.Fatalf("EPF sleeve should shorten years: plain=%v mixed=%v", a.Years, b.Years)
-	}
-}

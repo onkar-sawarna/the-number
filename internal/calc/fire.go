@@ -49,24 +49,9 @@ type FIREInput struct {
 	Housing  string `json:"housing"`   // own | rent | buy
 	Region   string `json:"region"`    // in | us
 
-	// Mixed household: fold the other currency into the primary at FxINRPerUSD (educational).
-	Mixed           bool    `json:"mixed"`
-	FxINRPerUSD     float64 `json:"fx_inr_per_usd"`
-	UsdParked       float64 `json:"usd_parked"`
-	UsdMonthly      float64 `json:"usd_monthly"`
-	UsdStopped      float64 `json:"usd_stopped"`
-	UsdRetire       float64 `json:"usd_retire"`
-	IndiaParked     float64 `json:"india_parked"`
-	IndiaNPSNow     float64 `json:"india_nps_now"`
-	IndiaNPSMonthly float64 `json:"india_nps_monthly"`
-	IndiaGold       float64 `json:"india_gold"`
-	IndiaJew        float64 `json:"india_jew"`
-
 	ContribScale float64 `json:"contrib_scale"` // 0 = 1 (full). 0.6 = 40% pay cut.
 	PauseMonths  int     `json:"pause_months"`  // first N months, deposits are 0
 }
-
-const DefaultFxINRPerUSD = 84.0
 
 type firePots struct {
 	general, nps, ppf, epf, foreign, stopped, gold, jewellery float64
@@ -103,6 +88,8 @@ type FIREOutput struct {
 	LifestyleLater  float64     `json:"lifestyle_later"`
 	HouseAdd        float64     `json:"house_add"`
 	StartingCorpus  float64     `json:"starting_corpus"`
+	SpendableNow    float64     `json:"spendable_now"`
+	StillNeed       float64     `json:"still_need"`
 	Jewellery       float64     `json:"jewellery"`
 	JewelleryLater  float64     `json:"jewellery_later"`
 	MonthlyIn       float64     `json:"monthly_in"`
@@ -126,7 +113,7 @@ func DefaultFIRE() FIREInput {
 		MonthlySavings: 50_000,
 		ExpectedReturn: 12,
 		Inflation:      6,
-		SWR:            3.5,
+		SWR:            4,
 		StepUp:         10,
 		CityTier:       1,
 		Housing:        "rent",
@@ -214,42 +201,6 @@ func ppfAt(in FIREInput, month int) float64 {
 	return v
 }
 
-func FxRate(in FIREInput) float64 {
-	if in.FxINRPerUSD > 0 {
-		return in.FxINRPerUSD
-	}
-	return DefaultFxINRPerUSD
-}
-
-func applyMixed(in FIREInput) FIREInput {
-	if !in.Mixed {
-		return in
-	}
-	fx := FxRate(in)
-	if IsUSD(in.Region) {
-		if in.PPFMonthly > 12_500 {
-			in.PPFMonthly = 12_500
-		}
-		in.CurrentSavings += nz(in.IndiaParked) / fx
-		in.NPSNow += nz(in.IndiaNPSNow) / fx
-		in.NPSMonthly += nz(in.IndiaNPSMonthly) / fx
-		in.PPFNow = nz(in.PPFNow) / fx
-		in.PPFMonthly = nz(in.PPFMonthly) / fx
-		in.EPFNow = nz(in.EPFNow) / fx
-		in.EPFMonthly = nz(in.EPFMonthly) / fx
-		in.GoldNow += nz(in.IndiaGold) / fx
-		in.JewelleryNow += nz(in.IndiaJew) / fx
-	} else {
-		in.CurrentSavings += nz(in.UsdParked) * fx
-		in.MonthlySavings += nz(in.UsdMonthly) * fx
-		in.StoppedNow += (nz(in.UsdStopped) + nz(in.UsdRetire)) * fx
-	}
-	in.Mixed = false
-	in.UsdParked, in.UsdMonthly, in.UsdStopped, in.UsdRetire = 0, 0, 0, 0
-	in.IndiaParked, in.IndiaNPSNow, in.IndiaNPSMonthly, in.IndiaGold, in.IndiaJew = 0, 0, 0, 0, 0
-	return in
-}
-
 func depositScale(in FIREInput, month int) float64 {
 	if in.PauseMonths > 0 && month <= in.PauseMonths {
 		return 0
@@ -288,7 +239,6 @@ func contribAt(in FIREInput, month int) float64 {
 }
 
 func FIRE(in FIREInput) FIREOutput {
-	in = applyMixed(in)
 	swr := in.SWR
 	if swr <= 0 {
 		swr = 4
@@ -298,6 +248,11 @@ func FIRE(in FIREInput) FIREOutput {
 	fireNum := lifestyle + house
 	grow := math.Pow(1+in.Inflation/100.0, 20)
 	pots := startPots(in)
+	spendable := pots.spendable()
+	still := fireNum - spendable
+	if still < 0 {
+		still = 0
+	}
 	out := FIREOutput{
 		FireNumber:      fireNum,
 		FireNumberLater: fireNum * grow,
@@ -305,12 +260,14 @@ func FIRE(in FIREInput) FIREOutput {
 		LifestyleLater:  lifestyle * grow,
 		HouseAdd:        house,
 		StartingCorpus:  pots.total(),
+		SpendableNow:    spendable,
+		StillNeed:       still,
 		Jewellery:       pots.jewellery,
 		JewelleryLater:  pots.jewellery,
 		MonthlyIn:       monthlyIn(in),
-		Lean:            lifestyle*0.5 + house,
+		Lean:            nz(in.AnnualExpenses)*20 + house,
 		Regular:         fireNum,
-		Fat:             lifestyle*2 + house,
+		Fat:             nz(in.AnnualExpenses)*50 + house,
 		FIAge:           in.Age,
 		CrossingAge:     in.Age,
 	}

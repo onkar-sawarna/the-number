@@ -205,7 +205,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl\" x-text=\"fmtINR(result.fireNumber)\"></p><p class=\"mt-1 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"yearsCopy()\"></p><p class=\"mt-0.5 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"crossingCopy()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"numberLaterCopy()\"></p><div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3\"><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl\" x-text=\"fmtINR(result.stillNeed)\"></p><p class=\"mt-1 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"stillNeedCopy()\"></p><p class=\"mt-1 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"yearsCopy()\"></p><p class=\"mt-0.5 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"crossingCopy()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"numberLaterCopy()\"></p><div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3\"><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -229,7 +229,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.startingCorpus)\"></p></div><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.spendableNow)\"></p></div><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -465,7 +465,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 141, Col: 121}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 142, Col: 121}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -483,7 +483,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 143, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 144, Col: 103}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -511,7 +511,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 149, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 150, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -524,7 +524,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMin('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 149, Col: 109}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 150, Col: 109}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -537,7 +537,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMax('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 149, Col: 152}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 150, Col: 152}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -550,7 +550,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs("rangeStep('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 149, Col: 197}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 150, Col: 197}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -828,7 +828,7 @@ func featureCard(href, kicker, titleKey, bodyKey string, wide bool) templ.Compon
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(kicker)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 207, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 208, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {

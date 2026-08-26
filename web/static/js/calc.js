@@ -134,45 +134,12 @@
     return v;
   }
 
-  var DEFAULT_FX = 84;
-
-  function fxRate(input) {
-    var r = Number(input.fxINRPerUSD);
-    return r > 0 ? r : DEFAULT_FX;
-  }
-
   function copyFire(input) {
     var o = {};
     for (var k in input) {
       if (Object.prototype.hasOwnProperty.call(input, k)) o[k] = input[k];
     }
     return o;
-  }
-
-  function applyMixed(input) {
-    input = copyFire(input);
-    if (!input.mixed) return input;
-    var fx = fxRate(input);
-    if (isUSD(input.region)) {
-      if (nz(input.ppfMonthly) > 12500) input.ppfMonthly = 12500;
-      input.currentSavings = nz(input.currentSavings) + nz(input.indiaParked) / fx;
-      input.npsNow = nz(input.npsNow) + nz(input.indiaNpsNow) / fx;
-      input.npsMonthly = nz(input.npsMonthly) + nz(input.indiaNpsMonthly) / fx;
-      input.ppfNow = nz(input.ppfNow) / fx;
-      input.ppfMonthly = nz(input.ppfMonthly) / fx;
-      input.epfNow = nz(input.epfNow) / fx;
-      input.epfMonthly = nz(input.epfMonthly) / fx;
-      input.goldNow = nz(input.goldNow) + nz(input.indiaGold) / fx;
-      input.jewelleryNow = nz(input.jewelleryNow) + nz(input.indiaJew) / fx;
-    } else {
-      input.currentSavings = nz(input.currentSavings) + nz(input.usdParked) * fx;
-      input.monthlySavings = nz(input.monthlySavings) + nz(input.usdMonthly) * fx;
-      input.stoppedNow = nz(input.stoppedNow) + (nz(input.usdStopped) + nz(input.usdRetire)) * fx;
-    }
-    input.mixed = false;
-    input.usdParked = input.usdMonthly = input.usdStopped = input.usdRetire = 0;
-    input.indiaParked = input.indiaNpsNow = input.indiaNpsMonthly = input.indiaGold = input.indiaJew = 0;
-    return input;
   }
 
   function depositScale(input, month) {
@@ -298,13 +265,16 @@
   }
 
   function fire(input) {
-    input = applyMixed(copyFire(input));
+    input = copyFire(input);
     var swr = input.swr > 0 ? input.swr : 4;
     var lifestyle = fireNumber(nz(input.annualExpenses), swr);
     var house = houseAdd(input);
     var n = lifestyle + house;
     var grow = Math.pow(1 + (Number(input.inflation) || 0) / 100, 20);
     var pots = startPots(input);
+    var spendable = potsSpendable(pots);
+    var still = n - spendable;
+    if (still < 0) still = 0;
     var out = {
       fireNumber: n,
       fireNumberLater: n * grow,
@@ -312,12 +282,14 @@
       lifestyleLater: lifestyle * grow,
       houseAdd: house,
       startingCorpus: potsTotal(pots),
+      spendableNow: spendable,
+      stillNeed: still,
       jewellery: pots.jewellery,
       jewelleryLater: pots.jewellery,
       monthlyIn: monthlyIn(input),
-      lean: lifestyle * 0.5 + house,
+      lean: nz(input.annualExpenses) * 20 + house,
       regular: n,
-      fat: lifestyle * 2 + house,
+      fat: nz(input.annualExpenses) * 50 + house,
       years: 0,
       reachesFire: false,
       fiAge: input.age,

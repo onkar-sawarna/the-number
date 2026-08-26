@@ -80,7 +80,7 @@ World (`region=us`):
 
 FIRE is the main product. India ₹ vs World $ toggle sits on the calculator (CalcNav and the home playground), not in the site header.
 
-FIRE lifestyle corpus = `annualExpenses / (SWR/100)`. Housing:
+FIRE lifestyle corpus = `annualExpenses / (SWR/100)`. That is the **corpus you need**. The result **headline is still to go** (`corpus − spendable pots today`), so parked cash, old SIPs, gold funds, NPS/EPF/PPF, and foreign stocks all change the big figure and years-to-FIRE. Housing:
 
 - **own:** house add-on is 0
 - **rent** (keep renting): house add-on is 0; put rent inside expenses
@@ -88,11 +88,11 @@ FIRE lifestyle corpus = `annualExpenses / (SWR/100)`. Housing:
 
 India house: tier 1 ₹2 Cr, tier 2 ₹90 L, tier 3 ₹45 L. World: high-cost $800k, mid-cost $400k, lower-cost $220k.
 
-Lean 0.5× lifestyle + house, Regular = total, Fat 2× lifestyle + house.
+Lean FIRE is 20× today’s expenses + house (5% withdrawal). Regular FIRE is `annualExpenses / (SWR/100)` — default 4% / 25×. Fat FIRE is 50× today’s expenses + house.
 
-**India pots:** Starting corpus = parked + gold funds + jewellery + NPS + EPF + PPF + foreign stocks + invested. Parked (cash, FDs, liquid funds) grows at ~6% and takes **no** monthly SIP. Gold funds ~8% (sellable). Jewellery grows at ~8% in net worth; you keep it, so it is ignored for years-to-FIRE. Invested = old SIPs still in funds + monthly SIPs still running, at expected return (same as foreign stocks). NPS ~9%, EPF ~8.25%, PPF ~7.1% (educational).
+**India pots:** Starting corpus = parked + gold funds + jewellery + NPS + EPF + PPF + foreign stocks + invested. Parked (cash, FDs, liquid funds) is spendable and grows at ~6%, so it shortens years-to-FIRE, but it takes **no** monthly SIP — you cannot contribute into parked in this calculator. Running SIPs and old SIPs still in funds belong under Invested (expected return). On the full FIRE page, parked and invested sit next to each other. Gold funds ~8% (sellable). Jewellery grows at ~8% in net worth; you keep it, so it is ignored for years-to-FIRE. NPS ~9%, EPF ~8.25%, PPF ~7.1% (educational). Foreign stocks grow at expected return.
 
-**World pots:** parked + gold funds + jewellery + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
+**World pots:** parked (no monthly contribution) + gold funds + jewellery + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). Parked and invested sit next to each other on the full page. No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
 
 Monthly contributions add to the matching pot. Optional yearly SIP step-up raises every monthly pot by that % after each completed year (PPF capped at ₹1.5L/year). Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting spendable corpus ≥ today’s number.
 
@@ -100,11 +100,9 @@ The **crossing** is the first completed year where spendable pots earn more than
 
 After Calculate, **what moves the year** re-runs FIRE with (1) ₹5,000 / $100 extra monthly SIP, (2) 1% lower expected return, (3) buy vs rent the house. **Salary-optional** re-runs with 40% less going in, half going in, and 24 months of zero deposits then resume (`ContribScale`, `PauseMonths`). The share card is a 1200×630 PNG of the FI year and crossing year — never the corpus.
 
-**Mixed household:** optional India + elsewhere pots. Educational FX default ₹84 per $1 (editable). India primary: dollar parked / monthly / invested / retirement convert to rupees and fold into parked and invested SIPs. World primary: rupee parked, NPS, EPF, PPF, gold, jewellery convert to dollars; PPF still capped at ₹1.5L/year before the convert. Not a live FX feed.
-
 Chart: yearly snapshots until ~FIRE+5 years (min 20, max 50; 40 if never).
 
-India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 12%, inflation 6%, SWR 3.5% (~29× expenses), yearly SIP step-up 10%, city tier 1, housing rent, other pots 0. The US 4% / 25× rule is not the India default.
+India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 12%, inflation 6%, SWR 4% (25× expenses), yearly SIP step-up 10%, city tier 1, housing rent, other pots 0. Lean 20×, Fat 50×.
 
 ### SIP
 
@@ -146,7 +144,7 @@ Sleeves sum to 100. Categories only.
 
 ## HTMX vs Alpine
 
-- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** carries the playground fields as a query string. FIRE results include year-moves, salary-optional scenarios, and a downloadable/shareable year card. Mixed household pots live on the full FIRE page.
+- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** carries the playground fields as a query string. FIRE results include year-moves, salary-optional scenarios, and a downloadable/shareable year card.
 - **HTMX:** guidance POST.
 
 Do not POST on every keystroke.

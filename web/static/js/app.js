@@ -174,8 +174,7 @@
     ctl.commitMoney = function (field, ev, scroll) {
       var n = parseCompactMoney(ev.target.value);
       if (!isFinite(n) || n < 0) n = 0;
-      var usdField = String(field).indexOf("usd") === 0;
-      if (this.region !== "us" && !usdField) n = inferIndiaLakhs(field, n, ev.target.value);
+      if (this.region !== "us") n = inferIndiaLakhs(field, n, ev.target.value);
       var min = this.rangeMin ? this.rangeMin(field) : 0;
       var max = this.rangeMax ? this.rangeMax(field) : 1e12;
       if (n < min) n = min;
@@ -351,10 +350,6 @@
     return Calc.formatMoney(Number(n) || 0, currentRegion());
   };
 
-  window.fmtUSD = function (n) {
-    return Calc.formatUSD(Number(n) || 0);
-  };
-
   window.regionCtl = function () {
     return {
       region: currentRegion(),
@@ -414,7 +409,7 @@
       monthlySavings: 50000,
       expectedReturn: 12,
       inflation: 6,
-      swr: 3.5,
+      swr: 4,
       npsNow: 0,
       npsMonthly: 0,
       ppfNow: 0,
@@ -431,17 +426,6 @@
       cityTier: 1,
       housing: "rent",
       region: "in",
-      mixed: false,
-      fxINRPerUSD: 84,
-      usdParked: 0,
-      usdMonthly: 0,
-      usdStopped: 0,
-      usdRetire: 0,
-      indiaParked: 0,
-      indiaNpsNow: 0,
-      indiaNpsMonthly: 0,
-      indiaGold: 0,
-      indiaJew: 0,
       moves: [],
       options: [],
       result: Calc.fire({
@@ -451,7 +435,7 @@
         monthlySavings: 50000,
         expectedReturn: 12,
         inflation: 6,
-        swr: 3.5,
+        swr: 4,
         housing: "rent",
         cityTier: 1,
         region: "in",
@@ -528,7 +512,7 @@
         this.housing = "rent";
         this.expectedReturn = 12;
         this.inflation = 6;
-        this.swr = 3.5;
+        this.swr = 4;
         this.stepUp = 10;
       },
       rangeMin: function () {
@@ -539,10 +523,6 @@
         if (field === "monthlySavings") return us ? 30000 : 1000000;
         if (field === "annualExpenses") return us ? 400000 : 20000000;
         if (field === "currentSavings") return us ? 5000000 : 100000000;
-        if (field === "usdParked" || field === "usdStopped" || field === "usdRetire") return 5000000;
-        if (field === "usdMonthly") return 30000;
-        if (field === "indiaParked" || field === "indiaNpsNow" || field === "indiaGold" || field === "indiaJew") return 100000000;
-        if (field === "indiaNpsMonthly") return 150000;
         if (field === "npsNow" || field === "stoppedNow" || field === "goldNow" || field === "jewelleryNow") return us ? 3000000 : 50000000;
         if (field === "npsMonthly" || field === "goldMonthly") return us ? 15000 : 150000;
         if (field === "epfNow" || field === "foreignNow") return 50000000;
@@ -570,10 +550,10 @@
           swr: Number(this.swr) || 0,
           npsNow: Number(this.npsNow) || 0,
           npsMonthly: Number(this.npsMonthly) || 0,
-          ppfNow: this.region === "us" && !this.mixed ? 0 : Number(this.ppfNow) || 0,
-          ppfMonthly: this.region === "us" && !this.mixed ? 0 : Number(this.ppfMonthly) || 0,
-          epfNow: this.region === "us" && !this.mixed ? 0 : Number(this.epfNow) || 0,
-          epfMonthly: this.region === "us" && !this.mixed ? 0 : Number(this.epfMonthly) || 0,
+          ppfNow: this.region === "us" ? 0 : Number(this.ppfNow) || 0,
+          ppfMonthly: this.region === "us" ? 0 : Number(this.ppfMonthly) || 0,
+          epfNow: this.region === "us" ? 0 : Number(this.epfNow) || 0,
+          epfMonthly: this.region === "us" ? 0 : Number(this.epfMonthly) || 0,
           foreignNow: this.region === "us" ? 0 : Number(this.foreignNow) || 0,
           foreignMonthly: this.region === "us" ? 0 : Number(this.foreignMonthly) || 0,
           stoppedNow: Number(this.stoppedNow) || 0,
@@ -584,17 +564,6 @@
           cityTier: Number(this.cityTier) || 1,
           housing: this.housing || "rent",
           region: this.region || currentRegion(),
-          mixed: !!this.mixed,
-          fxINRPerUSD: Number(this.fxINRPerUSD) || 84,
-          usdParked: this.mixed && this.region !== "us" ? Number(this.usdParked) || 0 : 0,
-          usdMonthly: this.mixed && this.region !== "us" ? Number(this.usdMonthly) || 0 : 0,
-          usdStopped: this.mixed && this.region !== "us" ? Number(this.usdStopped) || 0 : 0,
-          usdRetire: this.mixed && this.region !== "us" ? Number(this.usdRetire) || 0 : 0,
-          indiaParked: this.mixed && this.region === "us" ? Number(this.indiaParked) || 0 : 0,
-          indiaNpsNow: this.mixed && this.region === "us" ? Number(this.indiaNpsNow) || 0 : 0,
-          indiaNpsMonthly: this.mixed && this.region === "us" ? Number(this.indiaNpsMonthly) || 0 : 0,
-          indiaGold: this.mixed && this.region === "us" ? Number(this.indiaGold) || 0 : 0,
-          indiaJew: this.mixed && this.region === "us" ? Number(this.indiaJew) || 0 : 0,
         };
       },
       fullFireHref: function () {
@@ -625,23 +594,12 @@
         p.set("tier", String(Number(this.cityTier) || 1));
         p.set("housing", this.housing === "own" || this.housing === "buy" ? this.housing : "rent");
         p.set("region", this.region === "us" ? "us" : "in");
-        if (this.mixed) p.set("mixed", "1");
-        p.set("fx", String(Number(this.fxINRPerUSD) || 84));
-        p.set("usd", n(this.usdParked));
-        p.set("usdm", n(this.usdMonthly));
-        p.set("usds", n(this.usdStopped));
-        p.set("usdr", n(this.usdRetire));
-        p.set("ipark", n(this.indiaParked));
-        p.set("inps", n(this.indiaNpsNow));
-        p.set("inpsm", n(this.indiaNpsMonthly));
-        p.set("igold", n(this.indiaGold));
-        p.set("ijew", n(this.indiaJew));
         return "/calculators/fire?" + p.toString();
       },
       overlayFireQuery: function () {
         var q = new URLSearchParams(location.search);
         var hasRegion = q.get("region") === "us" || q.get("region") === "in";
-        var hasNum = q.has("age") || q.has("expenses") || q.has("parked") || q.has("monthly") || q.has("step") || q.get("mixed") === "1";
+        var hasNum = q.has("age") || q.has("expenses") || q.has("parked") || q.has("monthly") || q.has("step");
         if (!hasRegion && !hasNum) return false;
         var region = hasRegion ? (q.get("region") === "us" ? "us" : "in") : currentRegion();
         if (hasRegion) {
@@ -684,17 +642,6 @@
         if (this.cityTier > 3) this.cityTier = 3;
         var housing = q.get("housing");
         if (housing === "own" || housing === "rent" || housing === "buy") this.housing = housing;
-        this.mixed = q.get("mixed") === "1" || q.get("mixed") === "true";
-        take("fx", "fxINRPerUSD", 50, 120);
-        take("usd", "usdParked", 0, this.rangeMax("usdParked"));
-        take("usdm", "usdMonthly", 0, this.rangeMax("usdMonthly"));
-        take("usds", "usdStopped", 0, this.rangeMax("usdStopped"));
-        take("usdr", "usdRetire", 0, this.rangeMax("usdRetire"));
-        take("ipark", "indiaParked", 0, this.rangeMax("indiaParked"));
-        take("inps", "indiaNpsNow", 0, this.rangeMax("indiaNpsNow"));
-        take("inpsm", "indiaNpsMonthly", 0, this.rangeMax("indiaNpsMonthly"));
-        take("igold", "indiaGold", 0, this.rangeMax("indiaGold"));
-        take("ijew", "indiaJew", 0, this.rangeMax("indiaJew"));
         return hasNum;
       },
       applyPreset: function (name) {
@@ -755,7 +702,7 @@
         }
         this.expectedReturn = 12;
         this.inflation = 6;
-        this.swr = 3.5;
+        this.swr = 4;
         this.recalc(true);
       },
       recalc: function () {
@@ -820,8 +767,19 @@
       numberLaterCopy: function () {
         return this.t("number_later", { amount: window.fmtINR(this.result.fireNumberLater) });
       },
+      stillNeedCopy: function () {
+        var r = this.result || {};
+        var line = {
+          target: window.fmtINR(r.fireNumber),
+          have: window.fmtINR(r.spendableNow),
+        };
+        if ((Number(r.stillNeed) || 0) <= 0.5 && r.reachesFire && r.years === 0) {
+          return this.t("still_need_done", line);
+        }
+        return this.t("still_need", line);
+      },
       yearsStickyCopy: function () {
-        return this.yearsCopy() + " · " + this.numberLaterCopy();
+        return this.yearsCopy();
       },
       hookLine: function () {
         if (this.result.reachesFire && this.result.years === 0) return this.t("already_there");
@@ -830,10 +788,10 @@
         return y + this.t(Number(y) === 1 ? "year_one" : "year_many");
       },
       hookSub: function () {
-        var amt = window.fmtINR(this.result.fireNumber);
-        if (this.result.reachesFire && this.result.years === 0) return this.t("hook_already", { amount: amt });
-        if (!this.result.reachesFire) return this.t("hook_never", { amount: amt });
-        return this.t("hook_fi", { year: this.fiYear(), age: this.result.fiAge, amount: amt });
+        var r = this.result || {};
+        if (r.reachesFire && r.years === 0) return this.t("hook_already", { amount: window.fmtINR(r.fireNumber) });
+        if (!r.reachesFire) return this.t("hook_never", { amount: window.fmtINR(r.stillNeed) });
+        return this.t("hook_fi", { year: this.fiYear(), age: r.fiAge, amount: window.fmtINR(r.stillNeed) });
       },
       formatShift: function (row) {
         var base = this.result || {};
@@ -968,17 +926,13 @@
       potDefs: function () {
         var us = this.region === "us";
         if (us) {
-          var d = [
+          return [
             { key: "parked", label: "chart_parked" },
             { key: "nps", label: "chart_retire" },
             { key: "invested", label: "chart_invested_sip" },
             { key: "gold", label: "chart_gold" },
             { key: "jewellery", label: "chart_jew" },
           ];
-          if (this.mixed) {
-            d.splice(2, 0, { key: "epf", label: "chart_epf" }, { key: "ppf", label: "chart_ppf" });
-          }
-          return d;
         }
         return [
           { key: "parked", label: "chart_parked" },
