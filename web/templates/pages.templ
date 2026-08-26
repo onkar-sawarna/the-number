@@ -77,9 +77,11 @@ templ Landing(p Page) {
 									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.reachesFire ? result.fiAge : '—'"></p>
 								</div>
 							</div>
-							<div class="mt-4 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 dark:bg-zinc-900">
+							@fireChartIntro()
+							<div class="fire-chart-box mt-3 min-w-0 overflow-hidden rounded-xl bg-paper dark:bg-zinc-900">
 								<canvas id="fire-chart"></canvas>
 							</div>
+							@fireChartLegend()
 							@fireResultExtras()
 							<div class="mt-5 flex flex-col gap-3 border-t border-black/5 pt-5 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
 								<div class="min-w-0">
@@ -121,6 +123,22 @@ templ Landing(p Page) {
 			</div>
 		</section>
 	}
+}
+
+templ fireChartIntro() {
+	<p class="mt-5 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("chart_stack")</p>
+	<p class="mt-1 text-sm text-ink/65 dark:text-zinc-400" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("chart_stack_sub")</p>
+}
+
+templ fireChartLegend() {
+	<ul class="mt-2 flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] leading-snug text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''">
+		<template x-for="row in fireLegend()" x-bind:key="row.label">
+			<li class="inline-flex items-center gap-1.5">
+				<span class="inline-block shrink-0" x-bind:class="row.cls" x-bind:style="row.swatch"></span>
+				<span x-text="row.label"></span>
+			</li>
+		</template>
+	</ul>
 }
 
 templ potMoneyRows() {

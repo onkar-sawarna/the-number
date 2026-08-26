@@ -569,23 +569,23 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.fat)\"></p></div></div><p class=\"mt-5 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.fat)\"></p></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Tx("chart_stack").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = fireChartIntro().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 text-sm text-ink/65 dark:text-zinc-400\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"fire-chart-box mt-3 min-w-0 overflow-hidden rounded-xl bg-paper dark:bg-zinc-900\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"fire-chart\"></canvas></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Tx("chart_stack_sub").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = fireChartLegend().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"fire-chart\"></canvas></div><div class=\"mt-5\" x-show=\"hasPotLines()\" x-cloak><p class=\"text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-5\" x-show=\"hasPotLines()\" x-cloak><p class=\"text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -609,7 +609,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"fire-pots-chart\"></canvas></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"fire-chart-box mt-3 min-w-0 overflow-hidden rounded-xl bg-paper dark:bg-zinc-900\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><canvas id=\"fire-pots-chart\"></canvas></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

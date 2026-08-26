@@ -135,6 +135,22 @@
     animation: calc-pulse 0.7s ease-in-out infinite;
   }
 
+  .fire-chart-box {
+    height: 14.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .fire-chart-box {
+      height: 18rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .fire-chart-box {
+      height: 21rem;
+    }
+  }
+
   #calc-result.is-working,
   #calc-sticky-stat.is-working {
     position: relative;

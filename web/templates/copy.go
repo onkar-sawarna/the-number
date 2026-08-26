@@ -128,7 +128,7 @@ func Copy(key string) string {
 	case "calc_wait_1":
 		return "The number today, and what 20 years of inflation does to it"
 	case "calc_wait_2":
-		return "Corpus versus that number, year by year"
+		return "Your pots versus the corpus you need, year by year"
 	case "calc_wait_3":
 		return "Each pot today next to what it becomes later"
 	case "calc_wait_4":
@@ -494,19 +494,35 @@ func Copy(key string) string {
 	case "house_rent":
 		return " Not added. You’ll keep renting, so put rent inside annual expenses."
 	case "chart_spend":
-		return "Spendable"
+		return "What you have"
 	case "chart_nw":
-		return "Net worth"
+		return "Net worth (jewellery kept)"
 	case "chart_fire":
-		return "FIRE number"
+		return "What you need"
 	case "chart_stack":
-		return "Pots versus the number"
+		return "Your money versus what you need"
 	case "chart_stack_sub":
-		return "Each sleeve stacked. The dashed line is the FIRE number."
+		return "Filled areas are money you could spend. The dashed line is the FIRE corpus that year — it rises with inflation. You are independent where they meet."
+	case "chart_axis_age":
+		return "Your age"
+	case "chart_mark_fi":
+		return "Independent"
+	case "chart_mark_done":
+		return "Already there"
+	case "chart_tip_age":
+		return "Age {age} · {year}"
+	case "chart_tip_have":
+		return "You have {amount}"
+	case "chart_tip_need":
+		return "You need {amount}"
+	case "chart_tip_short":
+		return "Still {amount} short"
+	case "chart_tip_independent":
+		return "Independent this year"
 	case "pots_chart":
-		return "Today vs 20 years later"
+		return "Each pot today vs later"
 	case "pots_chart_sub":
-		return "Each pot today, and what it becomes if you keep going."
+		return "Grey is today. Blue is the same pot if you keep going."
 	case "pots_grows":
 		return "Growth"
 	case "pots_today":

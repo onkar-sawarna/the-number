@@ -288,6 +288,98 @@
     Chart.defaults.borderColor = gridColor();
   }
 
+  var fireMarkPlugin = {
+    id: "fireMark",
+    afterDatasetsDraw: function (chart) {
+      var opts = chart.options.plugins && chart.options.plugins.fireMark;
+      if (!opts || opts.index == null || opts.index < 0) return;
+      var xScale = chart.scales.x;
+      var area = chart.chartArea;
+      if (!xScale || !area) return;
+      var x = xScale.getPixelForValue(opts.index);
+      if (x < area.left || x > area.right) return;
+      var ctx = chart.ctx;
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = brandLine();
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 4]);
+      ctx.moveTo(x, area.top);
+      ctx.lineTo(x, area.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      var label = opts.label || "";
+      ctx.font = '600 11px "DM Sans", ui-sans-serif, system-ui, sans-serif';
+      ctx.fillStyle = brandLine();
+      ctx.textBaseline = "bottom";
+      var tw = ctx.measureText(label).width;
+      var tx = x + 6;
+      if (tx + tw > area.right - 4) tx = x - tw - 6;
+      ctx.fillText(label, tx, area.top - 4);
+      ctx.restore();
+    },
+  };
+  if (typeof Chart !== "undefined" && Chart.register) Chart.register(fireMarkPlugin);
+
+  function fireIndependenceIndex(result) {
+    var chart = (result && result.chart) || [];
+    if (!result || !result.reachesFire || !chart.length) return -1;
+    for (var i = 0; i < chart.length; i++) {
+      if ((Number(chart[i].corpus) || 0) + 1 >= (Number(chart[i].target) || 0)) return i;
+    }
+    return -1;
+  }
+
+  function fireChartOptions(stacked, result, tfn) {
+    var opts = stacked ? stackedFireOptions() : lineOptions();
+    opts.plugins.legend = { display: false };
+    opts.layout = { padding: { top: 18, right: 10 } };
+    opts.scales.x.title = {
+      display: true,
+      text: tfn("chart_axis_age"),
+      color: ink(),
+      font: { size: 11, weight: "600" },
+      padding: { top: 4 },
+    };
+    var points = (result && result.chart) || [];
+    var already = result && result.reachesFire && result.years === 0;
+    opts.plugins.fireMark = {
+      index: fireIndependenceIndex(result),
+      label: already ? tfn("chart_mark_done") : tfn("chart_mark_fi"),
+    };
+    opts.plugins.tooltip.filter = function (item) {
+      if (item.dataset.borderDash && item.dataset.borderDash.length) return true;
+      return (item.parsed.y || 0) > 1;
+    };
+    opts.plugins.tooltip.footerColor = ink();
+    opts.plugins.tooltip.footerMarginTop = 8;
+    opts.plugins.tooltip.callbacks = {
+      title: function (items) {
+        if (!items.length) return "";
+        var p = points[items[0].dataIndex] || {};
+        var year = new Date().getFullYear() + (Number(p.year) || 0);
+        return tfn("chart_tip_age", { age: p.age, year: year });
+      },
+      label: function (ctx) {
+        return ctx.dataset.label + "  " + window.fmtINR(ctx.parsed.y);
+      },
+      footer: function (items) {
+        if (!items.length) return "";
+        var p = points[items[0].dataIndex] || {};
+        var have = Number(p.corpus) || 0;
+        var need = Number(p.target) || 0;
+        var lines = [
+          tfn("chart_tip_have", { amount: window.fmtINR(have) }),
+          tfn("chart_tip_need", { amount: window.fmtINR(need) }),
+        ];
+        if (have + 1 >= need) lines.push(tfn("chart_tip_independent"));
+        else lines.push(tfn("chart_tip_short", { amount: window.fmtINR(need - have) }));
+        return lines.join("\n");
+      },
+    };
+    return opts;
+  }
+
   function stackedFireOptions() {
     var opts = lineOptions();
     opts.scales.y.stacked = true;
@@ -1022,8 +1114,20 @@
         var labels = this.result.chart.map(function (p) { return String(p.age); });
         var full = !!document.getElementById("fire-pots-chart");
         var sets = full ? this.fullFireSets() : this.homeFireSets();
-        this._chart = upsertLine(el, this._chart, labels, sets, full ? stackedFireOptions() : lineOptions());
+        this._chart = upsertLine(el, this._chart, labels, sets, fireChartOptions(full, this.result, this.t.bind(this)));
         this.drawPots();
+      },
+      fireLegend: function () {
+        var full = !!document.getElementById("fire-pots-chart");
+        var sets = full ? this.fullFireSets() : this.homeFireSets();
+        return sets.map(function (s) {
+          var dash = s.borderDash && s.borderDash.length;
+          return {
+            label: s.label,
+            cls: dash ? "h-0 w-4 border-t-2" : "h-2.5 w-2.5 rounded-sm",
+            swatch: dash ? "border-color:" + s.borderColor : "background:" + s.borderColor,
+          };
+        });
       },
       homeFireSets: function () {
         var sets = [
