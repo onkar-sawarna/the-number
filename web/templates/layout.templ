@@ -15,6 +15,16 @@ templ Layout(p Page) {
 			<meta property="og:title" content={ p.Title + " · the number" }/>
 			<meta property="og:description" content="A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Nothing is stored."/>
 			<meta property="og:type" content="website"/>
+			<meta property="og:url" content={ Canonical(p.Path) }/>
+			<meta property="og:image" content={ OgImageURL() }/>
+			<meta property="og:image:width" content="1200"/>
+			<meta property="og:image:height" content="630"/>
+			<meta property="og:image:alt" content="the number — Financial Independence, Retire Early"/>
+			<meta name="twitter:card" content="summary_large_image"/>
+			<meta name="twitter:title" content={ p.Title + " · the number" }/>
+			<meta name="twitter:description" content="A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Nothing is stored."/>
+			<meta name="twitter:image" content={ OgImageURL() }/>
+			<link rel="canonical" href={ Canonical(p.Path) }/>
 			<link rel="icon" href="/static/favicon.svg" type="image/svg+xml"/>
 			<title>{ p.Title } · the number</title>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -24,7 +34,7 @@ templ Layout(p Page) {
 			<script src="/static/js/theme-boot.js?v=3"></script>
 			<script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
 			<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js" defer></script>
-			<script src="/static/js/i18n.js?v=3" defer></script>
+			<script src="/static/js/i18n.js?v=4" defer></script>
 			<script src="/static/js/calc.js?v=3" defer></script>
 			<script src="/static/js/app.js?v=3" defer></script>
 			<script src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js" defer></script>

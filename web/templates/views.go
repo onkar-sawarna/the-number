@@ -2,6 +2,8 @@ package templates
 
 import "strings"
 
+const SiteOrigin = "https://number.onkarsawarna.dev"
+
 type Page struct {
 	Title    string
 	TitleKey string
@@ -63,4 +65,15 @@ func TabClass(path, href string) string {
 		return base + "bg-brand text-white"
 	}
 	return base + "text-ink/70 hover:bg-black/5 dark:text-zinc-300 dark:hover:bg-white/10"
+}
+
+func Canonical(path string) string {
+	if path == "" || path == "/" {
+		return SiteOrigin + "/"
+	}
+	return SiteOrigin + path
+}
+
+func OgImageURL() string {
+	return SiteOrigin + "/static/img/og.png"
 }

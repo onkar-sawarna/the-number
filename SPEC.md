@@ -31,6 +31,8 @@ Fonts: Fraunces + DM Sans.
 
 templ: do not put `{` in HTML attributes. Use `x-on:click`, not `@click`. Alpine state lives in `web/static/js/app.js`. Load `calc.js` and `app.js` before Alpine (all `defer`).
 
+English copy lives in `web/static/js/i18n.js`. `make generate` writes `web/templates/copy.go` from that file — do not edit `copy.go` by hand. `make og` renders the 1200×630 share card to `web/static/img/og.png`.
+
 Handlers call `internal/calc` and render templates. They must not contain FIRE/SIP/EMI formulas.
 
 ## Routes
