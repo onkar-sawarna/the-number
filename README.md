@@ -6,6 +6,8 @@ A calm personal-finance workshop for Indian savers. Calculate a FIRE corpus (“
 
 There is no login. Calculators and guidance are public; numbers stay in the browser. Typed amounts update maths and charts with no server round-trip.
 
+Live: [https://number.onkarsawarna.dev](https://number.onkarsawarna.dev).
+
 ## Run
 
 ```bash
@@ -27,13 +29,13 @@ Open [http://127.0.0.1:47321](http://127.0.0.1:47321).
 
 ## Deploy (Render, free)
 
-The live host is [Render](https://render.com): Docker web service, **Free** instance, no database.
+The live host is [Render](https://render.com): Docker web service, **Free** instance, no database. The public URL is [https://number.onkarsawarna.dev](https://number.onkarsawarna.dev).
 
 1. Sign in at [dashboard.render.com](https://dashboard.render.com) with GitHub (no card needed for Free).
 2. **New → Blueprint** and select `onkar-sawarna/the-number`, or **New → Web Service**, repo `onkar-sawarna/the-number`, runtime **Docker**, instance **Free**, region **Singapore**.
-3. Deploy. You get a URL like `https://the-number.onrender.com`.
+3. Deploy, then in Render add the custom domain `number.onkarsawarna.dev`. On Namecheap, CNAME host `number` → the `*.onrender.com` hostname Render shows for **this** service.
 
-Free instances sleep after ~15 minutes idle; the first request after that can take 30–60 seconds. Custom domain: in Render, add `number.onkarsawarna.dev`, then on Namecheap a CNAME host `number` → the `*.onrender.com` hostname Render shows.
+Free instances sleep after ~15 minutes idle; the first request after that can take 30–60 seconds. Do not use `the-number.onrender.com` — that hostname is a different app.
 
 Hot reload (optional): `make install` then `air`.
 
