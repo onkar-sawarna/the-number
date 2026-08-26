@@ -65,8 +65,10 @@ func Copy(key string) string {
 		return "Never a ticker"
 	case "hero_cta":
 		return "Try it below"
+	case "home_about_kicker":
+		return "Who built this"
 	case "home_about_body":
-		return "Onkar Sawarna — personal finance, compounding, and making money work for us."
+		return "I have a keen interest in personal finance and compounding — and I’m passionate about making money work for us. That’s why the number exists."
 	case "home_about_page":
 		return "About me"
 	case "about_kicker":
@@ -111,6 +113,10 @@ func Copy(key string) string {
 		return "Parked cash"
 	case "calculate":
 		return "Calculate"
+	case "calculate_working":
+		return "Working…"
+	case "calculate_busy":
+		return "Running the numbers…"
 	case "dirty_hint":
 		return "Inputs changed — calculate to refresh."
 	case "calc_wait_kicker":
@@ -195,6 +201,14 @@ func Copy(key string) string {
 		return "50/30/20 budget"
 	case "title_guidance":
 		return "FIRE sleeves"
+	case "title_404":
+		return "Not found"
+	case "not_found":
+		return "That page isn’t here."
+	case "not_found_body":
+		return "The link is wrong or the page moved. The calculator is still on the home page."
+	case "not_found_home":
+		return "Back home"
 	case "already_indep":
 		return "Already independent on these assumptions."
 	case "never_indep":

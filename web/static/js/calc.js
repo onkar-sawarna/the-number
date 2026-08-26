@@ -429,4 +429,4 @@
     emergency: emergency,
     budget: budget,
   };
-})(window);
+})(typeof window !== "undefined" ? window : globalThis);

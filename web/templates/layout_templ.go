@@ -171,14 +171,22 @@ func Layout(p Page) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><link rel=\"canonical\" href=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templ.Raw(JSONLDHTML()).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link rel=\"canonical\" href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(Canonical(p.Path))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/layout.templ`, Line: 27, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/layout.templ`, Line: 28, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -191,13 +199,13 @@ func Layout(p Page) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/layout.templ`, Line: 29, Col: 19}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/layout.templ`, Line: 30, Col: 19}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" · the number</title><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin=\"\"><link href=\"https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/static/css/app.css?v=4\"><script src=\"/static/js/theme-boot.js?v=3\"></script><script src=\"https://unpkg.com/htmx.org@2.0.4\" defer></script><script src=\"https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js\" defer></script><script src=\"/static/js/i18n.js?v=4\" defer></script><script src=\"/static/js/calc.js?v=3\" defer></script><script src=\"/static/js/app.js?v=3\" defer></script><script src=\"https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js\" defer></script></head><body class=\"min-h-screen bg-paper text-ink font-sans dark:bg-night dark:text-zinc-100\" x-data><div id=\"app-chrome\" class=\"sticky top-0 z-20\"><div class=\"border-b border-brand/25 bg-sky-50/90 px-4 py-1.5 text-center text-[11px] leading-snug text-sky-950 sm:py-2 sm:text-xs sm:leading-relaxed dark:border-sky-900/40 dark:bg-sky-950/30 dark:text-sky-100\">Educational information only, not personalized financial advice. Consult a SEBI-registered investment advisor before investing.</div><header class=\"border-b border-black/5 bg-paper/90 backdrop-blur dark:border-white/10 dark:bg-night/90\"><div class=\"mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2 sm:py-2.5 md:flex-nowrap\"><a href=\"/\" class=\"mr-auto flex min-w-0 shrink items-baseline gap-2\"><span class=\"font-serif text-xl lowercase tracking-tight sm:text-2xl\">the number</span> <span class=\"hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-brand sm:inline\">FIRE</span></a><nav class=\"hidden items-center gap-1 md:flex\" aria-label=\"Primary\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" · the number</title><link rel=\"stylesheet\" href=\"/static/css/app.css?v=7\"><script src=\"/static/js/theme-boot.js?v=3\"></script><script src=\"/static/js/vendor/htmx.min.js\" defer></script><script src=\"/static/js/vendor/chart.umd.min.js\" defer></script><script src=\"/static/js/i18n.js?v=7\" defer></script><script src=\"/static/js/calc.js?v=4\" defer></script><script src=\"/static/js/app.js?v=6\" defer></script><script src=\"/static/js/vendor/alpine.min.js\" defer></script></head><body class=\"min-h-screen bg-paper text-ink font-sans dark:bg-night dark:text-zinc-100\" x-data><div id=\"app-chrome\" class=\"sticky top-0 z-20\"><div class=\"border-b border-brand/25 bg-sky-50/90 px-4 py-1.5 text-center text-[11px] leading-snug text-sky-950 sm:py-2 sm:text-xs sm:leading-relaxed dark:border-sky-900/40 dark:bg-sky-950/30 dark:text-sky-100\">Educational information only, not personalized financial advice. Consult a SEBI-registered investment advisor before investing.</div><header class=\"border-b border-black/5 bg-paper/90 backdrop-blur dark:border-white/10 dark:bg-night/90\"><div class=\"mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2 sm:py-2.5 md:flex-nowrap\"><a href=\"/\" class=\"mr-auto flex min-w-0 shrink items-baseline gap-2\"><span class=\"font-serif text-xl lowercase tracking-tight sm:text-2xl\">the number</span> <span class=\"hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-brand sm:inline\">FIRE</span></a><nav class=\"hidden items-center gap-1 md:flex\" aria-label=\"Primary\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,6 +1,9 @@
 package templates
 
-import "strings"
+import (
+	"encoding/json"
+	"strings"
+)
 
 const SiteOrigin = "https://number.onkarsawarna.dev"
 
@@ -76,4 +79,46 @@ func Canonical(path string) string {
 
 func OgImageURL() string {
 	return SiteOrigin + "/static/img/og.png"
+}
+
+func JSONLDHTML() string {
+	return `<script type="application/ld+json">` + jsonLDDocument() + `</script>`
+}
+
+func jsonLDDocument() string {
+	doc := map[string]any{
+		"@context": "https://schema.org",
+		"@graph": []any{
+			map[string]any{
+				"@type":               "WebApplication",
+				"@id":                 SiteOrigin + "/#app",
+				"name":                "the number",
+				"url":                 SiteOrigin + "/",
+				"description":         "A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Nothing is stored.",
+				"applicationCategory": "FinanceApplication",
+				"operatingSystem":     "Any",
+				"browserRequirements": "Requires JavaScript",
+				"image":               OgImageURL(),
+				"offers":              map[string]any{"@type": "Offer", "price": "0", "priceCurrency": "INR"},
+				"author":              map[string]any{"@id": SiteOrigin + "/#person"},
+			},
+			map[string]any{
+				"@type": "Person",
+				"@id":   SiteOrigin + "/#person",
+				"name":  "Onkar Sawarna",
+				"url":   SiteOrigin + "/about",
+				"sameAs": []string{
+					"https://github.com/onkar-sawarna",
+					"https://www.linkedin.com/in/onkar-sawarna-569615187/",
+					"https://x.com/onkar_sawarna",
+					"https://www.onkarsawarna.dev/",
+				},
+			},
+		},
+	}
+	b, err := json.Marshal(doc)
+	if err != nil {
+		return "{}"
+	}
+	return string(b)
 }

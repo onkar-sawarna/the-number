@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -31,6 +32,29 @@ func (s *Server) Register(e *echo.Echo) {
 
 	e.GET("/guidance", s.guidanceGet)
 	e.POST("/guidance", s.guidancePost)
+
+	fallback := e.HTTPErrorHandler
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		s.httpError(err, c, fallback)
+	}
+}
+
+func (s *Server) httpError(err error, c echo.Context, fallback echo.HTTPErrorHandler) {
+	code := http.StatusInternalServerError
+	var he *echo.HTTPError
+	if errors.As(err, &he) {
+		code = he.Code
+	}
+	if c.Response().Committed {
+		return
+	}
+	if code == http.StatusNotFound {
+		if renderErr := render(c, http.StatusNotFound, templates.NotFound(s.page(c, "Not found", "title_404"))); renderErr != nil {
+			c.Logger().Error(renderErr)
+		}
+		return
+	}
+	fallback(err, c)
 }
 
 func render(c echo.Context, status int, t templ.Component) error {

@@ -1,6 +1,6 @@
 TEMPL ?= go run github.com/a-h/templ/cmd/templ@v0.2.793
 
-.PHONY: generate copy css og run test tidy install
+.PHONY: generate copy css og vendor run test tidy install
 
 copy:
 	python3 scripts/gen_copy.py
@@ -14,11 +14,14 @@ css:
 og:
 	python3 scripts/gen_og.py
 
+vendor:
+	python3 scripts/vendor.py
+
 run: generate
 	PORT=47321 go run ./cmd/server
 
 test:
-	go test ./internal/calc ./internal/ai ./web/templates
+	go test ./internal/calc ./internal/ai ./internal/handlers ./web/templates
 
 tidy:
 	go mod tidy

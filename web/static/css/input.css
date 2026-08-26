@@ -1,3 +1,5 @@
+@import "./fonts.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -93,6 +95,124 @@
     @apply inline-flex min-h-11 items-center justify-center rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-white shadow-glow transition hover:bg-brand-dark active:scale-[0.98];
   }
 
+  .btn-primary:disabled {
+    cursor: wait;
+  }
+
+  .calc-spin {
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 9999px;
+    animation: calc-spin 0.55s linear infinite;
+  }
+
+  .calc-progress {
+    height: 0.28rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: rgba(43, 108, 239, 0.16);
+  }
+
+  html.dark .calc-progress {
+    background: rgba(125, 211, 252, 0.18);
+  }
+
+  .calc-progress-bar {
+    height: 100%;
+    width: 38%;
+    border-radius: 9999px;
+    background: #2b6cef;
+    animation: calc-indeterminate 0.85s ease-in-out infinite;
+  }
+
+  html.dark .calc-progress-bar {
+    background: #7dd3fc;
+  }
+
+  .calc-chart-busy {
+    animation: calc-pulse 0.7s ease-in-out infinite;
+  }
+
+  #calc-result.is-working,
+  #calc-sticky-stat.is-working {
+    position: relative;
+  }
+
+  #calc-result.is-working::before,
+  #calc-sticky-stat.is-working::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 1rem 1rem 0 0;
+    background: linear-gradient(90deg, transparent, #2b6cef 40%, #38bdf8 60%, transparent);
+    animation: calc-scan 0.9s linear infinite;
+  }
+
+  .calc-result-in {
+    animation: calc-reveal 0.45s ease-out;
+  }
+
+  @keyframes calc-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes calc-indeterminate {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(320%);
+    }
+  }
+
+  @keyframes calc-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes calc-scan {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes calc-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .calc-spin,
+    .calc-progress-bar,
+    .calc-chart-busy,
+    .calc-result-in,
+    #calc-result.is-working::before,
+    #calc-sticky-stat.is-working::before {
+      animation: none;
+    }
+  }
+
   .btn-ghost {
     @apply inline-flex min-h-11 items-center justify-center rounded-full border border-black/10 bg-white/60 px-5 py-2.5 text-sm backdrop-blur transition hover:border-brand/40 hover:bg-white dark:border-white/15 dark:bg-white/5 dark:hover:bg-white/10;
   }
@@ -167,6 +287,12 @@
     box-shadow: 0 8px 24px rgba(15, 27, 51, 0.1);
   }
 
+  .about-portrait-wrap.is-teaser {
+    width: 5.75rem;
+    height: 5.75rem;
+    box-shadow: 0 6px 16px rgba(15, 27, 51, 0.08);
+  }
+
   .about-portrait-img {
     width: 100%;
     height: 100%;
@@ -180,6 +306,11 @@
     .about-portrait-wrap {
       width: 8.5rem;
       height: 8.5rem;
+    }
+
+    .about-portrait-wrap.is-teaser {
+      width: 4.75rem;
+      height: 4.75rem;
     }
   }
 

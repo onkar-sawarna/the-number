@@ -27,7 +27,8 @@ templ Landing(p Page) {
 							<p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand">@Tx("try_kicker")</p>
 							@RegionToggle()
 						</div>
-						<p class="mt-2 font-serif text-3xl tracking-tight sm:text-4xl" x-show="!revealed" x-cloak>@Tx("calc_wait_hook")</p>
+						<p class="mt-2 font-serif text-3xl tracking-tight sm:text-4xl" x-show="!revealed && !working" x-cloak>@Tx("calc_wait_hook")</p>
+						<p class="mt-2 font-serif text-3xl tracking-tight sm:text-4xl" x-show="working && !revealed" x-cloak>@Tx("calculate_busy")</p>
 						<p class="mt-2 font-serif text-4xl tabular-nums tracking-tight sm:text-5xl" x-show="revealed" x-cloak x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookLine()"></p>
 						<p class="mt-2 text-sm text-ink/60 dark:text-zinc-400" x-show="revealed" x-cloak x-bind:class="dirty ? 'opacity-50' : ''" x-text="hookSub()"></p>
 						<div class="mt-4 flex flex-wrap gap-2">
@@ -49,7 +50,7 @@ templ Landing(p Page) {
 					<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-show="!revealed" x-cloak>
 						@calcWaitBody()
 					</div>
-					<div id="calc-result" x-show="revealed" x-cloak>
+					<div id="calc-result" x-show="revealed" x-cloak x-bind:class="resultRevealClass()">
 						<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-bind:class="dirty ? 'opacity-50' : ''">
 							<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
 							<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl" x-text="fmtINR(result.fireNumber)"></p>
@@ -77,15 +78,15 @@ templ Landing(p Page) {
 							<div class="mt-4 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 dark:bg-zinc-900">
 								<canvas id="fire-chart"></canvas>
 							</div>
+							<div class="mt-5 flex flex-col gap-3 border-t border-black/5 pt-5 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
+								<div class="min-w-0">
+									<p class="text-sm font-medium text-ink dark:text-zinc-100">@Tx("want_detail")</p>
+									<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isIN()">@Tx("want_detail_in")</p>
+									<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("want_detail_us")</p>
+								</div>
+								<a href="/calculators/fire" class="btn-primary w-full shrink-0 sm:w-auto" x-bind:href="fullFireHref()">@Tx("open_full")</a>
+							</div>
 						</div>
-					</div>
-					<div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-						<div class="min-w-0">
-							<p class="text-sm font-medium text-ink dark:text-zinc-100">@Tx("want_detail")</p>
-							<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isIN()">@Tx("want_detail_in")</p>
-							<p class="mt-1 text-sm leading-relaxed text-ink/65 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("want_detail_us")</p>
-						</div>
-						<a href="/calculators/fire" class="btn-primary w-full shrink-0 sm:w-auto">@Tx("open_full")</a>
 					</div>
 				</div>
 			</form>
@@ -101,9 +102,19 @@ templ Landing(p Page) {
 				<a href="/guidance" class="preset-chip inline-flex items-center">@Tx("tab_sleeves")</a>
 			</div>
 		</nav>
-		<section class="mt-8 flex flex-col gap-3 border-t border-black/5 pt-6 sm:mt-10 sm:flex-row sm:items-center sm:justify-between dark:border-white/10" aria-labelledby="about-maker">
-			<p id="about-maker" class="max-w-2xl text-base leading-relaxed text-ink/70 dark:text-zinc-300">@Tx("home_about_body")</p>
-			<a href="/about" class="btn-ghost w-full shrink-0 sm:w-auto">@Tx("home_about_page")</a>
+		<section class="mt-10 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:mt-12 sm:p-8 dark:border-brand/30 dark:bg-white/5" aria-labelledby="about-maker">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("home_about_kicker")</p>
+			<div class="mt-4 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+				<div class="about-portrait-wrap is-teaser shrink-0">
+					<img class="about-portrait-img" src="/static/img/onkar-176.jpg" srcset="/static/img/onkar-176.jpg 176w, /static/img/onkar-352.jpg 352w" sizes="5.75rem" width="92" height="92" alt="Onkar Sawarna"/>
+				</div>
+				<div class="min-w-0 flex-1">
+					<h2 id="about-maker" class="font-serif text-2xl tracking-tight sm:text-3xl">Onkar Sawarna</h2>
+					<p class="mt-1 text-sm font-medium text-brand">@Tx("about_role")</p>
+					<p class="mt-3 max-w-2xl text-base leading-relaxed text-ink/70 dark:text-zinc-300">@Tx("home_about_body")</p>
+				</div>
+				<a href="/about" class="btn-primary w-full shrink-0 sm:w-auto">@Tx("home_about_page")</a>
+			</div>
 		</section>
 	}
 }
@@ -139,8 +150,15 @@ templ playRange(labelKey, model string, money bool) {
 
 templ calcButton() {
 	<div>
-		<button type="button" class="btn-primary w-full sm:w-auto" x-bind:class="dirty ? '' : 'opacity-80'" x-on:click="recalc(true)">@Tx("calculate")</button>
-		<p class="mt-1.5 text-xs font-medium text-brand" x-show="dirty" x-cloak>@Tx("dirty_hint")</p>
+		<button type="button" class="btn-primary w-full sm:w-auto" x-bind:disabled="working" x-bind:aria-busy="working" x-bind:class="working || dirty ? '' : 'opacity-80'" x-on:click="recalc(true)">
+			<span class="inline-flex items-center justify-center gap-2">
+				<span class="calc-spin" x-show="working" x-cloak aria-hidden="true"></span>
+				<span x-show="!working">@Tx("calculate")</span>
+				<span x-show="working" x-cloak>@Tx("calculate_working")</span>
+			</span>
+		</button>
+		<p class="mt-1.5 text-xs font-medium text-brand" x-show="working" x-cloak>@Tx("calculate_busy")</p>
+		<p class="mt-1.5 text-xs font-medium text-brand" x-show="dirty && !working" x-cloak>@Tx("dirty_hint")</p>
 	</div>
 }
 
@@ -156,7 +174,10 @@ templ calcWaitBody() {
 		<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_2")</span></li>
 		<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_3")</span></li>
 	</ul>
-	<div class="mt-5 overflow-hidden rounded-xl bg-paper px-2 pt-5 dark:bg-zinc-900">
+	<div class="calc-progress mt-5" x-show="working" x-cloak>
+		<div class="calc-progress-bar"></div>
+	</div>
+	<div class="mt-5 overflow-hidden rounded-xl bg-paper px-2 pt-5 dark:bg-zinc-900" x-bind:class="working ? 'calc-chart-busy' : ''">
 		<svg viewBox="0 0 360 150" class="h-36 w-full text-brand sm:h-48 dark:text-sky" fill="none" aria-hidden="true">
 			<path d="M8 118 C 48 108, 72 72, 108 78 S 168 128, 210 96 S 282 36, 352 48 L 352 142 L 8 142 Z" fill="currentColor" fill-opacity="0.16"></path>
 			<path d="M8 118 C 48 108, 72 72, 108 78 S 168 128, 210 96 S 282 36, 352 48" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"></path>
@@ -239,6 +260,17 @@ templ Disclaimer(p Page) {
 			<h2 class="mt-10 font-serif text-2xl">@Tx("disc_h5")</h2>
 			<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("disc_p5")</p>
 			<p class="mt-8 text-sm text-ink/60 dark:text-zinc-400">Not registered investment advice. For educational purposes only.</p>
+		</article>
+	}
+}
+
+templ NotFound(p Page) {
+	@Layout(p) {
+		<article class="mx-auto max-w-xl text-center">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("title_404")</p>
+			<h1 class="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">@Tx("not_found")</h1>
+			<p class="mt-4 text-base leading-relaxed text-ink/70 dark:text-zinc-300">@Tx("not_found_body")</p>
+			<a href="/" class="btn-primary mt-8 inline-flex">@Tx("not_found_home")</a>
 		</article>
 	}
 }

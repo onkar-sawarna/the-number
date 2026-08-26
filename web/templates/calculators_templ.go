@@ -481,7 +481,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -736,7 +736,7 @@ func SIPPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -891,7 +891,7 @@ func EMIPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1070,7 +1070,7 @@ func EmergencyPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1221,7 +1221,7 @@ func BudgetPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-result\" class=\"scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1328,7 +1328,7 @@ func mobileStickyStat(labelKey, expr, subExpr string) templ.Component {
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-sticky-stat\" class=\"sticky z-10 col-span-full -mx-4 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-night/95 lg:hidden\" style=\"top: var(--app-header-h, 5.5rem);\" x-show=\"revealed\" x-cloak><p class=\"text-[10px] font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"calc-sticky-stat\" class=\"sticky z-10 col-span-full -mx-4 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-night/95 lg:hidden\" style=\"top: var(--app-header-h, 5.5rem);\" x-show=\"revealed\" x-cloak x-bind:class=\"working ? &#39;is-working&#39; : &#39;&#39;\"><p class=\"text-[10px] font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

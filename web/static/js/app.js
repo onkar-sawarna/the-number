@@ -44,13 +44,37 @@
     return { size: isNarrow() ? 10 : 11 };
   }
 
+  var chartAnimateMs = 0;
+
+  function prefersReducedMotion() {
+    try {
+      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function motionOpts() {
+    if (!chartAnimateMs) return false;
+    return { duration: chartAnimateMs, easing: "easeOutQuart" };
+  }
+
+  function withChartMotion(fn) {
+    chartAnimateMs = prefersReducedMotion() ? 0 : 780;
+    try {
+      fn();
+    } finally {
+      chartAnimateMs = 0;
+    }
+  }
+
   function lineOptions() {
     var narrow = isNarrow();
     applyChartTheme();
     return {
       responsive: true,
       maintainAspectRatio: false,
-      animation: false,
+      animation: motionOpts(),
       color: ink(),
       interaction: { mode: "index", intersect: false },
       elements: { line: { borderWidth: 3 }, point: { radius: narrow ? 0 : 2, hoverRadius: 5 } },
@@ -161,22 +185,63 @@
       this.recalc(scroll);
     };
     ctl.revealed = false;
+    ctl.working = false;
+    ctl.justCalculated = false;
+    ctl._calcTimer = 0;
+    ctl._holdDraw = false;
+    ctl.resultRevealClass = function () {
+      var c = [];
+      if (this.working) c.push("is-working");
+      if (this.justCalculated) c.push("calc-result-in");
+      return c.join(" ");
+    };
     var recalc = ctl.recalc;
     ctl.recalc = function (scroll) {
       this.dirty = false;
-      recalc.call(this);
       if (scroll) {
-        this.revealed = true;
-        var self = this;
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            if (typeof self.draw === "function") self.draw();
-            scrollToResult();
-          });
-        });
+        runCalculate(this, recalc);
+        return;
       }
+      recalc.call(this);
     };
     return ctl;
+  }
+
+  function runCalculate(self, inner) {
+    if (self.working) return;
+    if (self._calcTimer) {
+      clearTimeout(self._calcTimer);
+      self._calcTimer = 0;
+    }
+    self.working = true;
+    var first = !self.revealed;
+    var wait = prefersReducedMotion() ? 0 : 480;
+    var finish = function () {
+      self._calcTimer = 0;
+      self._holdDraw = true;
+      inner.call(self);
+      self._holdDraw = false;
+      self.working = false;
+      self.revealed = true;
+      self.justCalculated = first;
+      if (first && !prefersReducedMotion()) {
+        setTimeout(function () {
+          self.justCalculated = false;
+        }, 500);
+      } else {
+        self.justCalculated = false;
+      }
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          withChartMotion(function () {
+            if (typeof self.draw === "function") self.draw();
+          });
+          scrollToResult();
+        });
+      });
+    };
+    if (wait === 0) finish();
+    else self._calcTimer = setTimeout(finish, wait);
   }
 
   function scrollToResult() {
@@ -203,6 +268,7 @@
   }
 
   function scheduleDraw(self) {
+    if (self._holdDraw) return;
     if (self._raf) return;
     self._raf = requestAnimationFrame(function () {
       self._raf = 0;
@@ -375,9 +441,21 @@
       _chart: null,
       _potsChart: null,
       init: function () {
-        this.applyRegion(currentRegion(), false);
+        var handed = this.overlayFireQuery();
+        if (!handed) this.applyRegion(currentRegion(), false);
         this.recalc();
         bindRegion(this);
+        if (handed) {
+          this.revealed = true;
+          var self = this;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              withChartMotion(function () {
+                if (typeof self.draw === "function") self.draw();
+              });
+            });
+          });
+        }
       },
       isIN: function () {
         return this.region !== "us";
@@ -486,6 +564,84 @@
           region: this.region || currentRegion(),
         };
       },
+      fullFireHref: function () {
+        function n(v) {
+          return String(Math.round(Number(v) || 0));
+        }
+        var p = new URLSearchParams();
+        p.set("age", n(this.age));
+        p.set("expenses", n(this.annualExpenses));
+        p.set("parked", n(this.currentSavings));
+        p.set("monthly", n(this.monthlySavings));
+        p.set("step", n(this.stepUp));
+        p.set("ret", n(this.expectedReturn));
+        p.set("inf", n(this.inflation));
+        p.set("swr", String(Number(this.swr) || 0));
+        p.set("nps", n(this.npsNow));
+        p.set("npsm", n(this.npsMonthly));
+        p.set("ppf", n(this.ppfNow));
+        p.set("ppfm", n(this.ppfMonthly));
+        p.set("epf", n(this.epfNow));
+        p.set("epfm", n(this.epfMonthly));
+        p.set("fx", n(this.foreignNow));
+        p.set("fxm", n(this.foreignMonthly));
+        p.set("stopped", n(this.stoppedNow));
+        p.set("gold", n(this.goldNow));
+        p.set("goldm", n(this.goldMonthly));
+        p.set("jew", n(this.jewelleryNow));
+        p.set("tier", String(Number(this.cityTier) || 1));
+        p.set("housing", this.housing === "own" || this.housing === "buy" ? this.housing : "rent");
+        p.set("region", this.region === "us" ? "us" : "in");
+        return "/calculators/fire?" + p.toString();
+      },
+      overlayFireQuery: function () {
+        var q = new URLSearchParams(location.search);
+        var hasRegion = q.get("region") === "us" || q.get("region") === "in";
+        var hasNum = q.has("age") || q.has("expenses") || q.has("parked") || q.has("monthly") || q.has("step");
+        if (!hasRegion && !hasNum) return false;
+        var region = hasRegion ? (q.get("region") === "us" ? "us" : "in") : currentRegion();
+        if (hasRegion) {
+          document.cookie = "region=" + region + "; path=/; max-age=31536000; samesite=lax";
+          document.documentElement.setAttribute("data-region", region);
+        }
+        this.applyRegion(region, true);
+        var self = this;
+        function take(key, field, min, max) {
+          if (!q.has(key)) return;
+          var n = parseFloat(String(q.get(key) || "").replace(/,/g, ""));
+          if (!isFinite(n) || n < 0) return;
+          if (n < min) n = min;
+          if (n > max) n = max;
+          self[field] = n;
+        }
+        take("age", "age", 18, 70);
+        take("expenses", "annualExpenses", 0, this.rangeMax("annualExpenses"));
+        take("parked", "currentSavings", 0, this.rangeMax("currentSavings"));
+        take("monthly", "monthlySavings", 0, this.rangeMax("monthlySavings"));
+        take("step", "stepUp", 0, 20);
+        take("ret", "expectedReturn", 0, 20);
+        take("inf", "inflation", 0, 15);
+        take("swr", "swr", 2, 8);
+        take("nps", "npsNow", 0, this.rangeMax("npsNow"));
+        take("npsm", "npsMonthly", 0, this.rangeMax("npsMonthly"));
+        take("ppf", "ppfNow", 0, this.rangeMax("ppfNow"));
+        take("ppfm", "ppfMonthly", 0, this.rangeMax("ppfMonthly"));
+        take("epf", "epfNow", 0, this.rangeMax("epfNow"));
+        take("epfm", "epfMonthly", 0, this.rangeMax("epfMonthly"));
+        take("fx", "foreignNow", 0, this.rangeMax("foreignNow"));
+        take("fxm", "foreignMonthly", 0, this.rangeMax("foreignMonthly"));
+        take("stopped", "stoppedNow", 0, this.rangeMax("stoppedNow"));
+        take("gold", "goldNow", 0, this.rangeMax("goldNow"));
+        take("goldm", "goldMonthly", 0, this.rangeMax("goldMonthly"));
+        take("jew", "jewelleryNow", 0, this.rangeMax("jewelleryNow"));
+        take("tier", "cityTier", 1, 3);
+        this.cityTier = Math.round(Number(this.cityTier) || 1);
+        if (this.cityTier < 1) this.cityTier = 1;
+        if (this.cityTier > 3) this.cityTier = 3;
+        var housing = q.get("housing");
+        if (housing === "own" || housing === "rent" || housing === "buy") this.housing = housing;
+        return hasNum;
+      },
       applyPreset: function (name) {
         this.applyRegion(this.region, true);
         if (this.region === "us") {
@@ -506,7 +662,7 @@
             this.currentSavings = 80000;
             this.monthlySavings = 2500;
           }
-          this.recalc();
+          this.recalc(true);
           return;
         }
         this.npsNow = 0;
@@ -545,7 +701,7 @@
         this.expectedReturn = 12;
         this.inflation = 6;
         this.swr = 3.5;
-        this.recalc();
+        this.recalc(true);
       },
       recalc: function () {
         this.result = Calc.fire(this.fireInput());
@@ -965,7 +1121,7 @@
         var barOpts = {
           responsive: true,
           maintainAspectRatio: false,
-          animation: false,
+          animation: motionOpts(),
           plugins: {
             legend: { labels: { color: ink(), boxWidth: 10, font: { size: isNarrow() ? 11 : 13, weight: "500" } } },
             tooltip: {
@@ -987,7 +1143,7 @@
         if (this._chart) {
           this._chart.data = data;
           this._chart.options = barOpts;
-          this._chart.update("none");
+          this._chart.update(chartAnimateMs ? undefined : "none");
           return;
         }
         this._chart = new Chart(el, { type: "bar", data: data, options: barOpts });

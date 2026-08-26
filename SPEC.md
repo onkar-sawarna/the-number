@@ -18,20 +18,19 @@ Calculators and guidance are public. There is no account.
 | Language | Go 1.22+ |
 | HTTP | Echo v4 |
 | HTML | templ v0.2.793 |
-| Partial updates | HTMX 2 (CDN) |
-| Client reactivity | Alpine.js 3 (CDN) |
+| Partial updates | HTMX 2.0.4 (`web/static/js/vendor/htmx.min.js`) |
+| Client reactivity | Alpine.js 3.14.8 (`web/static/js/vendor/alpine.min.js`) |
 | CSS | Tailwind CSS 3.4 CLI (`darkMode: 'class'`), scan `.templ` |
-| Charts | Chart.js 4 (CDN) |
+| Charts | Chart.js 4.4.6 (`web/static/js/vendor/chart.umd.min.js`) |
+| Fonts | DM Sans + Fraunces latin woff2 (`web/static/fonts/`, `fonts.css`) |
 | DB | none |
 | Module | `github.com/thenumber/app` |
 
-CDNs: htmx 2.0.4, alpinejs 3.14.8, chart.js 4.4.6.
-
-Fonts: Fraunces + DM Sans.
+Scripts and fonts are vendored. `make vendor` re-downloads them (`scripts/vendor.py`). Do not load Alpine, HTMX, Chart.js, or Google Fonts from a CDN at runtime.
 
 templ: do not put `{` in HTML attributes. Use `x-on:click`, not `@click`. Alpine state lives in `web/static/js/app.js`. Load `calc.js` and `app.js` before Alpine (all `defer`).
 
-English copy lives in `web/static/js/i18n.js`. `make generate` writes `web/templates/copy.go` from that file — do not edit `copy.go` by hand. `make og` renders the 1200×630 share card to `web/static/img/og.png`.
+English copy lives in `web/static/js/i18n.js`. `make generate` writes `web/templates/copy.go` from that file — do not edit `copy.go` by hand. `make og` renders the 1200×630 share card to `web/static/img/og.png`. Layout JSON-LD is a `WebApplication` + `Person` graph (`JSONLDHTML()`); do not put the email address in structured data.
 
 Handlers call `internal/calc` and render templates. They must not contain FIRE/SIP/EMI formulas.
 
@@ -43,9 +42,12 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | GET | `/about` | Who built this; link to the blog |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |
-| GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate |
+| GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate. FIRE accepts the current playground inputs as a query string from home |
 | GET/POST | `/guidance` | Questionnaire / HTMX fragment |
 | GET | `/static/*` | `web/static` |
+| GET | `/robots.txt` | Allow crawlers; points at sitemap |
+| GET | `/sitemap.xml` | Public pages only |
+| GET | any other path | HTML 404 in the same layout |
 
 Bind `0.0.0.0:$PORT`, default **47321**.
 
@@ -55,7 +57,7 @@ No accounts. Nothing is written except optional cookies: theme (`theme=dark|ligh
 
 ## Calculation rules
 
-Implemented in Go and identically in `web/static/js/calc.js`.
+Implemented in Go and identically in `web/static/js/calc.js`. `go test ./internal/calc` runs the same fixtures through both (`parity_test.go`); skip only if `node` is missing.
 
 ### Currency
 
@@ -137,7 +139,7 @@ Sleeves sum to 100. Categories only.
 
 ## HTMX vs Alpine
 
-- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for results and charts, dark toggle.
+- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** carries the playground fields as a query string.
 - **HTMX:** guidance POST.
 
 Do not POST on every keystroke.

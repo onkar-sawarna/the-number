@@ -20,6 +20,8 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Static("/static", "web/static")
+	e.File("/robots.txt", "web/static/robots.txt")
+	e.File("/sitemap.xml", "web/static/sitemap.xml")
 
 	handlers.New().Register(e)
 
