@@ -40,6 +40,7 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | --- | --- | --- |
 | GET | `/` | Landing |
 | GET | `/about` | Who built this; link to the blog |
+| GET | `/crossing` | What the crossing is; jewellery is out; it is not FIRE |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |
 | GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate. FIRE accepts the current playground inputs as a query string from home |
@@ -93,7 +94,13 @@ Lean 0.5× lifestyle + house, Regular = total, Fat 2× lifestyle + house.
 
 **World pots:** parked + gold funds + jewellery + retirement account (reuses the NPS fields, grows at expected return) + invested (already invested + monthly contributions). No EPF, PPF, or separate foreign-stock pot. Defaults: expenses $60k, parked $80k, monthly $2.5k, return 8%, inflation 3%, SWR 4%.
 
-Monthly contributions add to the matching pot. Optional yearly SIP step-up raises every monthly pot by that % after each completed year (PPF capped at ₹1.5L/year). Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting corpus ≥ today’s number.
+Monthly contributions add to the matching pot. Optional yearly SIP step-up raises every monthly pot by that % after each completed year (PPF capped at ₹1.5L/year). Inflation lifts expenses and the house add-on. Years-to-FIRE: monthly loop, max 80 years. Already FI if starting spendable corpus ≥ today’s number.
+
+The **crossing** is the first completed year where spendable pots earn more than you contribute that year (growth = end − start − contributions; jewellery is kept, so it is ignored). Contributions match the monthly adds in the FIRE loop. Crossing is usually before FIRE. No monthly in and a stash already counts as crossed; no monthly in and nothing saved has no crossing. Durable explainer: `/crossing`.
+
+After Calculate, **what moves the year** re-runs FIRE with (1) ₹5,000 / $100 extra monthly SIP, (2) 1% lower expected return, (3) buy vs rent the house. **Salary-optional** re-runs with 40% less going in, half going in, and 24 months of zero deposits then resume (`ContribScale`, `PauseMonths`). The share card is a 1200×630 PNG of the FI year and crossing year — never the corpus.
+
+**Mixed household:** optional India + elsewhere pots. Educational FX default ₹84 per $1 (editable). India primary: dollar parked / monthly / invested / retirement convert to rupees and fold into parked and invested SIPs. World primary: rupee parked, NPS, EPF, PPF, gold, jewellery convert to dollars; PPF still capped at ₹1.5L/year before the convert. Not a live FX feed.
 
 Chart: yearly snapshots until ~FIRE+5 years (min 20, max 50; 40 if never).
 
@@ -139,7 +146,7 @@ Sleeves sum to 100. Categories only.
 
 ## HTMX vs Alpine
 
-- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** carries the playground fields as a query string.
+- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** carries the playground fields as a query string. FIRE results include year-moves, salary-optional scenarios, and a downloadable/shareable year card. Mixed household pots live on the full FIRE page.
 - **HTMX:** guidance POST.
 
 Do not POST on every keystroke.

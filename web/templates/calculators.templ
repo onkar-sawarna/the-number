@@ -86,6 +86,31 @@ templ FIREPage(p Page) {
 					<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("jew_head")</p>
 					@moneyRange("jewellery_now", "jew_label", "jewelleryNow")
 					<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400" x-text="jewelleryCopy()"></p>
+					<div>
+						<button type="button" class="risk-card w-full text-left" x-bind:class="mixed ? 'is-on' : ''" x-on:click="mixed = !mixed; recalc()">
+							<span class="block text-sm font-medium">@Tx("mixed_toggle")</span>
+							<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400">@Tx("mixed_sub")</span>
+						</button>
+					</div>
+					<div x-show="mixed" x-cloak class="space-y-3">
+						@labeledRange("fx_rate", "mixed_fx", "fxINRPerUSD", "50", "120", "1")
+						<div x-show="isIN()">
+							<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("mixed_abroad")</p>
+							@moneyPairUSD("usd_parked", "mixed_usd_parked", "usdParked", "usd_monthly", "mixed_usd_monthly", "usdMonthly")
+							@moneyPairUSD("usd_stopped", "mixed_usd_stopped", "usdStopped", "usd_retire", "mixed_usd_retire", "usdRetire")
+							<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400">@Tx("mixed_note_in")</p>
+						</div>
+						<div x-show="isUS()" x-cloak>
+							<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("mixed_india")</p>
+							@moneyRange("india_parked", "mixed_in_parked", "indiaParked")
+							@moneyPair("india_nps_now", "mixed_in_nps", "indiaNpsNow", "india_nps_mo", "mixed_in_nps_mo", "indiaNpsMonthly")
+							@moneyPair("epf_now_mx", "epf_now", "epfNow", "epf_mo_mx", "epf_mo", "epfMonthly")
+							@moneyPair("ppf_now_mx", "ppf_now", "ppfNow", "ppf_mo_mx", "ppf_mo", "ppfMonthly")
+							@moneyRange("india_gold", "mixed_in_gold", "indiaGold")
+							@moneyRange("india_jew", "mixed_in_jew", "indiaJew")
+							<p class="text-xs leading-relaxed text-ink/50 dark:text-zinc-400">@Tx("mixed_note_us")</p>
+						</div>
+					</div>
 					<div x-show="isIN()">
 						<p class="text-xs font-semibold uppercase tracking-[0.18em] text-brand">@Tx("nps_head")</p>
 						@moneyPair("nps_now", "nps_now", "npsNow", "nps_monthly", "nps_mo", "npsMonthly")
@@ -114,6 +139,7 @@ templ FIREPage(p Page) {
 					@calcWait()
 					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]" x-show="revealed" x-cloak x-bind:class="resultRevealClass()">
 						@deskHeadline("number_today", "fmtINR(result.fireNumber)", "yearsCopy()")
+						<p class="mt-2 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="crossingCopy()"></p>
 						<p class="mt-1 hidden text-sm font-medium text-ink dark:text-zinc-100 lg:block" x-bind:class="dirty ? 'opacity-50' : ''" x-text="numberLaterCopy()"></p>
 						<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
 							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
@@ -167,6 +193,7 @@ templ FIREPage(p Page) {
 								<canvas id="fire-pots-chart"></canvas>
 							</div>
 						</div>
+						@fireResultExtras()
 					</div>
 				</div>
 			</form>
@@ -428,6 +455,17 @@ templ moneyPair(nowName, nowLabelKey, nowModel, monthName, monthLabelKey, monthM
 	</div>
 }
 
+templ moneyPairUSD(nowName, nowLabelKey, nowModel, monthName, monthLabelKey, monthModel string) {
+	<div class="grid grid-cols-2 gap-2 sm:gap-3">
+		<div class="min-w-0">
+			@moneyRangeUSD(nowName, nowLabelKey, nowModel)
+		</div>
+		<div class="min-w-0">
+			@moneyRangeUSD(monthName, monthLabelKey, monthModel)
+		</div>
+	</div>
+}
+
 templ moneyRange(name, labelKey, model string) {
 	<label class="block text-sm">
 		<span class="mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400">
@@ -438,6 +476,20 @@ templ moneyRange(name, labelKey, model string) {
 	</label>
 }
 
+templ moneyRangeUSD(name, labelKey, model string) {
+	<label class="block text-sm">
+		<span class="mb-1 flex items-center justify-between gap-3 text-ink/60 dark:text-zinc-400">
+			<span class="min-w-0">@Tx(labelKey)</span>
+			<span class="shrink-0 font-serif tabular-nums text-ink dark:text-zinc-100" x-text={ "fmtUSD(" + model + ")" }></span>
+		</span>
+		@moneyTextUSD(name, model)
+	</label>
+}
+
 templ moneyText(name, model string) {
 		<input type="text" inputmode="text" autocomplete="off" name={ name } x-bind:placeholder="moneyHint()" x-effect={ "if (_moneyFocus !== '" + model + "') $el.value = moneyBox('" + model + "')" } x-on:focus={ "_moneyFocus = '" + model + "'; $event.target.select()" } x-on:input.stop="" x-on:blur={ "commitMoney('" + model + "', $event)" } x-on:keydown.enter.prevent={ "commitMoney('" + model + "', $event); $event.target.blur()" } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
+}
+
+templ moneyTextUSD(name, model string) {
+		<input type="text" inputmode="text" autocomplete="off" name={ name } x-bind:placeholder="t('money_hint_us')" x-effect={ "if (_moneyFocus !== '" + model + "') $el.value = moneyBox('" + model + "')" } x-on:focus={ "_moneyFocus = '" + model + "'; $event.target.select()" } x-on:input.stop="" x-on:blur={ "commitMoney('" + model + "', $event)" } x-on:keydown.enter.prevent={ "commitMoney('" + model + "', $event); $event.target.blur()" } class="mt-1 w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 tabular-nums dark:border-white/10 dark:bg-white/5"/>
 }

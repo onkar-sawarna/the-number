@@ -8,10 +8,18 @@ import (
 const SiteOrigin = "https://number.onkarsawarna.dev"
 
 type Page struct {
-	Title    string
-	TitleKey string
-	Dark     bool
-	Path     string
+	Title       string
+	TitleKey    string
+	Description string
+	Dark        bool
+	Path        string
+}
+
+func (p Page) MetaDescription() string {
+	if strings.TrimSpace(p.Description) != "" {
+		return p.Description
+	}
+	return "FIRE is Financial Independence, Retire Early — a corpus that can cover your expenses without a salary. Know the number, see the year you could stop. No login, no fund pitch."
 }
 
 type SleeveVM struct {
@@ -121,4 +129,23 @@ func jsonLDDocument() string {
 		return "{}"
 	}
 	return string(b)
+}
+
+func JSONLDCrossingHTML() string {
+	doc := map[string]any{
+		"@context":    "https://schema.org",
+		"@type":       "Article",
+		"@id":         SiteOrigin + "/crossing#article",
+		"headline":    "The crossing",
+		"name":        "The crossing",
+		"description": "The crossing is the first year your spendable pots earn more than you add. It is not FIRE. Jewellery you keep is out.",
+		"url":         SiteOrigin + "/crossing",
+		"isPartOf":    map[string]any{"@id": SiteOrigin + "/#app"},
+		"author":      map[string]any{"@id": SiteOrigin + "/#person"},
+	}
+	b, err := json.Marshal(doc)
+	if err != nil {
+		return ""
+	}
+	return `<script type="application/ld+json">` + string(b) + `</script>`
 }

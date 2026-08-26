@@ -31,12 +31,12 @@ type FIREInput struct {
 	Inflation      float64 `json:"inflation"`
 	SWR            float64 `json:"swr"`
 
-	NPSNow        float64 `json:"nps_now"`
-	NPSMonthly    float64 `json:"nps_monthly"`
-	PPFNow        float64 `json:"ppf_now"`
-	PPFMonthly    float64 `json:"ppf_monthly"`
-	EPFNow        float64 `json:"epf_now"`
-	EPFMonthly    float64 `json:"epf_monthly"`
+	NPSNow         float64 `json:"nps_now"`
+	NPSMonthly     float64 `json:"nps_monthly"`
+	PPFNow         float64 `json:"ppf_now"`
+	PPFMonthly     float64 `json:"ppf_monthly"`
+	EPFNow         float64 `json:"epf_now"`
+	EPFMonthly     float64 `json:"epf_monthly"`
 	ForeignNow     float64 `json:"foreign_now"`
 	ForeignMonthly float64 `json:"foreign_monthly"`
 	StoppedNow     float64 `json:"stopped_now"`
@@ -48,7 +48,25 @@ type FIREInput struct {
 	CityTier int    `json:"city_tier"` // 1, 2, or 3
 	Housing  string `json:"housing"`   // own | rent | buy
 	Region   string `json:"region"`    // in | us
+
+	// Mixed household: fold the other currency into the primary at FxINRPerUSD (educational).
+	Mixed           bool    `json:"mixed"`
+	FxINRPerUSD     float64 `json:"fx_inr_per_usd"`
+	UsdParked       float64 `json:"usd_parked"`
+	UsdMonthly      float64 `json:"usd_monthly"`
+	UsdStopped      float64 `json:"usd_stopped"`
+	UsdRetire       float64 `json:"usd_retire"`
+	IndiaParked     float64 `json:"india_parked"`
+	IndiaNPSNow     float64 `json:"india_nps_now"`
+	IndiaNPSMonthly float64 `json:"india_nps_monthly"`
+	IndiaGold       float64 `json:"india_gold"`
+	IndiaJew        float64 `json:"india_jew"`
+
+	ContribScale float64 `json:"contrib_scale"` // 0 = 1 (full). 0.6 = 40% pay cut.
+	PauseMonths  int     `json:"pause_months"`  // first N months, deposits are 0
 }
+
+const DefaultFxINRPerUSD = 84.0
 
 type firePots struct {
 	general, nps, ppf, epf, foreign, stopped, gold, jewellery float64
@@ -84,17 +102,20 @@ type FIREOutput struct {
 	Lifestyle       float64     `json:"lifestyle"`
 	LifestyleLater  float64     `json:"lifestyle_later"`
 	HouseAdd        float64     `json:"house_add"`
-	StartingCorpus float64     `json:"starting_corpus"`
-	Jewellery      float64     `json:"jewellery"`
-	JewelleryLater float64     `json:"jewellery_later"`
-	MonthlyIn      float64     `json:"monthly_in"`
-	Lean           float64     `json:"lean"`
-	Regular        float64     `json:"regular"`
-	Fat            float64     `json:"fat"`
-	Years          float64     `json:"years"`
-	ReachesFire    bool        `json:"reaches_fire"`
-	FIAge          int         `json:"fi_age"`
-	Chart          []FIREPoint `json:"chart"`
+	StartingCorpus  float64     `json:"starting_corpus"`
+	Jewellery       float64     `json:"jewellery"`
+	JewelleryLater  float64     `json:"jewellery_later"`
+	MonthlyIn       float64     `json:"monthly_in"`
+	Lean            float64     `json:"lean"`
+	Regular         float64     `json:"regular"`
+	Fat             float64     `json:"fat"`
+	Years           float64     `json:"years"`
+	ReachesFire     bool        `json:"reaches_fire"`
+	FIAge           int         `json:"fi_age"`
+	CrossingYears   float64     `json:"crossing_years"`
+	ReachesCrossing bool        `json:"reaches_crossing"`
+	CrossingAge     int         `json:"crossing_age"`
+	Chart           []FIREPoint `json:"chart"`
 }
 
 func DefaultFIRE() FIREInput {
@@ -154,12 +175,12 @@ func FIRENumber(annualExpenses, swr float64) float64 {
 
 func startPots(in FIREInput) firePots {
 	return firePots{
-		general: nz(in.CurrentSavings),
-		nps:     nz(in.NPSNow),
-		ppf:     nz(in.PPFNow),
-		epf:     nz(in.EPFNow),
-		foreign: nz(in.ForeignNow),
-		stopped: nz(in.StoppedNow),
+		general:   nz(in.CurrentSavings),
+		nps:       nz(in.NPSNow),
+		ppf:       nz(in.PPFNow),
+		epf:       nz(in.EPFNow),
+		foreign:   nz(in.ForeignNow),
+		stopped:   nz(in.StoppedNow),
 		gold:      nz(in.GoldNow),
 		jewellery: nz(in.JewelleryNow),
 	}
@@ -193,19 +214,81 @@ func ppfAt(in FIREInput, month int) float64 {
 	return v
 }
 
+func FxRate(in FIREInput) float64 {
+	if in.FxINRPerUSD > 0 {
+		return in.FxINRPerUSD
+	}
+	return DefaultFxINRPerUSD
+}
+
+func applyMixed(in FIREInput) FIREInput {
+	if !in.Mixed {
+		return in
+	}
+	fx := FxRate(in)
+	if IsUSD(in.Region) {
+		if in.PPFMonthly > 12_500 {
+			in.PPFMonthly = 12_500
+		}
+		in.CurrentSavings += nz(in.IndiaParked) / fx
+		in.NPSNow += nz(in.IndiaNPSNow) / fx
+		in.NPSMonthly += nz(in.IndiaNPSMonthly) / fx
+		in.PPFNow = nz(in.PPFNow) / fx
+		in.PPFMonthly = nz(in.PPFMonthly) / fx
+		in.EPFNow = nz(in.EPFNow) / fx
+		in.EPFMonthly = nz(in.EPFMonthly) / fx
+		in.GoldNow += nz(in.IndiaGold) / fx
+		in.JewelleryNow += nz(in.IndiaJew) / fx
+	} else {
+		in.CurrentSavings += nz(in.UsdParked) * fx
+		in.MonthlySavings += nz(in.UsdMonthly) * fx
+		in.StoppedNow += (nz(in.UsdStopped) + nz(in.UsdRetire)) * fx
+	}
+	in.Mixed = false
+	in.UsdParked, in.UsdMonthly, in.UsdStopped, in.UsdRetire = 0, 0, 0, 0
+	in.IndiaParked, in.IndiaNPSNow, in.IndiaNPSMonthly, in.IndiaGold, in.IndiaJew = 0, 0, 0, 0, 0
+	return in
+}
+
+func depositScale(in FIREInput, month int) float64 {
+	if in.PauseMonths > 0 && month <= in.PauseMonths {
+		return 0
+	}
+	if in.ContribScale > 0 && in.ContribScale != 1 {
+		return in.ContribScale
+	}
+	return 1
+}
+
+func addDeposit(base float64, in FIREInput, month int) float64 {
+	return steppedMonthly(base, in.StepUp, month) * depositScale(in, month)
+}
+
 func stepPots(p firePots, in FIREInput, month int, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold float64) firePots {
+	s := depositScale(in, month)
 	p.general = p.general * (1 + rmLiq)
-	p.nps = p.nps*(1+rmNPS) + steppedMonthly(in.NPSMonthly, in.StepUp, month)
-	p.ppf = p.ppf*(1+rmPPF) + ppfAt(in, month)
-	p.epf = p.epf*(1+rmEPF) + steppedMonthly(in.EPFMonthly, in.StepUp, month)
-	p.foreign = p.foreign*(1+rmEq) + steppedMonthly(in.ForeignMonthly, in.StepUp, month)
-	p.stopped = p.stopped*(1+rmEq) + steppedMonthly(in.MonthlySavings, in.StepUp, month)
-	p.gold = p.gold*(1+rmGold) + steppedMonthly(in.GoldMonthly, in.StepUp, month)
+	p.nps = p.nps*(1+rmNPS) + addDeposit(in.NPSMonthly, in, month)
+	p.ppf = p.ppf*(1+rmPPF) + ppfAt(in, month)*s
+	p.epf = p.epf*(1+rmEPF) + addDeposit(in.EPFMonthly, in, month)
+	p.foreign = p.foreign*(1+rmEq) + addDeposit(in.ForeignMonthly, in, month)
+	p.stopped = p.stopped*(1+rmEq) + addDeposit(in.MonthlySavings, in, month)
+	p.gold = p.gold*(1+rmGold) + addDeposit(in.GoldMonthly, in, month)
 	p.jewellery = p.jewellery * (1 + rmGold)
 	return p
 }
 
+func contribAt(in FIREInput, month int) float64 {
+	s := depositScale(in, month)
+	return addDeposit(in.NPSMonthly, in, month) +
+		ppfAt(in, month)*s +
+		addDeposit(in.EPFMonthly, in, month) +
+		addDeposit(in.ForeignMonthly, in, month) +
+		addDeposit(in.MonthlySavings, in, month) +
+		addDeposit(in.GoldMonthly, in, month)
+}
+
 func FIRE(in FIREInput) FIREOutput {
+	in = applyMixed(in)
 	swr := in.SWR
 	if swr <= 0 {
 		swr = 4
@@ -221,20 +304,33 @@ func FIRE(in FIREInput) FIREOutput {
 		Lifestyle:       lifestyle,
 		LifestyleLater:  lifestyle * grow,
 		HouseAdd:        house,
-		StartingCorpus: pots.total(),
-		Jewellery:      pots.jewellery,
-		JewelleryLater: pots.jewellery,
-		MonthlyIn:      monthlyIn(in),
-		Lean:           lifestyle*0.5 + house,
-		Regular:        fireNum,
-		Fat:            lifestyle*2 + house,
-		FIAge:          in.Age,
+		StartingCorpus:  pots.total(),
+		Jewellery:       pots.jewellery,
+		JewelleryLater:  pots.jewellery,
+		MonthlyIn:       monthlyIn(in),
+		Lean:            lifestyle*0.5 + house,
+		Regular:         fireNum,
+		Fat:             lifestyle*2 + house,
+		FIAge:           in.Age,
+		CrossingAge:     in.Age,
 	}
 
+	fireSet := false
 	if pots.spendable() >= fireNum {
 		out.Years = 0
 		out.ReachesFire = true
-		out.Chart = fireChart(in, swr, 0, true)
+		out.JewelleryLater = pots.jewellery
+		fireSet = true
+	}
+	if monthlyIn(in) <= 0 {
+		if pots.spendable() > 0 {
+			out.ReachesCrossing = true
+			out.CrossingYears = 0
+			out.CrossingAge = in.Age
+		}
+	}
+	if fireSet && out.ReachesCrossing {
+		out.Chart = fireChart(in, swr, out.Years, out.ReachesFire)
 		return out
 	}
 
@@ -250,25 +346,45 @@ func FIRE(in FIREInput) FIREOutput {
 	im := monthlyEffective(in.Inflation)
 	expenses := in.AnnualExpenses
 	houseNow := house
+	startYear := pots.spendable()
+	contribYear := 0.0
 	const maxMonths = 80 * 12
 	for m := 1; m <= maxMonths; m++ {
+		contribYear += contribAt(in, m)
 		pots = stepPots(pots, in, m, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold)
 		expenses = expenses * (1 + im)
 		houseNow = houseNow * (1 + im)
-		target := FIRENumber(expenses, swr) + houseNow
-		if pots.spendable() >= target {
-			out.ReachesFire = true
-			out.Years = float64(m) / 12.0
-			out.FIAge = in.Age + int(math.Round(out.Years))
-			out.JewelleryLater = pots.jewellery
-			out.Chart = fireChart(in, swr, out.Years, true)
-			return out
+		if !fireSet {
+			target := FIRENumber(expenses, swr) + houseNow
+			if pots.spendable() >= target {
+				fireSet = true
+				out.ReachesFire = true
+				out.Years = float64(m) / 12.0
+				out.FIAge = in.Age + int(math.Round(out.Years))
+				out.JewelleryLater = pots.jewellery
+			}
+		}
+		if m%12 == 0 && !out.ReachesCrossing {
+			end := pots.spendable()
+			growth := end - startYear - contribYear
+			if contribYear > 0 && growth+1e-6 >= contribYear {
+				out.ReachesCrossing = true
+				out.CrossingYears = float64(m) / 12.0
+				out.CrossingAge = in.Age + int(math.Round(out.CrossingYears))
+			}
+			startYear = end
+			contribYear = 0
+		}
+		if fireSet && out.ReachesCrossing {
+			break
 		}
 	}
-	out.ReachesFire = false
-	out.Years = 0
-	out.JewelleryLater = pots.jewellery
-	out.Chart = fireChart(in, swr, 0, false)
+	if !fireSet {
+		out.ReachesFire = false
+		out.Years = 0
+		out.JewelleryLater = pots.jewellery
+	}
+	out.Chart = fireChart(in, swr, out.Years, out.ReachesFire)
 	return out
 }
 

@@ -11,9 +11,9 @@ templ Layout(p Page) {
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 			<meta name="theme-color" content="#eef3fb"/>
-			<meta name="description" content="FIRE is Financial Independence, Retire Early — a corpus that can cover your expenses without a salary. Know the number, see the year you could stop. No login, no fund pitch."/>
+			<meta name="description" content={ p.MetaDescription() }/>
 			<meta property="og:title" content={ p.Title + " · the number" }/>
-			<meta property="og:description" content="A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Nothing is stored."/>
+			<meta property="og:description" content={ p.MetaDescription() }/>
 			<meta property="og:type" content="website"/>
 			<meta property="og:url" content={ Canonical(p.Path) }/>
 			<meta property="og:image" content={ OgImageURL() }/>
@@ -22,7 +22,7 @@ templ Layout(p Page) {
 			<meta property="og:image:alt" content="the number — Financial Independence, Retire Early"/>
 			<meta name="twitter:card" content="summary_large_image"/>
 			<meta name="twitter:title" content={ p.Title + " · the number" }/>
-			<meta name="twitter:description" content="A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Nothing is stored."/>
+			<meta name="twitter:description" content={ p.MetaDescription() }/>
 			<meta name="twitter:image" content={ OgImageURL() }/>
 			@templ.Raw(JSONLDHTML())
 			<link rel="canonical" href={ Canonical(p.Path) }/>
@@ -32,9 +32,9 @@ templ Layout(p Page) {
 			<script src="/static/js/theme-boot.js?v=3"></script>
 			<script src="/static/js/vendor/htmx.min.js" defer></script>
 			<script src="/static/js/vendor/chart.umd.min.js" defer></script>
-			<script src="/static/js/i18n.js?v=7" defer></script>
-			<script src="/static/js/calc.js?v=4" defer></script>
-			<script src="/static/js/app.js?v=6" defer></script>
+			<script src="/static/js/i18n.js?v=9" defer></script>
+			<script src="/static/js/calc.js?v=6" defer></script>
+			<script src="/static/js/app.js?v=8" defer></script>
 			<script src="/static/js/vendor/alpine.min.js" defer></script>
 		</head>
 		<body class="min-h-screen bg-paper text-ink font-sans dark:bg-night dark:text-zinc-100" x-data>
@@ -142,6 +142,9 @@ templ JumpRow(path string) {
 			<a href="/" class="btn-ghost">@Tx("jump_home")</a>
 			if !IsCalc(path) {
 				<a href="/calculators/fire" class="btn-ghost">@Tx("jump_fire")</a>
+			}
+			if path != "/crossing" {
+				<a href="/crossing" class="btn-ghost">@Tx("jump_crossing")</a>
 			}
 			if path != "/about" {
 				<a href="/about" class="btn-ghost">@Tx("jump_about")</a>

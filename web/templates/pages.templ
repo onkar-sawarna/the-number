@@ -55,6 +55,7 @@ templ Landing(p Page) {
 							<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
 							<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl" x-text="fmtINR(result.fireNumber)"></p>
 							<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text="yearsCopy()"></p>
+							<p class="mt-0.5 text-sm text-ink/70 dark:text-zinc-300" x-text="crossingCopy()"></p>
 							<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-text="numberLaterCopy()"></p>
 							<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
 								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
@@ -78,6 +79,7 @@ templ Landing(p Page) {
 							<div class="mt-4 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 dark:bg-zinc-900">
 								<canvas id="fire-chart"></canvas>
 							</div>
+							@fireResultExtras()
 							<div class="mt-5 flex flex-col gap-3 border-t border-black/5 pt-5 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
 								<div class="min-w-0">
 									<p class="text-sm font-medium text-ink dark:text-zinc-100">@Tx("want_detail")</p>
@@ -100,6 +102,7 @@ templ Landing(p Page) {
 				<a href="/calculators/emergency" class="preset-chip inline-flex items-center">@Tx("tab_emergency")</a>
 				<a href="/calculators/budget" class="preset-chip inline-flex items-center">@Tx("tab_budget")</a>
 				<a href="/guidance" class="preset-chip inline-flex items-center">@Tx("tab_sleeves")</a>
+				<a href="/crossing" class="preset-chip inline-flex items-center">@Tx("jump_crossing")</a>
 			</div>
 		</nav>
 		<section class="mt-10 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:mt-12 sm:p-8 dark:border-brand/30 dark:bg-white/5" aria-labelledby="about-maker">
@@ -172,7 +175,8 @@ templ calcWaitBody() {
 	<ul class="mt-4 space-y-2 text-sm text-ink/70 dark:text-zinc-300">
 		<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_1")</span></li>
 		<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_2")</span></li>
-		<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_3")</span></li>
+				<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_3")</span></li>
+				<li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span><span>@Tx("calc_wait_4")</span></li>
 	</ul>
 	<div class="calc-progress mt-5" x-show="working" x-cloak>
 		<div class="calc-progress-bar"></div>
@@ -232,6 +236,7 @@ templ About(p Page) {
 				<section>
 					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_compound")</h2>
 					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_compound")</p>
+					<p class="mt-3"><a href="/crossing" class="font-medium text-brand hover:underline">@Tx("crossing_learn")</a></p>
 				</section>
 				<section>
 					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_number")</h2>
@@ -239,7 +244,72 @@ templ About(p Page) {
 				</section>
 				<div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
 					<a href="/calculators/fire" class="btn-primary w-full sm:w-auto">@Tx("jump_fire")</a>
+					<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("jump_crossing")</a>
 					<a href="https://www.onkarsawarna.dev/" class="btn-ghost w-full sm:w-auto" rel="noopener noreferrer">@Tx("visit_blog")</a>
+				</div>
+			</div>
+		</article>
+	}
+}
+
+templ fireResultExtras() {
+	<div class="mt-5 space-y-5 border-t border-black/5 pt-5 dark:border-white/10" x-bind:class="dirty ? 'opacity-50' : ''">
+		<div>
+			<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("moves_kicker")</p>
+			<ul class="mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200">
+				<template x-for="row in moveRows()" x-bind:key="row.kind">
+					<li x-text="row.line"></li>
+				</template>
+			</ul>
+		</div>
+		<div>
+			<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("optional_kicker")</p>
+			<p class="mt-1 text-sm text-ink/55 dark:text-zinc-400">@Tx("optional_sub")</p>
+			<ul class="mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200">
+				<template x-for="row in optionRows()" x-bind:key="row.kind">
+					<li x-text="row.line"></li>
+				</template>
+			</ul>
+		</div>
+		<div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+			<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="shareYear()">@Tx("share_year")</button>
+			<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("crossing_learn")</a>
+		</div>
+		<canvas id="fire-share-card" width="1200" height="630" class="hidden" aria-hidden="true"></canvas>
+	</div>
+}
+
+templ Crossing(p Page) {
+	@Layout(p) {
+		@templ.Raw(JSONLDCrossingHTML())
+		<article class="mx-auto max-w-3xl">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("crossing_kicker")</p>
+			<h1 class="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">@Tx("crossing_h1")</h1>
+			<p class="mt-4 max-w-2xl font-serif text-xl leading-snug text-ink/80 dark:text-zinc-200">@Tx("crossing_lede")</p>
+			<div class="mt-10 space-y-8 rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5">
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("crossing_h_what")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("crossing_p_what")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("crossing_h_measure")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("crossing_p_measure")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("crossing_h_jew")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("crossing_p_jew")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("crossing_h_not")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("crossing_p_not")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("crossing_h_use")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("crossing_p_use")</p>
+				</section>
+				<div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
+					<a href="/calculators/fire" class="btn-primary w-full sm:w-auto">@Tx("crossing_cta")</a>
+					<a href="/about" class="btn-ghost w-full sm:w-auto">@Tx("jump_about")</a>
 				</div>
 			</div>
 		</article>

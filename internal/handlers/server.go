@@ -21,6 +21,7 @@ func New() *Server {
 func (s *Server) Register(e *echo.Echo) {
 	e.GET("/", s.landing)
 	e.GET("/about", s.about)
+	e.GET("/crossing", s.crossing)
 	e.GET("/disclaimer", s.disclaimer)
 	e.POST("/theme", s.theme)
 
@@ -83,6 +84,12 @@ func (s *Server) landing(c echo.Context) error {
 
 func (s *Server) about(c echo.Context) error {
 	return render(c, http.StatusOK, templates.About(s.page(c, "About", "title_about")))
+}
+
+func (s *Server) crossing(c echo.Context) error {
+	p := s.page(c, "The crossing", "title_crossing")
+	p.Description = templates.Copy("crossing_meta")
+	return render(c, http.StatusOK, templates.Crossing(p))
 }
 
 func (s *Server) disclaimer(c echo.Context) error {

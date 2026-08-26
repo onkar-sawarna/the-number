@@ -134,14 +134,68 @@
     return v;
   }
 
+  var DEFAULT_FX = 84;
+
+  function fxRate(input) {
+    var r = Number(input.fxINRPerUSD);
+    return r > 0 ? r : DEFAULT_FX;
+  }
+
+  function copyFire(input) {
+    var o = {};
+    for (var k in input) {
+      if (Object.prototype.hasOwnProperty.call(input, k)) o[k] = input[k];
+    }
+    return o;
+  }
+
+  function applyMixed(input) {
+    input = copyFire(input);
+    if (!input.mixed) return input;
+    var fx = fxRate(input);
+    if (isUSD(input.region)) {
+      if (nz(input.ppfMonthly) > 12500) input.ppfMonthly = 12500;
+      input.currentSavings = nz(input.currentSavings) + nz(input.indiaParked) / fx;
+      input.npsNow = nz(input.npsNow) + nz(input.indiaNpsNow) / fx;
+      input.npsMonthly = nz(input.npsMonthly) + nz(input.indiaNpsMonthly) / fx;
+      input.ppfNow = nz(input.ppfNow) / fx;
+      input.ppfMonthly = nz(input.ppfMonthly) / fx;
+      input.epfNow = nz(input.epfNow) / fx;
+      input.epfMonthly = nz(input.epfMonthly) / fx;
+      input.goldNow = nz(input.goldNow) + nz(input.indiaGold) / fx;
+      input.jewelleryNow = nz(input.jewelleryNow) + nz(input.indiaJew) / fx;
+    } else {
+      input.currentSavings = nz(input.currentSavings) + nz(input.usdParked) * fx;
+      input.monthlySavings = nz(input.monthlySavings) + nz(input.usdMonthly) * fx;
+      input.stoppedNow = nz(input.stoppedNow) + (nz(input.usdStopped) + nz(input.usdRetire)) * fx;
+    }
+    input.mixed = false;
+    input.usdParked = input.usdMonthly = input.usdStopped = input.usdRetire = 0;
+    input.indiaParked = input.indiaNpsNow = input.indiaNpsMonthly = input.indiaGold = input.indiaJew = 0;
+    return input;
+  }
+
+  function depositScale(input, month) {
+    var pause = Number(input.pauseMonths) || 0;
+    if (pause > 0 && month <= pause) return 0;
+    var s = Number(input.contribScale);
+    if (s > 0 && s !== 1) return s;
+    return 1;
+  }
+
+  function addDeposit(base, input, month) {
+    return steppedMonthly(base, input.stepUp, month) * depositScale(input, month);
+  }
+
   function stepPots(p, input, month, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold) {
+    var s = depositScale(input, month);
     p.general = p.general * (1 + rmLiq);
-    p.nps = p.nps * (1 + rmNPS) + steppedMonthly(input.npsMonthly, input.stepUp, month);
-    p.ppf = p.ppf * (1 + rmPPF) + ppfAt(input, month);
-    p.epf = p.epf * (1 + rmEPF) + steppedMonthly(input.epfMonthly, input.stepUp, month);
-    p.foreign = p.foreign * (1 + rmEq) + steppedMonthly(input.foreignMonthly, input.stepUp, month);
-    p.stopped = p.stopped * (1 + rmEq) + steppedMonthly(input.monthlySavings, input.stepUp, month);
-    p.gold = p.gold * (1 + rmGold) + steppedMonthly(input.goldMonthly, input.stepUp, month);
+    p.nps = p.nps * (1 + rmNPS) + addDeposit(input.npsMonthly, input, month);
+    p.ppf = p.ppf * (1 + rmPPF) + ppfAt(input, month) * s;
+    p.epf = p.epf * (1 + rmEPF) + addDeposit(input.epfMonthly, input, month);
+    p.foreign = p.foreign * (1 + rmEq) + addDeposit(input.foreignMonthly, input, month);
+    p.stopped = p.stopped * (1 + rmEq) + addDeposit(input.monthlySavings, input, month);
+    p.gold = p.gold * (1 + rmGold) + addDeposit(input.goldMonthly, input, month);
     p.jewellery = p.jewellery * (1 + rmGold);
     return p;
   }
@@ -189,7 +243,62 @@
     return pts;
   }
 
+  function contribAt(input, month) {
+    var s = depositScale(input, month);
+    return (
+      addDeposit(input.npsMonthly, input, month) +
+      ppfAt(input, month) * s +
+      addDeposit(input.epfMonthly, input, month) +
+      addDeposit(input.foreignMonthly, input, month) +
+      addDeposit(input.monthlySavings, input, month) +
+      addDeposit(input.goldMonthly, input, month)
+    );
+  }
+
+  function sipBump(region) {
+    return isUSD(region) ? 100 : 5000;
+  }
+
+  function shiftFrom(base, out, kind, amount) {
+    var s = { kind: kind, amount: amount, years: out.years, reaches: out.reachesFire, fiAge: out.fiAge, deltaYears: 0 };
+    if (base.reachesFire && out.reachesFire) s.deltaYears = out.years - base.years;
+    else if (base.reachesFire && !out.reachesFire) s.deltaYears = 80;
+    else if (!base.reachesFire && out.reachesFire) s.deltaYears = out.years - 80;
+    return s;
+  }
+
+  function yearMoves(input) {
+    var base = fire(input);
+    var sip = copyFire(input);
+    sip.monthlySavings = nz(sip.monthlySavings) + sipBump(sip.region);
+    var ret = copyFire(input);
+    ret.expectedReturn = Math.max(0, nz(ret.expectedReturn) - 1);
+    var house = copyFire(input);
+    house.housing = house.housing === "buy" ? "rent" : "buy";
+    return [
+      shiftFrom(base, fire(sip), "sip", sipBump(input.region)),
+      shiftFrom(base, fire(ret), "return", 1),
+      shiftFrom(base, fire(house), "house", 0),
+    ];
+  }
+
+  function yearOptions(input) {
+    var base = fire(input);
+    var cut = copyFire(input);
+    cut.contribScale = 0.6;
+    var part = copyFire(input);
+    part.contribScale = 0.5;
+    var pause = copyFire(input);
+    pause.pauseMonths = 24;
+    return [
+      shiftFrom(base, fire(cut), "paycut", 40),
+      shiftFrom(base, fire(part), "parttime", 50),
+      shiftFrom(base, fire(pause), "pause", 24),
+    ];
+  }
+
   function fire(input) {
+    input = applyMixed(copyFire(input));
     var swr = input.swr > 0 ? input.swr : 4;
     var lifestyle = fireNumber(nz(input.annualExpenses), swr);
     var house = houseAdd(input);
@@ -212,11 +321,24 @@
       years: 0,
       reachesFire: false,
       fiAge: input.age,
+      crossingYears: 0,
+      reachesCrossing: false,
+      crossingAge: input.age,
       chart: [],
     };
+    var fireSet = false;
     if (potsSpendable(pots) >= n) {
       out.reachesFire = true;
-      out.chart = fireChart(input, swr, 0, true);
+      out.jewelleryLater = pots.jewellery;
+      fireSet = true;
+    }
+    if (monthlyIn(input) <= 0 && potsSpendable(pots) > 0) {
+      out.reachesCrossing = true;
+      out.crossingYears = 0;
+      out.crossingAge = input.age;
+    }
+    if (fireSet && out.reachesCrossing) {
+      out.chart = fireChart(input, swr, out.years, out.reachesFire);
       return out;
     }
     var rmLiq = monthlyEffective(RATE_LIQUID);
@@ -228,22 +350,42 @@
     var im = monthlyEffective(input.inflation);
     var expenses = nz(input.annualExpenses);
     var houseNow = house;
+    var startYear = potsSpendable(pots);
+    var contribYear = 0;
     var maxMonths = 80 * 12;
     for (var m = 1; m <= maxMonths; m++) {
+      contribYear += contribAt(input, m);
       pots = stepPots(pots, input, m, rmLiq, rmEq, rmNPS, rmPPF, rmEPF, rmGold);
       expenses = expenses * (1 + im);
       houseNow = houseNow * (1 + im);
-      if (potsSpendable(pots) >= fireNumber(expenses, swr) + houseNow) {
-        out.reachesFire = true;
-        out.years = m / 12;
-        out.fiAge = input.age + Math.round(out.years);
-        out.jewelleryLater = pots.jewellery;
-        out.chart = fireChart(input, swr, out.years, true);
-        return out;
+      if (!fireSet) {
+        if (potsSpendable(pots) >= fireNumber(expenses, swr) + houseNow) {
+          fireSet = true;
+          out.reachesFire = true;
+          out.years = m / 12;
+          out.fiAge = input.age + Math.round(out.years);
+          out.jewelleryLater = pots.jewellery;
+        }
       }
+      if (m % 12 === 0 && !out.reachesCrossing) {
+        var end = potsSpendable(pots);
+        var growth = end - startYear - contribYear;
+        if (contribYear > 0 && growth + 1e-6 >= contribYear) {
+          out.reachesCrossing = true;
+          out.crossingYears = m / 12;
+          out.crossingAge = input.age + Math.round(out.crossingYears);
+        }
+        startYear = end;
+        contribYear = 0;
+      }
+      if (fireSet && out.reachesCrossing) break;
     }
-    out.jewelleryLater = pots.jewellery;
-    out.chart = fireChart(input, swr, 0, false);
+    if (!fireSet) {
+      out.reachesFire = false;
+      out.years = 0;
+      out.jewelleryLater = pots.jewellery;
+    }
+    out.chart = fireChart(input, swr, out.years, out.reachesFire);
     return out;
   }
 
@@ -424,6 +566,9 @@
     formatUSD: formatUSD,
     formatMoney: formatMoney,
     fire: fire,
+    yearMoves: yearMoves,
+    yearOptions: yearOptions,
+    sipBump: sipBump,
     sip: sip,
     emi: emi,
     emergency: emergency,

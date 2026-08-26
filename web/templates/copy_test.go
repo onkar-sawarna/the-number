@@ -30,6 +30,23 @@ func TestCanonical(t *testing.T) {
 	if Canonical("/about") != "https://number.onkarsawarna.dev/about" {
 		t.Fatalf("about canonical: %s", Canonical("/about"))
 	}
+	if Canonical("/crossing") != "https://number.onkarsawarna.dev/crossing" {
+		t.Fatalf("crossing canonical: %s", Canonical("/crossing"))
+	}
+}
+
+func TestCrossingMeta(t *testing.T) {
+	p := Page{Title: "The crossing", TitleKey: "title_crossing", Description: Copy("crossing_meta"), Path: "/crossing"}
+	if !strings.Contains(p.MetaDescription(), "spendable pots") {
+		t.Fatalf("crossing meta: %s", p.MetaDescription())
+	}
+	html := JSONLDCrossingHTML()
+	if !strings.Contains(html, `"@type":"Article"`) || !strings.Contains(html, "/crossing") {
+		t.Fatalf("crossing JSON-LD: %s", html)
+	}
+	if strings.Contains(html, "onkarsawarna@gmail.com") {
+		t.Fatal("email must not appear in crossing JSON-LD")
+	}
 }
 
 func TestJSONLDWebAppAndPerson(t *testing.T) {

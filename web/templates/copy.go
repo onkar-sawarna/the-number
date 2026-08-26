@@ -131,6 +131,8 @@ func Copy(key string) string {
 		return "Corpus versus that number, year by year"
 	case "calc_wait_3":
 		return "Each pot today next to what it becomes later"
+	case "calc_wait_4":
+		return "What moves the year, and whether a pay cut still lands"
 	case "number_today":
 		return "The number today"
 	case "number_later":
@@ -215,6 +217,148 @@ func Copy(key string) string {
 		return "Does not reach independence within 80 years."
 	case "fi_line":
 		return "Financially independent in {year}, around age {age}"
+	case "crossing_already":
+		return "The pots already earn more in a year than you add."
+	case "crossing_this":
+		return "This year the pots earn more than you add."
+	case "crossing_before":
+		return "From {year}, around age {age}, the pots earn more than you add — still before independence."
+	case "crossing_line":
+		return "From {year}, around age {age}, the pots earn more than you add."
+	case "crossing_never":
+		return "In 80 years the pots never earn more than you add."
+	case "crossing_none":
+		return "You are not adding, so there is no crossing yet."
+	case "crossing_learn":
+		return "What the crossing is"
+	case "title_crossing":
+		return "The crossing"
+	case "crossing_meta":
+		return "The crossing is the first year your spendable pots earn more than you add. It is not FIRE. Jewellery you keep is out. How the number measures it."
+	case "crossing_kicker":
+		return "Compounding"
+	case "crossing_h1":
+		return "The crossing"
+	case "crossing_lede":
+		return "The first year your pots earn more than you put in. Not independence — the moment the corpus starts working harder than you do."
+	case "crossing_h_what":
+		return "What it is"
+	case "crossing_p_what":
+		return "For a stretch, almost everything you accumulate is money you transferred. Then a year arrives when growth — interest, mark-to-market, whatever the pots returned — is larger than that year’s contributions. That is the crossing. After it, time does more of the lifting. Before it, you do."
+	case "crossing_h_measure":
+		return "How this site measures it"
+	case "crossing_p_measure":
+		return "Each completed year, spendable pots at the end minus spendable pots at the start minus what you contributed that year. If growth is at least what you added, that year is the crossing. Contributions are the same monthly adds as the FIRE loop, including SIP step-up and the PPF cap. We look once a year, not every month, so a noisy month does not count."
+	case "crossing_h_jew":
+		return "Why jewellery is out"
+	case "crossing_p_jew":
+		return "Jewellery grows in net worth at a gold-like rate. You keep it. It does not pay rent. So the crossing, like years-to-FIRE, uses spendable pots only — parked cash, SIPs, gold funds you could sell, NPS, EPF, PPF, foreign stocks. A family stash of gold that will not be sold does not pull the crossing forward."
+	case "crossing_h_not":
+		return "Why it is not FIRE"
+	case "crossing_p_not":
+		return "FIRE is when spendable pots can cover a year’s expenses at your withdrawal rate, plus a house if you still need to buy one. The crossing can arrive a decade earlier. You might still be paying rent and still contributing. The pots have only started to out-earn you. Independence is later, when the corpus covers the life — not when it first beats the SIP."
+	case "crossing_h_use":
+		return "What to do with it"
+	case "crossing_p_use":
+		return "Treat it as a checkpoint, not a product pitch. If the crossing is far, the levers are the same as FIRE: more going in, a rate you can live with, expenses that do not sprint. If it is close, you are already in the part of the curve that feels slow until it is not. Type your pots on the calculator. See both years. Nothing is stored."
+	case "crossing_cta":
+		return "See your crossing year"
+	case "jump_crossing":
+		return "The crossing"
+	case "moves_kicker":
+		return "What moves the year"
+	case "moves_sip":
+		return "{amount} more SIP → {shift}"
+	case "moves_return":
+		return "1% lower return → {shift}"
+	case "moves_house_buy":
+		return "Buy the house → {shift}"
+	case "moves_house_rent":
+		return "Keep renting (no house in the number) → {shift}"
+	case "shift_earlier_y":
+		return "{n} years earlier"
+	case "shift_earlier_m":
+		return "{n} months earlier"
+	case "shift_later_y":
+		return "+{n} years"
+	case "shift_later_m":
+		return "{n} months later"
+	case "shift_same":
+		return "no change on these assumptions"
+	case "shift_never":
+		return "does not reach in 80 years"
+	case "shift_reaches":
+		return "reaches, from never"
+	case "shift_already":
+		return "already independent either way"
+	case "optional_kicker":
+		return "Salary optional — still land?"
+	case "optional_sub":
+		return "Same pots. Less going in. Educational, not a resignation plan."
+	case "optional_paycut":
+		return "40% less going in → {line}"
+	case "optional_part":
+		return "Half going in (part-time) → {line}"
+	case "optional_pause":
+		return "Two years off, then resume → {line}"
+	case "optional_fi":
+		return "independent in {year}, around age {age}"
+	case "optional_never":
+		return "does not reach in 80 years"
+	case "optional_already":
+		return "still already independent"
+	case "optional_none":
+		return "You are not adding, so a pay cut does not move the year."
+	case "share_year":
+		return "Share this year"
+	case "share_download":
+		return "Download the card"
+	case "share_fi":
+		return "Independent in {year}. Crossing in {cross}."
+	case "share_fi_only":
+		return "Independent in {year}."
+	case "share_cross_only":
+		return "Crossing in {year}."
+	case "share_already":
+		return "Already independent."
+	case "share_never":
+		return "Not independent in 80 years."
+	case "share_kicker":
+		return "the number"
+	case "share_footer":
+		return "Educational, not advice · number.onkarsawarna.dev"
+	case "mixed_toggle":
+		return "India + elsewhere"
+	case "mixed_sub":
+		return "Salary in one currency, parents’ pots in the other. Folded at an educational rupee-per-dollar rate — not a live FX feed."
+	case "mixed_fx":
+		return "₹ per $1 (educational)"
+	case "mixed_abroad":
+		return "Elsewhere · $"
+	case "mixed_india":
+		return "India pots · ₹"
+	case "mixed_usd_parked":
+		return "Parked abroad till now"
+	case "mixed_usd_monthly":
+		return "Monthly abroad"
+	case "mixed_usd_stopped":
+		return "Invested abroad till now"
+	case "mixed_usd_retire":
+		return "Retirement abroad till now"
+	case "mixed_in_parked":
+		return "Parked in India till now"
+	case "mixed_in_nps":
+		return "NPS till now"
+	case "mixed_in_nps_mo":
+		return "NPS monthly"
+	case "mixed_in_gold":
+		return "Gold in India till now"
+	case "mixed_in_jew":
+		return "Jewellery in India"
+	case "mixed_note_in":
+		return "Dollar amounts convert to rupees at the rate above, then follow the India pots (abroad invested and retirement grow with SIPs at expected return)."
+	case "mixed_note_us":
+		return "Rupee amounts convert to dollars at the rate above. EPF, PPF, and NPS keep their educational Indian rates after conversion. PPF is still capped at ₹1.5L/year before the convert."
 	case "already_there":
 		return "Already there."
 	case "not_80":

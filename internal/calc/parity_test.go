@@ -187,7 +187,11 @@ func fireFixtures() []FIREInput {
 
 	already := FIREInput{Age: 40, AnnualExpenses: 1_200_000, CurrentSavings: 40_000_000, ExpectedReturn: 8, Inflation: 6, SWR: 4, Housing: "rent"}
 	never := FIREInput{Age: 30, AnnualExpenses: 1_200_000, ExpectedReturn: 0, Inflation: 0, SWR: 4, Housing: "rent"}
-	return []FIREInput{DefaultFIRE(), buy, us, pots, already, never}
+	mixed := DefaultFIRE()
+	mixed.Mixed = true
+	mixed.UsdParked = 10_000
+	mixed.UsdMonthly = 500
+	return []FIREInput{DefaultFIRE(), buy, us, pots, already, never, mixed}
 }
 
 func sipFixtures() []SIPInput {
@@ -237,6 +241,11 @@ func fireToJS(in FIREInput) map[string]any {
 		"epfNow": in.EPFNow, "epfMonthly": in.EPFMonthly, "foreignNow": in.ForeignNow, "foreignMonthly": in.ForeignMonthly,
 		"stoppedNow": in.StoppedNow, "goldNow": in.GoldNow, "goldMonthly": in.GoldMonthly, "jewelleryNow": in.JewelleryNow,
 		"stepUp": in.StepUp, "cityTier": in.CityTier, "housing": in.Housing, "region": in.Region,
+		"mixed": in.Mixed, "fxINRPerUSD": in.FxINRPerUSD,
+		"usdParked": in.UsdParked, "usdMonthly": in.UsdMonthly, "usdStopped": in.UsdStopped, "usdRetire": in.UsdRetire,
+		"indiaParked": in.IndiaParked, "indiaNpsNow": in.IndiaNPSNow, "indiaNpsMonthly": in.IndiaNPSMonthly,
+		"indiaGold": in.IndiaGold, "indiaJew": in.IndiaJew,
+		"contribScale": in.ContribScale, "pauseMonths": in.PauseMonths,
 	}
 }
 
@@ -256,6 +265,9 @@ type jsFIRE struct {
 	Years           float64 `json:"years"`
 	ReachesFire     bool    `json:"reachesFire"`
 	FIAge           int     `json:"fiAge"`
+	CrossingYears   float64 `json:"crossingYears"`
+	ReachesCrossing bool    `json:"reachesCrossing"`
+	CrossingAge     int     `json:"crossingAge"`
 	Chart           []struct {
 		Year     int     `json:"year"`
 		Corpus   float64 `json:"corpus"`
@@ -316,8 +328,12 @@ func compareFIRE(t *testing.T, in FIREInput, js jsFIRE, goOut FIREOutput) {
 	same("lean", js.Lean, goOut.Lean)
 	same("fat", js.Fat, goOut.Fat)
 	same("years", js.Years, goOut.Years)
+	same("crossingYears", js.CrossingYears, goOut.CrossingYears)
 	if js.ReachesFire != goOut.ReachesFire || js.FIAge != goOut.FIAge {
 		t.Errorf("%s reaches/fiAge js=%v/%d go=%v/%d", label, js.ReachesFire, js.FIAge, goOut.ReachesFire, goOut.FIAge)
+	}
+	if js.ReachesCrossing != goOut.ReachesCrossing || js.CrossingAge != goOut.CrossingAge {
+		t.Errorf("%s crossing js=%v/%d go=%v/%d", label, js.ReachesCrossing, js.CrossingAge, goOut.ReachesCrossing, goOut.CrossingAge)
 	}
 	if len(js.Chart) != len(goOut.Chart) {
 		t.Errorf("%s chart len js=%d go=%d", label, len(js.Chart), len(goOut.Chart))

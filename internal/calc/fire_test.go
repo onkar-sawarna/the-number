@@ -45,6 +45,56 @@ func TestAlreadyFIZeroYears(t *testing.T) {
 	if !out.ReachesFire || out.Years != 0 {
 		t.Fatalf("already FI: years=%v reaches=%v", out.Years, out.ReachesFire)
 	}
+	if !out.ReachesCrossing || out.CrossingYears != 0 {
+		t.Fatalf("stash and no SIP should already have crossed: years=%v reaches=%v", out.CrossingYears, out.ReachesCrossing)
+	}
+}
+
+func TestCrossingBeforeFIRE(t *testing.T) {
+	in := DefaultFIRE()
+	out := FIRE(in)
+	if !out.ReachesCrossing {
+		t.Fatal("default should reach the crossing")
+	}
+	if out.CrossingYears <= 0 {
+		t.Fatalf("crossing years=%v want > 0", out.CrossingYears)
+	}
+	if !out.ReachesFire {
+		t.Fatal("default should reach FIRE")
+	}
+	if out.CrossingYears >= out.Years {
+		t.Fatalf("crossing should come before FIRE: crossing=%v fire=%v", out.CrossingYears, out.Years)
+	}
+}
+
+func TestCrossingWithSIPWhileAlreadyFI(t *testing.T) {
+	in := DefaultFIRE()
+	in.CurrentSavings = 80_000_000
+	out := FIRE(in)
+	if !out.ReachesFire || out.Years != 0 {
+		t.Fatalf("should be already FI: years=%v reaches=%v", out.Years, out.ReachesFire)
+	}
+	if !out.ReachesCrossing || out.CrossingYears <= 0 {
+		t.Fatalf("large stash with SIPs should still report a crossing year: years=%v reaches=%v", out.CrossingYears, out.ReachesCrossing)
+	}
+}
+
+func TestCrossingNoneWithoutContribOrStash(t *testing.T) {
+	in := FIREInput{Age: 30, AnnualExpenses: 1_200_000, SWR: 4}
+	out := FIRE(in)
+	if out.ReachesCrossing {
+		t.Fatal("empty pots and no SIP should not cross")
+	}
+}
+
+func TestJewelleryDoesNotChangeCrossing(t *testing.T) {
+	base := DefaultFIRE()
+	a := FIRE(base)
+	base.JewelleryNow = 5_000_000
+	j := FIRE(base)
+	if a.ReachesCrossing != j.ReachesCrossing || a.CrossingYears != j.CrossingYears {
+		t.Fatalf("jewellery must not change crossing: %v/%v vs %v/%v", a.ReachesCrossing, a.CrossingYears, j.ReachesCrossing, j.CrossingYears)
+	}
 }
 
 func TestZeroReturnInflationTenYears(t *testing.T) {

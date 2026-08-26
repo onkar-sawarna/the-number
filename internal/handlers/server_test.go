@@ -40,3 +40,18 @@ func TestHomeStillOK(t *testing.T) {
 		t.Fatal("home missing site name")
 	}
 }
+
+func TestCrossingPage(t *testing.T) {
+	e := echo.New()
+	New().Register(e)
+	req := httptest.NewRequest(http.MethodGet, "/crossing", nil)
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status=%d", rec.Code)
+	}
+	body := rec.Body.String()
+	if !strings.Contains(body, "The crossing") || !strings.Contains(body, "Jewellery") {
+		t.Fatalf("crossing page missing copy: %s", body[:min(500, len(body))])
+	}
+}
