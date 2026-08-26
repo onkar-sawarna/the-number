@@ -7,8 +7,8 @@ templ Landing(p Page) {
 			<div class="pointer-events-none absolute -left-20 top-32 h-40 w-40 rounded-full bg-sky/30 blur-3xl dark:bg-sky/20"></div>
 			<p class="relative text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("hero_kicker")</p>
 			<h1 class="relative mt-3 max-w-full font-serif text-[1.85rem] leading-[1.15] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl">@Tx("hero_before")<em class="not-italic text-brand">the number</em>@Tx("hero_after")</h1>
-			<p class="relative mt-4 max-w-xl text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg dark:text-zinc-300">@Tx("hero_sub")</p>
-			<div class="relative mt-5 hidden flex-wrap gap-2 sm:flex">
+			<p class="relative mt-4 max-w-2xl text-base leading-relaxed text-ink/70 sm:mt-6 sm:text-lg dark:text-zinc-300">@Tx("hero_sub")</p>
+			<div class="relative mt-5 flex flex-wrap gap-2">
 				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">@Tx("chip_product")</span>
 				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">@Tx("chip_browser")</span>
 				<span class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand dark:bg-brand/20">@Tx("chip_ticker")</span>
@@ -90,12 +90,29 @@ templ Landing(p Page) {
 				</div>
 			</form>
 		</section>
-		<section class="mt-10 grid gap-3 sm:mt-16 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-			@featureCard("/calculators/fire", "FIRE", "card_fire_title", "card_fire_body", true)
-			@featureCard("/calculators/sip", "SIP", "card_sip_title", "card_sip_body", false)
-			@featureCard("/calculators/emi", "EMI", "card_emi_title", "card_emi_body", false)
-			@featureCard("/calculators/emergency", "Runway", "card_run_title", "card_run_body", false)
-			@featureCard("/calculators/budget", "50/30/20", "card_bud_title", "card_bud_body", false)
+		<nav class="mt-8 border-t border-black/5 pt-6 sm:mt-10 dark:border-white/10" aria-label="Other calculators">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/45 dark:text-zinc-500">@Tx("more_calcs_kicker")</p>
+			<p class="mt-1 text-sm text-ink/60 dark:text-zinc-400">@Tx("more_calcs_lead")</p>
+			<div class="mt-3 flex flex-wrap gap-2">
+				<a href="/calculators/sip" class="preset-chip inline-flex items-center">@Tx("tab_sip")</a>
+				<a href="/calculators/emi" class="preset-chip inline-flex items-center">@Tx("tab_emi")</a>
+				<a href="/calculators/emergency" class="preset-chip inline-flex items-center">@Tx("tab_emergency")</a>
+				<a href="/calculators/budget" class="preset-chip inline-flex items-center">@Tx("tab_budget")</a>
+				<a href="/guidance" class="preset-chip inline-flex items-center">@Tx("tab_sleeves")</a>
+			</div>
+		</nav>
+		<section class="mt-10 overflow-hidden rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:mt-12 sm:p-8 dark:border-brand/30 dark:bg-white/5" aria-labelledby="about-maker">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("home_about_kicker")</p>
+			<div class="mt-3 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+				<div class="max-w-2xl">
+					<h2 id="about-maker" class="font-serif text-2xl tracking-tight sm:text-3xl">Onkar Sawarna</h2>
+					<p class="mt-3 text-base leading-relaxed text-ink/70 dark:text-zinc-300">@Tx("home_about_body")</p>
+				</div>
+				<div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+					<a href="/about" class="btn-primary w-full sm:w-auto">@Tx("home_about_page")</a>
+					<a href="https://www.onkarsawarna.dev/" class="btn-ghost w-full sm:w-auto" rel="noopener noreferrer">@Tx("visit_blog")</a>
+				</div>
+			</div>
 		</section>
 	}
 }
@@ -176,6 +193,56 @@ templ featureCard(href, kicker, titleKey, bodyKey string, wide bool) {
 		<p class="mt-2 text-sm leading-relaxed text-ink/65 dark:text-zinc-400">@Tx(bodyKey)</p>
 		<p class="mt-3 text-sm font-medium text-brand opacity-80 group-hover:opacity-100">@Tx("open")</p>
 	</a>
+}
+
+templ About(p Page) {
+	@Layout(p) {
+		<article class="mx-auto max-w-3xl">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("about_kicker")</p>
+			<header class="mt-5 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+				<div class="about-portrait-wrap shrink-0">
+					<img class="about-portrait-img" src="/static/img/onkar-352.jpg" srcset="/static/img/onkar-176.jpg 176w, /static/img/onkar-352.jpg 352w" sizes="(max-width: 40rem) 8.5rem, 11rem" width="220" height="220" alt="Onkar Sawarna"/>
+				</div>
+				<div class="min-w-0">
+					<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">Onkar Sawarna</h1>
+					<p class="mt-2 text-sm font-medium text-brand">@Tx("about_role")</p>
+					<p class="mt-3 max-w-xl font-serif text-xl leading-snug text-ink/80 dark:text-zinc-200">@Tx("about_lede")</p>
+					<div class="mt-5">
+						@SocialLinks()
+					</div>
+				</div>
+			</header>
+			<p class="mt-8 text-lg leading-relaxed text-ink/80 dark:text-zinc-200">@Tx("about_lead")</p>
+			<div class="mt-8 space-y-8 rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5">
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_money")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_money")</p>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_money2")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_compound")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_compound")</p>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_compound2")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_optional")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_optional")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_number")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_number")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("about_h_work")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("about_p_work")</p>
+				</section>
+				<div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
+					<a href="/calculators/fire" class="btn-primary w-full sm:w-auto">@Tx("jump_fire")</a>
+					<a href="https://www.onkarsawarna.dev/" class="btn-ghost w-full sm:w-auto" rel="noopener noreferrer">@Tx("visit_blog")</a>
+				</div>
+			</div>
+		</article>
+	}
 }
 
 templ Disclaimer(p Page) {

@@ -153,9 +153,8 @@ templ FIREPage(p Page) {
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.fat)"></p>
 							</div>
 						</div>
-						@chartKicker("number_today", "fmtINR(result.fireNumber)")
-						<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="yearsCopy()"></p>
-						<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-bind:class="dirty ? 'opacity-50' : ''" x-text="numberLaterCopy()"></p>
+						<p class="mt-5 text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("chart_stack")</p>
+						<p class="mt-1 text-sm text-ink/65 dark:text-zinc-400" x-bind:class="dirty ? 'opacity-50' : ''">@Tx("chart_stack_sub")</p>
 						<div class="mt-3 h-40 min-w-0 overflow-hidden rounded-xl bg-paper sm:h-56 lg:h-64 dark:bg-zinc-900" x-bind:class="dirty ? 'opacity-50' : ''">
 							<canvas id="fire-chart"></canvas>
 						</div>
@@ -171,6 +170,10 @@ templ FIREPage(p Page) {
 					</div>
 				</div>
 			</form>
+			<p class="mt-6 text-sm text-ink/65 dark:text-zinc-400">
+				<a class="font-medium text-brand hover:underline" href="/guidance" x-bind:href="revealed && result.reachesFire ? ('/guidance?years=' + Math.max(1, Math.round(result.years))) : '/guidance'">@Tx("sleeves_fire")</a>
+				<span> @Tx("sleeves_fire_sub")</span>
+			</p>
 		</div>
 	}
 }

@@ -19,6 +19,7 @@ func New() *Server {
 
 func (s *Server) Register(e *echo.Echo) {
 	e.GET("/", s.landing)
+	e.GET("/about", s.about)
 	e.GET("/disclaimer", s.disclaimer)
 	e.POST("/theme", s.theme)
 
@@ -54,6 +55,10 @@ func themeDark(c echo.Context) bool {
 
 func (s *Server) landing(c echo.Context) error {
 	return render(c, http.StatusOK, templates.Landing(s.page(c, "Home", "title_home")))
+}
+
+func (s *Server) about(c echo.Context) error {
+	return render(c, http.StatusOK, templates.About(s.page(c, "About", "title_about")))
 }
 
 func (s *Server) disclaimer(c echo.Context) error {

@@ -38,6 +38,7 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | Method | Path | Notes |
 | --- | --- | --- |
 | GET | `/` | Landing |
+| GET | `/about` | Who built this; link to the blog |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |
 | GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate |

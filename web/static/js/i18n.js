@@ -2,7 +2,8 @@
   var EN = {
     nav_home: "Home",
     nav_fire: "FIRE",
-    nav_guidance: "Guidance",
+    nav_guidance: "Sleeves",
+    nav_about: "About",
     nav_mix: "Mix",
     theme_light: "Light",
     theme_dark: "Dark",
@@ -10,23 +11,46 @@
     disc_link: "Disclaimer",
     jump_home: "← Home",
     jump_fire: "FIRE calculator",
-    jump_mix: "Get a mix",
+    jump_mix: "FIRE sleeves",
+    jump_about: "About",
+    visit_blog: "Visit my blogging site",
     tab_fire: "FIRE",
     tab_sip: "SIP",
     tab_emi: "EMI",
     tab_emergency: "Emergency",
     tab_budget: "Budget",
+    tab_sleeves: "Sleeves",
     region_in: "India ₹",
     region_us: "World $",
 
-    hero_kicker: "FIRE first — India or the world",
+    hero_kicker: "Financial Independence, Retire Early",
     hero_before: "Know ",
     hero_after: " that lets you stop.",
-    hero_sub: "India in rupees, everywhere else in dollars. Type the numbers. Hit calculate. No login, no lecture, no “buy this fund.”",
-    chip_product: "FIRE is the product",
+    hero_sub: "FIRE is a corpus large enough that a small withdrawal covers your yearly spend — so a salary becomes optional. You do not have to retire at 40. Type what you spend and save. See the year you could stop. India in rupees, everywhere else in dollars. No login, no fund pitch.",
+    chip_product: "Independence, not a product pitch",
     chip_browser: "Runs in your browser",
     chip_ticker: "Never a ticker",
     hero_cta: "Try it below",
+    home_about_kicker: "Who built this",
+    home_about_body: "I have a keen interest in personal finance and compounding — and I’m passionate about making money work for us. That’s why the number exists.",
+    home_about_page: "About me",
+    about_kicker: "About",
+    about_role: "Personal finance · compounding · FIRE",
+    about_lede: "Making money work for us — so a salary is optional, not a leash.",
+    about_lead: "I have a keen interest in personal finance and compounding. I’m really passionate about how we make money work for ourselves: a corpus that covers the year, a SIP that does not need you to be clever every month, and a finish line you can actually see.",
+    about_h_money: "Money that works for us",
+    about_p_money: "Most of us trade hours for a paycheck and hope the leftovers become a future. I am interested in the other direction. Capital that earns while you sleep. A contribution you leave running. A spend you can live on without performing a lifestyle. The point is not to get rich on a thread. The point is optionality — leave, pause, go part-time, or keep the job because you like it.",
+    about_p_money2: "A salary is a wonderful engine for the early years. It is a terrible plan for the whole of life if it is the only engine. I want money to take over some of that work: NPS, EPF, PPF, SIPs, gold you could sell, cash you parked. Each pot has a job. Together they should be able to pay for a year without you showing up on Monday.",
+    about_h_compound: "What compounding actually is",
+    about_p_compound: "Compounding is slow until it is not. The first years look small. Then the corpus starts earning more in a year than you add. That crossing is the whole game — not a tip, not a ticker. Time, a rate you can live with, and contributions that rise a little as income rises. Inflation eats the other side. Years-to-independence is just those two forces meeting.",
+    about_p_compound2: "A higher SIP, a lower annual spend, skipping a house you do not need, waiting two more years — each one moves the date. I built a calculator so you can see that without a brochure. Play with the boxes. Watch the year move. That is the useful kind of personal finance: arithmetic on your life, not someone else’s product.",
+    about_h_optional: "A number, not a poster",
+    about_p_optional: "FIRE is a clumsy acronym. The useful part is a number: the corpus that covers this year’s expenses from a small withdrawal. India is not the US 25× rule by default — 3.5% is about 29× expenses, with inflation that does not pretend to be 3%. You do not have to retire at 40. You get to say no to a transfer, a toxic team, or another decade you do not want.",
+    about_h_number: "Why this site exists",
+    about_p_number: "I wanted that calculator in rupees, with Indian pots — NPS, EPF, PPF, gold, jewellery you keep, SIPs still running — and dollars if you live elsewhere. Nothing is stored. No scheme names. Type what you spend and save. See the year work could become optional.",
+    about_h_work: "The day job",
+    about_p_work: "By day I write software. The rest of this page is the interest that sits beside that job: personal finance, compounding, and making capital do the work. Systems notes live on the blog if you want the engineer.",
+    about_photo_alt: "Onkar Sawarna",
     try_kicker: "Try it — right here",
     preset_start: "Just starting",
     preset_mid: "Saving hard",
@@ -57,6 +81,10 @@
     want_detail_us: "Parked cash, invested pots, gold, retirement, jewellery, housing — today’s dollars and the future amount for every sleeve.",
     open_full: "Open the full FIRE calculator",
     open: "Open →",
+    more_calcs_kicker: "Also here",
+    more_calcs_lead: "SIP, EMI, emergency, budget, and sleeves for the years to FIRE — after you have the number.",
+    sleeves_fire: "Sleeves for your FIRE years →",
+    sleeves_fire_sub: "A category mix for the horizon, never a ticker.",
 
     card_fire_title: "The full calculator",
     card_fire_body: "Parked cash, gold, NPS, EPF, PPF, invested SIPs, housing — every pot, not just three boxes.",
@@ -70,13 +98,14 @@
     card_bud_body: "50% needs, 30% wants, 20% savings. Type the month. See which bucket went over.",
 
     title_home: "Home",
+    title_about: "About",
     title_disclaimer: "Disclaimer",
     title_fire: "FIRE calculator",
     title_sip: "SIP calculator",
     title_emi: "EMI calculator",
     title_emergency: "Emergency fund",
     title_budget: "50/30/20 budget",
-    title_guidance: "Guidance",
+    title_guidance: "FIRE sleeves",
 
     already_indep: "Already independent on these assumptions.",
     never_indep: "Does not reach independence within 80 years.",
@@ -166,6 +195,8 @@
     chart_spend: "Spendable",
     chart_nw: "Net worth",
     chart_fire: "FIRE number",
+    chart_stack: "Pots versus the number",
+    chart_stack_sub: "Each sleeve stacked. The dashed line is the FIRE number.",
     pots_chart: "Today vs 20 years later",
     pots_chart_sub: "Each pot today, and what it becomes if you keep going.",
     pots_grows: "Growth",
@@ -272,9 +303,9 @@
     chart_savings: "Savings",
     chart_actual: "Actual",
 
-    guide_h1: "A mix, not a stock tip",
-    guide_intro: "Sleeves across index categories. Never a stock, fund, AMC, or ticker.",
-    horizon: "Horizon (years)",
+    guide_h1: "Sleeves for your FIRE years",
+    guide_intro: "Horizon is years until independence. Mix stays at category level — never a stock, fund, AMC, or ticker.",
+    horizon: "Years to FIRE",
     risk: "Risk stance",
     risk_con: "Conservative",
     risk_con_sub: "Sleep at night",
@@ -304,7 +335,6 @@
     disc_end: "Not registered investment advice. For educational purposes only.",
   };
 
-
   function lookup(key) {
     return EN[key] || key;
   }
@@ -322,6 +352,19 @@
   window.I18N = { en: EN };
   window.currentLang = function () { return "en"; };
   window.t = t;
+
+  function fillI18n(root) {
+    (root || document).querySelectorAll("[data-i18n]").forEach(function (el) {
+      var k = el.getAttribute("data-i18n");
+      if (k) el.textContent = lookup(k);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () { fillI18n(); });
+  } else {
+    fillI18n();
+  }
 
   document.addEventListener("alpine:init", function () {
     Alpine.store("lang", {

@@ -57,7 +57,7 @@ func GuidancePage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" hx-post=\"/guidance\" hx-target=\"#guidance-result\" hx-swap=\"innerHTML\" hx-indicator=\"#guide-ind\"><div class=\"min-w-0 space-y-5 lg:col-span-5\"><label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60 dark:text-zinc-400\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><form class=\"mt-6 grid min-w-0 gap-6 sm:mt-8 sm:gap-8 lg:grid-cols-12\" hx-post=\"/guidance\" hx-target=\"#guidance-result\" hx-swap=\"innerHTML\" hx-indicator=\"#guide-ind\" x-data=\"guideForm()\"><div class=\"min-w-0 space-y-5 lg:col-span-5\"><label class=\"block text-sm\"><span class=\"mb-1 block text-ink/60 dark:text-zinc-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -73,7 +73,7 @@ func GuidancePage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <input type=\"number\" inputmode=\"numeric\" name=\"horizon\" value=\"10\" min=\"1\" max=\"50\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5\"></label><fieldset class=\"text-sm\"><legend class=\"mb-2 text-ink/60 dark:text-zinc-400\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <input type=\"number\" inputmode=\"numeric\" name=\"horizon\" value=\"10\" min=\"1\" max=\"50\" x-model=\"horizon\" class=\"w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5\"></label><fieldset class=\"text-sm\"><legend class=\"mb-2 text-ink/60 dark:text-zinc-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

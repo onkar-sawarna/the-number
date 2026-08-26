@@ -26,6 +26,12 @@
       : ["#1d4ed8", "#c2410c", "#15803d", "#7c3aed", "#be123c", "#b45309", "#0f766e", "#e11d48"];
     return colors[i % colors.length];
   }
+  function potFill(i) {
+    var colors = isDark()
+      ? ["rgba(125,211,252,0.42)", "rgba(253,186,116,0.38)", "rgba(134,239,172,0.38)", "rgba(196,181,253,0.40)", "rgba(249,168,212,0.38)", "rgba(251,191,36,0.36)", "rgba(94,234,212,0.36)", "rgba(251,113,133,0.36)"]
+      : ["rgba(29,78,216,0.28)", "rgba(194,65,12,0.24)", "rgba(21,128,61,0.24)", "rgba(124,58,237,0.24)", "rgba(190,18,60,0.22)", "rgba(180,83,9,0.24)", "rgba(15,118,110,0.24)", "rgba(225,29,72,0.22)"];
+    return colors[i % colors.length];
+  }
   function targetLine() {
     return isDark() ? "#fafafa" : "#111827";
   }
@@ -133,7 +139,7 @@
       if (n < 0) n = 0;
       return String(n);
     };
-    ctl.lang = window.currentLang ? window.currentLang() : "en";
+    ctl.lang = "en";
     ctl.t = function (key, vars) {
       void this.lang;
       return window.t(key, vars);
@@ -216,11 +222,20 @@
     Chart.defaults.borderColor = gridColor();
   }
 
-  function upsertLine(el, chart, labels, datasets) {
+  function stackedFireOptions() {
+    var opts = lineOptions();
+    opts.scales.y.stacked = true;
+    opts.elements.line.borderWidth = 2;
+    opts.elements.point.radius = 0;
+    opts.elements.point.hoverRadius = 4;
+    return opts;
+  }
+
+  function upsertLine(el, chart, labels, datasets, options) {
     if (!el || typeof Chart === "undefined") return null;
     var existing = (typeof Chart.getChart === "function" && Chart.getChart(el)) || chart;
     if (existing) existing.destroy();
-    return new Chart(el, { type: "line", data: { labels: labels, datasets: datasets }, options: lineOptions() });
+    return new Chart(el, { type: "line", data: { labels: labels, datasets: datasets }, options: options || lineOptions() });
   }
 
   function potsSlopeOptions() {
@@ -685,6 +700,12 @@
       draw: function () {
         var el = document.getElementById("fire-chart");
         var labels = this.result.chart.map(function (p) { return String(p.age); });
+        var full = !!document.getElementById("fire-pots-chart");
+        var sets = full ? this.fullFireSets() : this.homeFireSets();
+        this._chart = upsertLine(el, this._chart, labels, sets, full ? stackedFireOptions() : lineOptions());
+        this.drawPots();
+      },
+      homeFireSets: function () {
         var sets = [
           { label: this.t("chart_spend"), data: this.result.chart.map(function (p) { return p.corpus; }), borderColor: brandLine(), backgroundColor: brandFill(), fill: true, tension: 0.25 },
         ];
@@ -692,8 +713,57 @@
           sets.push({ label: this.t("chart_nw"), data: this.result.chart.map(function (p) { return p.netWorth; }), borderColor: accentLine(), tension: 0.25, pointRadius: 0 });
         }
         sets.push({ label: this.t("chart_fire"), data: this.result.chart.map(function (p) { return p.target; }), borderColor: targetLine(), borderDash: [6, 4], tension: 0.2, pointRadius: 0 });
-        this._chart = upsertLine(el, this._chart, labels, sets);
-        this.drawPots();
+        return sets;
+      },
+      fullFireSets: function () {
+        var self = this;
+        var spendable = this.livePots().filter(function (d) { return d.key !== "jewellery"; });
+        var sets = spendable.map(function (d, i) {
+          return {
+            label: self.t(d.label),
+            data: self.result.chart.map(function (p) { return Number(p[d.key]) || 0; }),
+            borderColor: potStroke(i),
+            backgroundColor: potFill(i),
+            fill: true,
+            stack: "pots",
+            tension: 0.2,
+            pointRadius: 0,
+          };
+        });
+        if (!sets.length) {
+          sets.push({
+            label: this.t("chart_spend"),
+            data: this.result.chart.map(function (p) { return p.corpus; }),
+            borderColor: brandLine(),
+            backgroundColor: brandFill(),
+            fill: true,
+            stack: "pots",
+            tension: 0.2,
+            pointRadius: 0,
+          });
+        }
+        if ((Number(this.jewelleryNow) || 0) > 0) {
+          sets.push({
+            label: this.t("chart_nw"),
+            data: this.result.chart.map(function (p) { return p.netWorth; }),
+            borderColor: accentLine(),
+            fill: false,
+            stack: "nw",
+            tension: 0.25,
+            pointRadius: 0,
+          });
+        }
+        sets.push({
+          label: this.t("chart_fire"),
+          data: this.result.chart.map(function (p) { return p.target; }),
+          borderColor: targetLine(),
+          borderDash: [6, 4],
+          fill: false,
+          stack: "fire",
+          tension: 0.2,
+          pointRadius: 0,
+        });
+        return sets;
       },
       drawPots: function () {
         var el = document.getElementById("fire-pots-chart");
@@ -976,6 +1046,13 @@
         },
       },
     });
+  };
+
+  window.guideForm = function () {
+    var y = parseInt(new URLSearchParams(location.search).get("years") || "10", 10);
+    if (!isFinite(y) || y < 1) y = 10;
+    if (y > 50) y = 50;
+    return { horizon: String(y) };
   };
 
   document.addEventListener("htmx:beforeSwap", function (e) {
