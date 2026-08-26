@@ -40,7 +40,7 @@ templ GuidancePage(p Page) {
 				</label>
 				<label class="block text-sm">
 					<span class="mb-1 block text-ink/60 dark:text-zinc-400">@Tx("goals")</span>
-					<textarea name="goals" rows="4" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5" x-bind:placeholder="$store.lang.t('goals_ph')"></textarea>
+					<textarea name="goals" rows="4" class="w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-white/5" placeholder={ Copy("goals_ph") }></textarea>
 				</label>
 				<button type="submit" class="btn-primary w-full sm:w-auto">@Tx("show_mix")</button>
 				<span id="guide-ind" class="htmx-indicator ml-2 text-sm text-ink/60 dark:text-zinc-400">@Tx("working")</span>

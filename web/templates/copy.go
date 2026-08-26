@@ -1,0 +1,653 @@
+package templates
+
+// Copy is the English string for a template key. HTML renders this so labels never flash the key.
+func Copy(key string) string {
+	switch key {
+	case "nav_home":
+		return "Home"
+	case "nav_fire":
+		return "FIRE"
+	case "nav_guidance":
+		return "Sleeves"
+	case "nav_about":
+		return "About"
+	case "nav_mix":
+		return "Mix"
+	case "theme_light":
+		return "Light"
+	case "theme_dark":
+		return "Dark"
+	case "footer_play":
+		return "Play with the number. Don’t take it as a plan."
+	case "disc_link":
+		return "Disclaimer"
+	case "jump_home":
+		return "← Home"
+	case "jump_fire":
+		return "FIRE calculator"
+	case "jump_mix":
+		return "FIRE sleeves"
+	case "jump_about":
+		return "About"
+	case "visit_blog":
+		return "Visit my blogging site"
+	case "tab_fire":
+		return "FIRE"
+	case "tab_sip":
+		return "SIP"
+	case "tab_emi":
+		return "EMI"
+	case "tab_emergency":
+		return "Emergency"
+	case "tab_budget":
+		return "Budget"
+	case "tab_sleeves":
+		return "Sleeves"
+	case "region_in":
+		return "India ₹"
+	case "region_us":
+		return "World $"
+	case "hero_kicker":
+		return "Financial Independence, Retire Early"
+	case "hero_before":
+		return "Know "
+	case "hero_after":
+		return " that lets you stop."
+	case "hero_sub":
+		return "FIRE is a corpus large enough that a small withdrawal covers your yearly spend — so a salary becomes optional. You do not have to retire at 40. Type what you spend and save. See the year you could stop. India in rupees, everywhere else in dollars. No login, no fund pitch."
+	case "chip_product":
+		return "Independence, not a product pitch"
+	case "chip_browser":
+		return "Runs in your browser"
+	case "chip_ticker":
+		return "Never a ticker"
+	case "hero_cta":
+		return "Try it below"
+	case "home_about_kicker":
+		return "Who built this"
+	case "home_about_body":
+		return "I have a keen interest in personal finance and compounding — and I’m passionate about making money work for us. That’s why the number exists."
+	case "home_about_page":
+		return "About me"
+	case "about_kicker":
+		return "About"
+	case "about_role":
+		return "Personal finance · compounding · FIRE"
+	case "about_lede":
+		return "Making money work for us — so a salary is optional, not a leash."
+	case "about_lead":
+		return "I have a keen interest in personal finance and compounding. I’m really passionate about how we make money work for ourselves: a corpus that covers the year, a SIP that does not need you to be clever every month, and a finish line you can actually see."
+	case "about_h_money":
+		return "Money that works for us"
+	case "about_p_money":
+		return "Most of us trade hours for a paycheck and hope the leftovers become a future. I am interested in the other direction. Capital that earns while you sleep. A contribution you leave running. A spend you can live on without performing a lifestyle. The point is not to get rich on a thread. The point is optionality — leave, pause, go part-time, or keep the job because you like it."
+	case "about_p_money2":
+		return "A salary is a wonderful engine for the early years. It is a terrible plan for the whole of life if it is the only engine. I want money to take over some of that work: NPS, EPF, PPF, SIPs, gold you could sell, cash you parked. Each pot has a job. Together they should be able to pay for a year without you showing up on Monday."
+	case "about_h_compound":
+		return "What compounding actually is"
+	case "about_p_compound":
+		return "Compounding is slow until it is not. The first years look small. Then the corpus starts earning more in a year than you add. That crossing is the whole game — not a tip, not a ticker. Time, a rate you can live with, and contributions that rise a little as income rises. Inflation eats the other side. Years-to-independence is just those two forces meeting."
+	case "about_p_compound2":
+		return "A higher SIP, a lower annual spend, skipping a house you do not need, waiting two more years — each one moves the date. I built a calculator so you can see that without a brochure. Play with the boxes. Watch the year move. That is the useful kind of personal finance: arithmetic on your life, not someone else’s product."
+	case "about_h_optional":
+		return "A number, not a poster"
+	case "about_p_optional":
+		return "FIRE is a clumsy acronym. The useful part is a number: the corpus that covers this year’s expenses from a small withdrawal. India is not the US 25× rule by default — 3.5% is about 29× expenses, with inflation that does not pretend to be 3%. You do not have to retire at 40. You get to say no to a transfer, a toxic team, or another decade you do not want."
+	case "about_h_number":
+		return "Why this site exists"
+	case "about_p_number":
+		return "I wanted that calculator in rupees, with Indian pots — NPS, EPF, PPF, gold, jewellery you keep, SIPs still running — and dollars if you live elsewhere. Nothing is stored. No scheme names. Type what you spend and save. See the year work could become optional."
+	case "about_h_work":
+		return "The day job"
+	case "about_p_work":
+		return "By day I write software. The rest of this page is the interest that sits beside that job: personal finance, compounding, and making capital do the work. Systems notes live on the blog if you want the engineer."
+	case "about_photo_alt":
+		return "Onkar Sawarna"
+	case "try_kicker":
+		return "Try it — right here"
+	case "preset_start":
+		return "Just starting"
+	case "preset_mid":
+		return "Saving hard"
+	case "preset_ahead":
+		return "Already a stash"
+	case "age_yours":
+		return "Your age"
+	case "age":
+		return "Age"
+	case "monthly_sips":
+		return "Monthly SIPs"
+	case "step_up":
+		return "Yearly SIP step-up % (10% plan)"
+	case "annual_spend":
+		return "Annual spend"
+	case "parked_cash":
+		return "Parked cash"
+	case "calculate":
+		return "Calculate"
+	case "dirty_hint":
+		return "Inputs changed — calculate to refresh."
+	case "calc_wait_kicker":
+		return "After you calculate"
+	case "calc_wait":
+		return "Your number, the year you can stop, and how each pot grows — from the boxes, not a demo."
+	case "calc_wait_hook":
+		return "Type the boxes. Calculate writes the year."
+	case "calc_wait_1":
+		return "The number today, and what 20 years of inflation does to it"
+	case "calc_wait_2":
+		return "Corpus versus that number, year by year"
+	case "calc_wait_3":
+		return "Each pot today next to what it becomes later"
+	case "number_today":
+		return "The number today"
+	case "number_later":
+		return "{amount} in 20 years"
+	case "lifestyle":
+		return "Lifestyle corpus"
+	case "later_20":
+		return "In 20 years "
+	case "you_have":
+		return "You have today"
+	case "monthly_in":
+		return "Monthly going in"
+	case "youll_be":
+		return "You'll be"
+	case "want_detail":
+		return "See each pot today vs later"
+	case "want_detail_in":
+		return "Parked cash, SIPs, gold, NPS, EPF, PPF, jewellery, housing — today’s rupees and the future amount for every sleeve."
+	case "want_detail_us":
+		return "Parked cash, invested pots, gold, retirement, jewellery, housing — today’s dollars and the future amount for every sleeve."
+	case "open_full":
+		return "Open the full FIRE calculator"
+	case "open":
+		return "Open →"
+	case "more_calcs_kicker":
+		return "Also here"
+	case "more_calcs_lead":
+		return "SIP, EMI, emergency, budget, and sleeves for the years to FIRE — after you have the number."
+	case "sleeves_fire":
+		return "Sleeves for your FIRE years →"
+	case "sleeves_fire_sub":
+		return "A category mix for the horizon, never a ticker."
+	case "card_fire_title":
+		return "The full calculator"
+	case "card_fire_body":
+		return "Parked cash, gold, NPS, EPF, PPF, invested SIPs, housing — every pot, not just three boxes."
+	case "card_sip_title":
+		return "What does a monthly plan become?"
+	case "card_sip_body":
+		return "Leave a contribution running. See the future value, not a brochure."
+	case "card_emi_title":
+		return "What if you prepay?"
+	case "card_emi_body":
+		return "The EMI, then extra monthly or a lump — interest and months you get back."
+	case "card_run_title":
+		return "How many months of buffer?"
+	case "card_run_body":
+		return "Essentials × cover, the gap, and how long a top-up takes to close it."
+	case "card_bud_title":
+		return "Did this month’s split hold?"
+	case "card_bud_body":
+		return "50% needs, 30% wants, 20% savings. Type the month. See which bucket went over."
+	case "title_home":
+		return "Home"
+	case "title_about":
+		return "About"
+	case "title_disclaimer":
+		return "Disclaimer"
+	case "title_fire":
+		return "FIRE calculator"
+	case "title_sip":
+		return "SIP calculator"
+	case "title_emi":
+		return "EMI calculator"
+	case "title_emergency":
+		return "Emergency fund"
+	case "title_budget":
+		return "50/30/20 budget"
+	case "title_guidance":
+		return "FIRE sleeves"
+	case "already_indep":
+		return "Already independent on these assumptions."
+	case "never_indep":
+		return "Does not reach independence within 80 years."
+	case "fi_line":
+		return "Financially independent in {year}, around age {age}"
+	case "already_there":
+		return "Already there."
+	case "not_80":
+		return "Not in 80 yrs"
+	case "year_one":
+		return " year"
+	case "year_many":
+		return " years"
+	case "hook_already":
+		return "Corpus already covers the number. {amount}."
+	case "hook_never":
+		return "Save more, spend less, or both. Need {amount}."
+	case "hook_fi":
+		return "Independent in {year}, around age {age} · need {amount}"
+	case "money_hint_in":
+		return "12L, 50k, or 12"
+	case "money_hint_us":
+		return "60k or 60000"
+	case "fire_h1":
+		return "FIRE number"
+	case "fire_intro_in":
+		return "India plan: invested SIPs at 12%, inflation 6%, withdrawal 3.5% — about 29× expenses, not the US 25× rule. Parked cash ~6%. Gold funds ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, foreign stocks, and housing. Step SIPs up 10% a year."
+	case "fire_intro_us":
+		return "Parked cash at ~6%. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then invested pots, a retirement account, and housing. Amounts are in dollars."
+	case "annual_exp":
+		return "Annual expenses (include rent if you rent)"
+	case "city":
+		return "City"
+	case "tier1":
+		return "Tier 1"
+	case "tier1_sub":
+		return "Metro"
+	case "tier2":
+		return "Tier 2"
+	case "tier2_sub":
+		return "Big town"
+	case "tier3":
+		return "Tier 3"
+	case "tier3_sub":
+		return "Smaller city"
+	case "high_cost":
+		return "High cost"
+	case "high_cost_sub":
+		return "Coast / capital"
+	case "mid_cost":
+		return "Mid cost"
+	case "mid_cost_sub":
+		return "Regional city"
+	case "low_cost":
+		return "Lower cost"
+	case "low_cost_sub":
+		return "Smaller city"
+	case "house":
+		return "House"
+	case "own":
+		return "I own"
+	case "own_sub":
+		return "No extra corpus"
+	case "rent":
+		return "I’ll keep renting"
+	case "rent_sub":
+		return "Rent stays in expenses"
+	case "buy":
+		return "I rent, I’ll buy"
+	case "buy_sub":
+		return "House added; keep rent for now"
+	case "ret_in":
+		return "Expected return % (invested SIPs + foreign · 12% plan)"
+	case "ret_us":
+		return "Expected return % (invested + retirement)"
+	case "inf_in":
+		return "Inflation % (India 6%)"
+	case "inf_us":
+		return "Inflation % (World 3%)"
+	case "swr_in":
+		return "Safe withdrawal rate % (3.5% ≈ 29×)"
+	case "swr_us":
+		return "Safe withdrawal rate % (4% ≈ 25×)"
+	case "parked_head":
+		return "Parked · ~6%"
+	case "parked_in":
+		return "Cash, FDs, liquid funds till now"
+	case "parked_us":
+		return "Cash & savings till now"
+	case "gold_head":
+		return "Gold funds · ~8%"
+	case "jew_head":
+		return "Jewellery · kept · ~8%"
+	case "jew_label":
+		return "Jewellery (you would not sell)"
+	case "nps_head":
+		return "NPS · EPF · PPF"
+	case "nps_now":
+		return "NPS till now"
+	case "nps_mo":
+		return "NPS monthly"
+	case "epf_now":
+		return "EPF till now"
+	case "epf_mo":
+		return "EPF monthly"
+	case "ppf_now":
+		return "PPF till now"
+	case "ppf_mo":
+		return "PPF monthly"
+	case "foreign_head":
+		return "Foreign stocks"
+	case "retire_head":
+		return "Retirement account"
+	case "till_now":
+		return "Till now"
+	case "monthly":
+		return "Monthly"
+	case "invested_head":
+		return "Invested · expected return"
+	case "old_sips":
+		return "Till now (old SIPs)"
+	case "step_note":
+		return "Each year, monthly SIPs and other monthly pots rise by this %. 10% is the usual plan as income grows. 0 keeps today’s amount. PPF stays at the ₹1.5L/year cap."
+	case "house_add":
+		return "House add-on"
+	case "jew_kept":
+		return "Jewellery (kept)"
+	case "later":
+		return "Later "
+	case "lean":
+		return "Lean"
+	case "regular":
+		return "Regular"
+	case "fat":
+		return "Fat"
+	case "parked_us_copy":
+		return "Educational parking rate 6%. Cash and savings only — no monthly contribution into this pot."
+	case "parked_in_copy":
+		return "Educational parking rate 6% (cash, FDs, liquid funds). No monthly SIP here. Old SIPs still sitting in funds go under Invested."
+	case "gold_copy":
+		return "Educational ~8%. Gold funds and coins you could sell. Not jewellery."
+	case "jew_copy":
+		return "Grows at ~8% like gold, so net worth rises. You keep it — it does not shorten years-to-FIRE."
+	case "inv_us":
+		return "This pot grows at {rate}% — your expected return. Old contributions still invested, plus monthly contributions still running. Lock-ins, employer match, and tax wrappers are ignored — educational only."
+	case "inv_in":
+		return "This pot grows at {rate}% — your expected return. Old SIPs still in funds, plus SIPs still running. NPS ~9%, EPF ~8.25%, PPF ~7.1% — educational rates, lock-ins ignored. PPF cap is ₹1.5L/year."
+	case "house_line":
+		return "Indicative modest house in a {city} city: {cost}."
+	case "city_t1":
+		return "tier-1"
+	case "city_t2":
+		return "tier-2"
+	case "city_t3":
+		return "tier-3"
+	case "city_hi":
+		return "high-cost"
+	case "city_mid":
+		return "mid-cost"
+	case "city_lo":
+		return "lower-cost"
+	case "house_buy":
+		return " Added to the number, then inflated with expenses. Keep today’s rent inside annual expenses until you buy; after that you can drop rent from spend."
+	case "house_own":
+		return " Not added — you already live there. Keep the mortgage out of expenses if the home is paid."
+	case "house_rent":
+		return " Not added. You’ll keep renting, so put rent inside annual expenses."
+	case "chart_spend":
+		return "Spendable"
+	case "chart_nw":
+		return "Net worth"
+	case "chart_fire":
+		return "FIRE number"
+	case "chart_stack":
+		return "Pots versus the number"
+	case "chart_stack_sub":
+		return "Each sleeve stacked. The dashed line is the FIRE number."
+	case "pots_chart":
+		return "Today vs 20 years later"
+	case "pots_chart_sub":
+		return "Each pot today, and what it becomes if you keep going."
+	case "pots_grows":
+		return "Growth"
+	case "pots_today":
+		return "Today"
+	case "pots_later_20":
+		return "In 20 years"
+	case "pots_later_years":
+		return "In {years} years"
+	case "pots_later_fi":
+		return "At age {age}"
+	case "pots_later_keep":
+		return "In 10 years"
+	case "pots_later_far":
+		return "In 40 years"
+	case "pots_span":
+		return "{today} today → {later} {when}"
+	case "pots_lead":
+		return "{pot} is {today} today, {later} {when}."
+	case "pots_lead_flat":
+		return "These pots stay about the same on these assumptions."
+	case "chart_parked":
+		return "Parked"
+	case "chart_nps":
+		return "NPS"
+	case "chart_epf":
+		return "EPF"
+	case "chart_ppf":
+		return "PPF"
+	case "chart_foreign":
+		return "Foreign"
+	case "chart_invested_sip":
+		return "Invested SIPs"
+	case "chart_gold":
+		return "Gold"
+	case "chart_jew":
+		return "Jewellery"
+	case "chart_retire":
+		return "Retirement"
+	case "sip_h1":
+		return "SIP & compounding"
+	case "sip_intro":
+		return "Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, no brochure."
+	case "sip_monthly":
+		return "Monthly contribution"
+	case "sip_existing":
+		return "Existing corpus"
+	case "expected_return":
+		return "Expected return %"
+	case "years":
+		return "Years"
+	case "future_value":
+		return "Future value"
+	case "invested":
+		return "Invested"
+	case "interest":
+		return "Interest"
+	case "gain":
+		return "Gain"
+	case "sip_split":
+		return "Invested {invested} · Gain {gain}"
+	case "chart_invested":
+		return "Invested"
+	case "chart_fv":
+		return "Future value"
+	case "emi_h1":
+		return "EMI with prepayment"
+	case "emi_intro":
+		return "What if you throw extra at it? Reducing-balance EMI, then extra monthly or a day-one lump."
+	case "emi_monthly":
+		return "Monthly EMI"
+	case "principal":
+		return "Principal"
+	case "annual_rate":
+		return "Annual rate %"
+	case "extra_monthly":
+		return "Extra monthly"
+	case "lump":
+		return "Day-one lump"
+	case "interest_only":
+		return "Interest only"
+	case "interest_saved":
+		return "Interest saved"
+	case "tenure":
+		return "Tenure"
+	case "months_saved":
+		return "Months saved"
+	case "mo":
+		return " mo"
+	case "you_pay":
+		return "You pay (principal + interest)"
+	case "prin_int":
+		return "Principal {principal} · Interest {interest}"
+	case "emi_after":
+		return "After extra, interest {interest} · you pay {pay} · saved {saved}"
+	case "chart_sched":
+		return "Scheduled balance"
+	case "chart_prepay":
+		return "With prepayment"
+	case "em_h1":
+		return "Emergency fund"
+	case "em_intro":
+		return "How many months of runway, the gap, and how fast a top-up closes it."
+	case "em_essentials":
+		return "Monthly essentials"
+	case "em_cover":
+		return "Months of cover"
+	case "em_buffer":
+		return "Current buffer"
+	case "em_topup":
+		return "Monthly top-up"
+	case "em_park":
+		return "Parking return %"
+	case "target":
+		return "Target"
+	case "gap":
+		return "Gap"
+	case "coverage_now":
+		return "Coverage now"
+	case "fill_met":
+		return "Target already met."
+	case "fill_never":
+		return "Does not fill within 40 years on this top-up."
+	case "fill_months":
+		return "{n} months to fill."
+	case "chart_buffer":
+		return "Buffer"
+	case "chart_target":
+		return "Target"
+	case "bud_h1":
+		return "50/30/20 budget"
+	case "bud_intro":
+		return "A simple split of this month’s take-home (after tax): 50% needs, 30% wants, 20% savings. Type what you actually spent. We show the cap for your income, and whether a bucket went over."
+	case "bud_hint":
+		return "Needs: rent, groceries, bills, fees, medicines. Wants: eating out, shopping, travel for fun. Savings: SIPs, deposits, anything you parked and did not spend. The split is a workshop rule, not a law."
+	case "this_month":
+		return "This month"
+	case "take_home":
+		return "Take-home this month (after tax)"
+	case "needs_in":
+		return "Needs — rent, groceries, bills"
+	case "wants_in":
+		return "Wants — eating out, shopping, fun"
+	case "save_in":
+		return "Savings — SIPs, deposits, parked"
+	case "needs50":
+		return "Needs · 50%"
+	case "wants30":
+		return "Wants · 30%"
+	case "save20":
+		return "Savings · 20%"
+	case "cap":
+		return "Cap "
+	case "aim":
+		return "Aim "
+	case "vs_typed":
+		return "Target vs what you typed"
+	case "vs_hint":
+		return "Grey bar is the 50 / 30 / 20 cap. Blue bar is what you typed."
+	case "overspent":
+		return "Overspent"
+	case "needs_over":
+		return "Needs over cap"
+	case "wants_over":
+		return "Wants over cap"
+	case "save_under":
+		return "Saving under 20%"
+	case "on_track":
+		return "On track"
+	case "save_line":
+		return "You save {pct}% of take-home. The 20% bucket is {amount}."
+	case "hit_20":
+		return "Hits the 20% bucket."
+	case "on_cap":
+		return "On the cap."
+	case "more_20":
+		return "{amount} more than the 20% bucket."
+	case "short_20":
+		return "{amount} short of the 20% bucket."
+	case "over_cap":
+		return "{amount} over the cap."
+	case "under_cap":
+		return "{amount} under the cap."
+	case "bud_over":
+		return "Needs + wants + savings add up to more than take-home. Something is missing, or the month is overspent."
+	case "bud_left":
+		return "{amount} of take-home is not in any bucket yet."
+	case "bud_over_sum":
+		return "The three buckets exceed take-home by {amount}."
+	case "bud_ok":
+		return "The three buckets add up to take-home."
+	case "chart_needs":
+		return "Needs"
+	case "chart_wants":
+		return "Wants"
+	case "chart_savings":
+		return "Savings"
+	case "chart_actual":
+		return "Actual"
+	case "guide_h1":
+		return "Sleeves for your FIRE years"
+	case "guide_intro":
+		return "Horizon is years until independence. Mix stays at category level — never a stock, fund, AMC, or ticker."
+	case "horizon":
+		return "Years to FIRE"
+	case "risk":
+		return "Risk stance"
+	case "risk_con":
+		return "Conservative"
+	case "risk_con_sub":
+		return "Sleep at night"
+	case "risk_mod":
+		return "Moderate"
+	case "risk_mod_sub":
+		return "Balanced mix"
+	case "risk_agg":
+		return "Aggressive"
+	case "risk_agg_sub":
+		return "Long horizon"
+	case "monthly_inv":
+		return "Monthly investable"
+	case "goals":
+		return "Goals"
+	case "goals_ph":
+		return "Independence, a home, children’s education — in your words."
+	case "show_mix":
+		return "Show my mix"
+	case "working":
+		return "Working…"
+	case "guide_empty":
+		return "Submit to see a category mix. Calculators stay on-device; this is the one network call."
+	case "sleeves":
+		return "Suggested sleeves"
+	case "play_fire":
+		return "Play with FIRE"
+	case "disc_h1":
+		return "Disclaimer"
+	case "disc_p1":
+		return "the number is an educational workshop. It is not a SEBI-registered investment advisor, research analyst, or broker. Nothing here is registered investment advice, a solicitation, or a recommendation to buy or sell any security."
+	case "disc_h2":
+		return "The maths is yours"
+	case "disc_p2":
+		return "Every calculator is arithmetic on the assumptions you type. Change the return, inflation, or withdrawal rate and the “number” moves. The popular 4% safe-withdrawal rule can fail in long poor markets. Past returns do not predict future ones."
+	case "disc_h3":
+		return "What we omit"
+	case "disc_p3":
+		return "Taxes, exit loads, expense ratios, insurance, currency risk, and sequence-of-returns risk are omitted. EPF, NPS, and PPF lock-ins and annuity rules are ignored so the pots can sit in one number. House prices are a modest indicative corpus, not a quote. Real life is messier than a typed assumption."
+	case "disc_h4":
+		return "Guidance stays at category level"
+	case "disc_p4":
+		return "Optional allocation guidance names only asset-class sleeves (for example large-cap index or gold). It never names stocks, funds, AMCs, or tickers. If a language model is configured, its output is sanitised the same way. On failure we fall back to an on-device heuristic."
+	case "disc_h5":
+		return "What we store"
+	case "disc_p5":
+		return "There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (theme=dark or light) remembers appearance. A region cookie (region=in or us) remembers India ₹ vs World $. There is no localStorage."
+	case "disc_end":
+		return "Not registered investment advice. For educational purposes only."
+	default:
+		return key
+	}
+}

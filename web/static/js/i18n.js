@@ -356,7 +356,7 @@
   function fillI18n(root) {
     (root || document).querySelectorAll("[data-i18n]").forEach(function (el) {
       var k = el.getAttribute("data-i18n");
-      if (k) el.textContent = lookup(k);
+      if (k && Object.prototype.hasOwnProperty.call(EN, k)) el.textContent = EN[k];
     });
   }
 
