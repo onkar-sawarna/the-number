@@ -564,11 +564,13 @@ func Copy(key string) string {
 	case "sip_h1":
 		return "SIP & compounding"
 	case "sip_intro":
-		return "Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, no brochure."
+		return "Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, optional yearly step-up. No brochure."
 	case "sip_monthly":
 		return "Monthly contribution"
 	case "sip_existing":
 		return "Existing corpus"
+	case "sip_step_note":
+		return "Each year the monthly contribution rises by this %. 10% is the usual plan as income grows. 0 keeps today’s amount."
 	case "expected_return":
 		return "Expected return %"
 	case "years":

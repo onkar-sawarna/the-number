@@ -1222,8 +1222,9 @@
       existing: 0,
       expectedReturn: 12,
       years: 15,
+      stepUp: 10,
       region: currentRegion(),
-      result: Calc.sip({ monthly: 10000, existing: 0, expectedReturn: 12, years: 15 }),
+      result: Calc.sip({ monthly: 10000, existing: 0, expectedReturn: 12, years: 15, stepUp: 10 }),
       _chart: null,
       init: function () { bindRegion(this); this.recalc(); },
       recalc: function () {
@@ -1232,6 +1233,7 @@
           existing: Number(this.existing) || 0,
           expectedReturn: Number(this.expectedReturn) || 0,
           years: Number(this.years) || 0,
+          stepUp: Number(this.stepUp) || 0,
         });
         scheduleDraw(this);
       },

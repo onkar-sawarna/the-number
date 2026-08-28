@@ -122,7 +122,7 @@ func parityJobs() []jsJob {
 	}
 	for _, in := range sipFixtures() {
 		jobs = append(jobs, jsJob{Op: "sip", Input: map[string]any{
-			"monthly": in.Monthly, "existing": in.Existing, "expectedReturn": in.ExpectedReturn, "years": in.Years,
+			"monthly": in.Monthly, "existing": in.Existing, "expectedReturn": in.ExpectedReturn, "years": in.Years, "stepUp": in.StepUp,
 		}})
 	}
 	for _, in := range emiFixtures() {
@@ -195,6 +195,7 @@ func sipFixtures() []SIPInput {
 		DefaultSIP(),
 		{Monthly: 10_000, Existing: 0, ExpectedReturn: 12, Years: 10},
 		{Monthly: 10_000, Existing: 50_000, ExpectedReturn: 0, Years: 10},
+		{Monthly: 10_000, Existing: 0, ExpectedReturn: 12, Years: 10, StepUp: 10},
 	}
 }
 

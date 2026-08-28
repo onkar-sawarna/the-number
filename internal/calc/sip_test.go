@@ -19,3 +19,18 @@ func TestSIPZeroRate(t *testing.T) {
 		t.Fatalf("zero rate FV=%v want %v", out.FV, want)
 	}
 }
+
+func TestSIPStepUpRaisesInvested(t *testing.T) {
+	flat := SIP(SIPInput{Monthly: 10_000, ExpectedReturn: 0, Years: 2})
+	up := SIP(SIPInput{Monthly: 10_000, ExpectedReturn: 0, Years: 2, StepUp: 10})
+	want := 10_000.0*12 + 11_000*12
+	if up.Invested != want {
+		t.Fatalf("invested=%v want %v", up.Invested, want)
+	}
+	if up.Invested <= flat.Invested {
+		t.Fatalf("step-up should invest more: flat=%v up=%v", flat.Invested, up.Invested)
+	}
+	if up.FV != want {
+		t.Fatalf("zero-rate FV should equal invested: %v", up.FV)
+	}
+}

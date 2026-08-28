@@ -361,29 +361,29 @@
     return out;
   }
 
-  function sipFV(monthly, existing, rm, n) {
-    if (n <= 0) return existing;
-    if (nearlyZero(rm)) return existing + monthly * n;
-    var fvSip = (monthly * (Math.pow(1 + rm, n) - 1)) / rm;
-    return fvSip + existing * Math.pow(1 + rm, n);
-  }
-
   function sip(input) {
     var years = Math.max(0, input.years | 0);
     var n = years * 12;
-    var rm = monthlyEffective(input.expectedReturn);
-    var fv = sipFV(input.monthly, input.existing, rm, n);
-    var invested = input.monthly * n + input.existing;
+    var end = sipPath(input.monthly, input.existing, input.stepUp, input.expectedReturn, n);
     var chart = [];
     for (var y = 0; y <= years; y++) {
-      var nm = y * 12;
-      chart.push({
-        year: y,
-        invested: input.monthly * nm + input.existing,
-        fv: sipFV(input.monthly, input.existing, rm, nm),
-      });
+      var pt = sipPath(input.monthly, input.existing, input.stepUp, input.expectedReturn, y * 12);
+      chart.push({ year: y, invested: pt.invested, fv: pt.fv });
     }
-    return { invested: invested, fv: fv, gain: fv - invested, chart: chart };
+    return { invested: end.invested, fv: end.fv, gain: end.fv - end.invested, chart: chart };
+  }
+
+  function sipPath(monthly, existing, stepUp, annualPct, months) {
+    if (months < 0) months = 0;
+    var rm = monthlyEffective(annualPct);
+    var fv = nz(existing);
+    var invested = nz(existing);
+    for (var m = 1; m <= months; m++) {
+      var p = steppedMonthly(nz(monthly), stepUp, m);
+      fv = fv * (1 + rm) + p;
+      invested += p;
+    }
+    return { fv: fv, invested: invested };
   }
 
   function emiAmount(principal, annualRate, years) {

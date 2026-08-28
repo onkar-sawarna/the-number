@@ -289,9 +289,10 @@
     chart_retire: "Retirement",
 
     sip_h1: "SIP & compounding",
-    sip_intro: "Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, no brochure.",
+    sip_intro: "Leave a contribution running. See what it becomes — month-end SIPs, monthly compounding, optional yearly step-up. No brochure.",
     sip_monthly: "Monthly contribution",
     sip_existing: "Existing corpus",
+    sip_step_note: "Each year the monthly contribution rises by this %. 10% is the usual plan as income grows. 0 keeps today’s amount.",
     expected_return: "Expected return %",
     years: "Years",
     future_value: "Future value",

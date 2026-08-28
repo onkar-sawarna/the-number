@@ -1,12 +1,11 @@
 package calc
 
-import "math"
-
 type SIPInput struct {
 	Monthly        float64 `json:"monthly"`
 	Existing       float64 `json:"existing"`
 	ExpectedReturn float64 `json:"expected_return"`
 	Years          int     `json:"years"`
+	StepUp         float64 `json:"step_up"` // yearly % rise in monthly SIP
 }
 
 type SIPPoint struct {
@@ -28,6 +27,7 @@ func DefaultSIP() SIPInput {
 		Existing:       0,
 		ExpectedReturn: 12,
 		Years:          15,
+		StepUp:         10,
 	}
 }
 
@@ -36,9 +36,7 @@ func SIP(in SIPInput) SIPOutput {
 		in.Years = 0
 	}
 	n := in.Years * 12
-	rm := monthlyEffective(in.ExpectedReturn)
-	fv := sipFV(in.Monthly, in.Existing, rm, n)
-	invested := in.Monthly*float64(n) + in.Existing
+	fv, invested := sipPath(in.Monthly, in.Existing, in.StepUp, in.ExpectedReturn, n)
 	out := SIPOutput{
 		Invested: invested,
 		FV:       fv,
@@ -46,25 +44,27 @@ func SIP(in SIPInput) SIPOutput {
 		Chart:    make([]SIPPoint, 0, in.Years+1),
 	}
 	for y := 0; y <= in.Years; y++ {
-		nm := y * 12
+		fy, inv := sipPath(in.Monthly, in.Existing, in.StepUp, in.ExpectedReturn, y*12)
 		out.Chart = append(out.Chart, SIPPoint{
 			Year:     y,
-			Invested: in.Monthly*float64(nm) + in.Existing,
-			FV:       sipFV(in.Monthly, in.Existing, rm, nm),
+			Invested: inv,
+			FV:       fy,
 		})
 	}
 	return out
 }
 
-func sipFV(monthly, existing, rm float64, n int) float64 {
-	if n <= 0 {
-		return existing
+func sipPath(monthly, existing, stepUp, annualPct float64, months int) (fv, invested float64) {
+	if months < 0 {
+		months = 0
 	}
-	nf := float64(n)
-	if nearlyZero(rm) {
-		return existing + monthly*nf
+	rm := monthlyEffective(annualPct)
+	fv = nz(existing)
+	invested = nz(existing)
+	for m := 1; m <= months; m++ {
+		p := steppedMonthly(nz(monthly), stepUp, m)
+		fv = fv*(1+rm) + p
+		invested += p
 	}
-	fvSip := monthly * (math.Pow(1+rm, nf) - 1) / rm
-	fvExist := existing * math.Pow(1+rm, nf)
-	return fvSip + fvExist
+	return fv, invested
 }

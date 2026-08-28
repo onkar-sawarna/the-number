@@ -108,9 +108,9 @@ India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,
 
 Ordinary annuity, month-end contribution, monthly compounding.
 
-`FV_sip = P * ((1+r_m)^n - 1) / r_m` plus existing corpus grown `(1+r_m)^n`. If r ≈ 0, FV = principal sums.
+`FV_sip = P * ((1+r_m)^n - 1) / r_m` plus existing corpus grown `(1+r_m)^n`. If r ≈ 0, FV = principal sums. Optional yearly step-up raises the monthly SIP by that % after each completed year (same `steppedMonthly` as FIRE). Default step-up 10%.
 
-Defaults: 10,000/mo, 0 existing, 12%, 15 years.
+Defaults: 10,000/mo, 0 existing, 12%, 15 years, 10% yearly step-up.
 
 ### EMI
 
