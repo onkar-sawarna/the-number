@@ -76,6 +76,9 @@ func TestFIREPageHasPlanLink(t *testing.T) {
 	if !strings.Contains(body, "Or pay via card") {
 		t.Fatal("FIRE page missing pay-via-card line")
 	}
+	if !strings.Contains(body, "Switch that page to Indian Rupee") {
+		t.Fatal("FIRE page missing India card hint")
+	}
 	if !strings.Contains(body, "buymeacoffee.com/onkarsawarna") {
 		t.Fatal("full FIRE page missing World card link")
 	}

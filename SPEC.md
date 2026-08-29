@@ -8,7 +8,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 - Live inputs: maths and charts update in the browser with **no server round-trip**.
 - Numbers stay in the browser. No accounts, no database. Last FIRE inputs can stay in `localStorage` on this device.
 - Optional category-level allocation guidance (never product names).
-- After results on the full FIRE calculator, a support card plus a link to `/support`. India (`region=in`) sees UPI (Google Pay QR, id, pay, copy) and a text link **Or pay via card**. World (`region=us`) sees a card button (Buy Me a Coffee). The home playground stays the number. Not required to see the year. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`), remark “Paid for FIRE — the number”. Card URL from `SUPPORT_CARD_URL` (default `https://buymeacoffee.com/onkarsawarna`).
+- After results on the full FIRE calculator, a support card plus a link to `/support`. India (`region=in`) sees UPI (Google Pay QR, id, pay, copy) and a text link **Or pay via card** (an Indian card works if they switch that page to ₹). World (`region=us`) sees a card button (Buy Me a Coffee). The home playground stays the number. Not required to see the year. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`), remark “Paid for FIRE — the number”. Card URL from `SUPPORT_CARD_URL` (default `https://buymeacoffee.com/onkarsawarna`).
 
 Calculators and guidance are public. There is no account.
 

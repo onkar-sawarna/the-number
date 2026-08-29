@@ -189,7 +189,7 @@
     support_h_why: "Why ask at all",
     support_p_why: "The host sleeps. The domain costs. Evenings go into pots, housing, and the crossing. A coffee is enough. Close the tab and nothing changes.",
     support_h_how: "In India",
-    support_p_how: "Scan the Google Pay code from a computer, or pay on your phone. The remark is already Paid for FIRE — the number, so I know it came from here.",
+    support_p_how: "Scan the Google Pay code from a computer, or pay on your phone. The remark is already Paid for FIRE — the number, so I know it came from here. A card works in India too — use Or pay via card, then switch that page to Indian Rupee.",
     support_h_world: "From outside India",
     support_p_world: "A US or UK bank app cannot pay that UPI. Use the card page — same coffee, in a currency your bank knows. Not a fund. Not required.",
     support_page_close: "Then go back to the calculator. The number is still yours.",
@@ -201,6 +201,7 @@
     support_card: "Pay with a card",
     support_card_note: "Opens Buy Me a Coffee. Close the tab and nothing changes.",
     support_via_card: "Or pay via card",
+    support_via_card_hint: "Works in India. Switch that page to Indian Rupee.",
     support_copy: "Copy UPI ID",
     support_copied: "Copied",
 

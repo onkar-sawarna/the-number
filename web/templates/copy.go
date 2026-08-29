@@ -370,7 +370,7 @@ func Copy(key string) string {
 	case "support_h_how":
 		return "In India"
 	case "support_p_how":
-		return "Scan the Google Pay code from a computer, or pay on your phone. The remark is already Paid for FIRE — the number, so I know it came from here."
+		return "Scan the Google Pay code from a computer, or pay on your phone. The remark is already Paid for FIRE — the number, so I know it came from here. A card works in India too — use Or pay via card, then switch that page to Indian Rupee."
 	case "support_h_world":
 		return "From outside India"
 	case "support_p_world":
@@ -393,6 +393,8 @@ func Copy(key string) string {
 		return "Opens Buy Me a Coffee. Close the tab and nothing changes."
 	case "support_via_card":
 		return "Or pay via card"
+	case "support_via_card_hint":
+		return "Works in India. Switch that page to Indian Rupee."
 	case "support_copy":
 		return "Copy UPI ID"
 	case "support_copied":
