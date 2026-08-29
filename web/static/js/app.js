@@ -532,6 +532,7 @@
       options: [],
       coast: { reaches: false },
       planCopied: false,
+      supportCopied: false,
       result: Calc.fire({
         age: 30,
         annualExpenses: 1200000,
@@ -779,6 +780,28 @@
       },
       copyPlanLabel: function () {
         return this.t(this.planCopied ? "copy_plan_done" : "copy_plan");
+      },
+      supportCopyLabel: function () {
+        return this.t(this.supportCopied ? "support_copied" : "support_copy");
+      },
+      copySupportUPI: function () {
+        var el = this.$root.querySelector("[data-support-upi]");
+        var id = el ? (el.getAttribute("data-support-upi") || "").trim() : "";
+        if (!id) return;
+        var self = this;
+        var done = function () {
+          self.supportCopied = true;
+          setTimeout(function () {
+            self.supportCopied = false;
+          }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(id).then(done).catch(function () {
+            if (self.fallbackCopy(id)) done();
+          });
+          return;
+        }
+        if (this.fallbackCopy(id)) done();
       },
       fallbackCopy: function (text) {
         var el = document.createElement("textarea");

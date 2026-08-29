@@ -308,6 +308,12 @@ templ fireResultExtras() {
 			<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="shareYear()">@Tx("share_year")</button>
 			<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("crossing_learn")</a>
 		</div>
+		<p class="mt-4 text-[11px] leading-relaxed text-ink/40 dark:text-zinc-500">
+			@Tx("support_lead")
+			<a href={ SupportUPIHref() } data-support-upi={ SupportUPI() } class="ml-1 font-medium text-ink/55 underline decoration-brand/30 underline-offset-2 hover:text-brand dark:text-zinc-400">{ SupportUPI() }</a>
+			<span class="mx-1" aria-hidden="true">·</span>
+			<button type="button" class="underline decoration-black/15 underline-offset-2 hover:text-ink dark:decoration-white/20 dark:hover:text-zinc-300" x-on:click="copySupportUPI()" x-text="supportCopyLabel()">@Tx("support_copy")</button>
+		</p>
 		<canvas id="fire-share-card" width="1200" height="630" class="hidden" aria-hidden="true"></canvas>
 	</div>
 }

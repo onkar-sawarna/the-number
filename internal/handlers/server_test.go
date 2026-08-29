@@ -57,6 +57,12 @@ func TestFIREPageHasPlanLink(t *testing.T) {
 	if !strings.Contains(body, "Copy this plan") {
 		t.Fatal("FIRE page missing copy-this-plan")
 	}
+	if !strings.Contains(body, "If the year helped, UPI is welcome") {
+		t.Fatal("FIRE page missing support line")
+	}
+	if !strings.Contains(body, "upi://pay?") {
+		t.Fatal("FIRE page missing UPI pay link")
+	}
 	if !strings.Contains(body, "coastLine()") {
 		t.Fatal("FIRE page missing coast line")
 	}

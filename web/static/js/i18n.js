@@ -177,6 +177,9 @@
     share_never: "Not independent in 80 years.",
     share_kicker: "the number",
     share_footer: "Educational, not advice · number.onkarsawarna.dev",
+    support_lead: "If the year helped, UPI is welcome — not required.",
+    support_copy: "Copy UPI",
+    support_copied: "Copied",
 
     already_there: "Already there.",
     not_80: "Not in 80 yrs",
