@@ -21,6 +21,9 @@ func TestCopyKnownKeys(t *testing.T) {
 	if got := Copy("not_found_home"); got != "Back home" {
 		t.Fatalf("Copy(not_found_home)=%q", got)
 	}
+	if got := Copy("hero_sub_short"); got != "Type what you spend and save. See the year you could stop." {
+		t.Fatalf("Copy(hero_sub_short)=%q", got)
+	}
 	if Copy("does_not_exist") != "does_not_exist" {
 		t.Fatal("missing keys should echo the key")
 	}

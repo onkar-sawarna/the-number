@@ -6,8 +6,8 @@ templ FIREPage(p Page) {
 			@CalcNav(p.Path)
 			@mobileStickyStat("number_today", "fmtINR(result.stillNeed)", "yearsCopy()")
 			<h1 class="font-serif text-3xl tracking-tight sm:text-4xl">@Tx("fire_h1")</h1>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isIN()">@Tx("fire_intro_in")</p>
-			<p class="mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("fire_intro_us")</p>
+			<p class="mt-2 max-w-2xl text-sm leading-snug text-ink/65 dark:text-zinc-400" x-show="isIN()">@Tx("fire_intro_in")</p>
+			<p class="mt-2 max-w-2xl text-sm text-ink/65 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("fire_intro_us")</p>
 			<div class="mt-4 flex flex-wrap gap-2">
 				<button type="button" class="preset-chip" x-on:click="applyPreset('start')">@Tx("preset_start")</button>
 				<button type="button" class="preset-chip" x-on:click="applyPreset('mid')">@Tx("preset_mid")</button>
@@ -19,24 +19,24 @@ templ FIREPage(p Page) {
 					@moneyRange("annual_expenses", "annual_exp", "annualExpenses")
 					<div>
 						<p class="mb-2 text-sm text-ink/60 dark:text-zinc-400">@Tx("city")</p>
-						<div class="grid grid-cols-3 gap-2">
-							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 1 ? 'is-on' : ''" x-on:click="cityTier = 1; recalc()">
-								<span class="block text-sm font-medium" x-show="isIN()">@Tx("tier1")</span>
-								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>@Tx("high_cost")</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier1_sub")</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("high_cost_sub")</span>
+						<div class="grid min-w-0 grid-cols-3 gap-1.5 sm:gap-2">
+							<button type="button" class="risk-card risk-card-compact text-center sm:text-left" x-bind:class="cityTier === 1 ? 'is-on' : ''" x-on:click="cityTier = 1; recalc()">
+								<span class="block text-xs font-medium sm:text-sm" x-show="isIN()">@Tx("tier1")</span>
+								<span class="block text-xs font-medium sm:text-sm" x-show="isUS()" x-cloak>@Tx("high_cost")</span>
+								<span class="mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier1_sub")</span>
+								<span class="mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("high_cost_sub")</span>
 							</button>
-							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 2 ? 'is-on' : ''" x-on:click="cityTier = 2; recalc()">
-								<span class="block text-sm font-medium" x-show="isIN()">@Tx("tier2")</span>
-								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>@Tx("mid_cost")</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier2_sub")</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("mid_cost_sub")</span>
+							<button type="button" class="risk-card risk-card-compact text-center sm:text-left" x-bind:class="cityTier === 2 ? 'is-on' : ''" x-on:click="cityTier = 2; recalc()">
+								<span class="block text-xs font-medium sm:text-sm" x-show="isIN()">@Tx("tier2")</span>
+								<span class="block text-xs font-medium sm:text-sm" x-show="isUS()" x-cloak>@Tx("mid_cost")</span>
+								<span class="mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier2_sub")</span>
+								<span class="mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("mid_cost_sub")</span>
 							</button>
-							<button type="button" class="risk-card text-left" x-bind:class="cityTier === 3 ? 'is-on' : ''" x-on:click="cityTier = 3; recalc()">
-								<span class="block text-sm font-medium" x-show="isIN()">@Tx("tier3")</span>
-								<span class="block text-sm font-medium" x-show="isUS()" x-cloak>@Tx("low_cost")</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier3_sub")</span>
-								<span class="mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("low_cost_sub")</span>
+							<button type="button" class="risk-card risk-card-compact text-center sm:text-left" x-bind:class="cityTier === 3 ? 'is-on' : ''" x-on:click="cityTier = 3; recalc()">
+								<span class="block text-xs font-medium sm:text-sm" x-show="isIN()">@Tx("tier3")</span>
+								<span class="block text-xs font-medium sm:text-sm" x-show="isUS()" x-cloak>@Tx("low_cost")</span>
+								<span class="mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400" x-show="isIN()">@Tx("tier3_sub")</span>
+								<span class="mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400" x-show="isUS()" x-cloak>@Tx("low_cost_sub")</span>
 							</button>
 						</div>
 					</div>

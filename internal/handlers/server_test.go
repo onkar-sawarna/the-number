@@ -46,6 +46,12 @@ func TestHomeStillOK(t *testing.T) {
 	if !strings.Contains(body, `href="/support"`) {
 		t.Fatal("home nav missing support")
 	}
+	if !strings.Contains(body, "Educational information only, not personalized financial advice. Consult a SEBI-registered investment advisor before investing.") {
+		t.Fatal("home missing guidance banner")
+	}
+	if strings.Contains(body, "bg-sky-50") {
+		t.Fatal("guidance banner should not be a colored strip")
+	}
 	if strings.Contains(body, "The year stays free. The domain") || strings.Contains(body, "/static/img/upi-qr-code.png") {
 		t.Fatal("home playground should not show the UPI card")
 	}

@@ -61,6 +61,8 @@ func Copy(key string) string {
 		return " that lets you stop."
 	case "hero_sub":
 		return "FIRE is a corpus large enough that a small withdrawal covers your yearly spend — so a salary becomes optional. You do not have to retire at 40. Type what you spend and save. See the year you could stop. India in rupees, everywhere else in dollars. No login, no fund pitch."
+	case "hero_sub_short":
+		return "Type what you spend and save. See the year you could stop."
 	case "chip_product":
 		return "Independence, not a product pitch"
 	case "chip_browser":
@@ -126,7 +128,7 @@ func Copy(key string) string {
 	case "calc_wait_kicker":
 		return "After you calculate"
 	case "calc_wait":
-		return "Your number, the year you can stop, and how each pot grows — from the boxes, not a demo."
+		return "The year, the pots, and what moves them — from the boxes."
 	case "calc_wait_hook":
 		return "Type the boxes. Calculate writes the year."
 	case "calc_wait_1":
@@ -422,9 +424,9 @@ func Copy(key string) string {
 	case "fire_h1":
 		return "FIRE number"
 	case "fire_intro_in":
-		return "India plan: invested SIPs, bonds, and other invested pots at 12%, inflation 6%, withdrawal 4% — 25× expenses. Lean is 20×, Fat is 50×. Liquid savings (cash, FDs, liquid funds) sit in the corpus at ~6% and take no monthly SIP — put running SIPs, old SIPs, bonds, and other invested stuff under Invested, next to it. Gold funds ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, foreign stocks, and housing. Step SIPs up 10% a year."
+		return "12% return, 6% inflation, 4% withdrawal. Other pots and housing sit in the boxes below."
 	case "fire_intro_us":
-		return "Liquid savings sit in the corpus at ~6% and take no monthly contribution — bonds, brokerage, and running contributions go under Invested, next to it. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then a retirement account and housing. Amounts are in dollars."
+		return "Liquid savings at ~6%. Invested pots, gold, retirement, jewellery, and housing sit in the boxes below."
 	case "annual_exp":
 		return "Annual expenses (include rent if you rent)"
 	case "city":

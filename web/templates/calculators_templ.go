@@ -61,7 +61,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1><p class=\"mt-2 max-w-2xl text-sm leading-snug text-ink/65 dark:text-zinc-400\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -69,7 +69,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-2 max-w-2xl text-sm text-ink/65 sm:text-base dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-2 max-w-2xl text-sm text-ink/65 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -121,7 +121,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"grid grid-cols-3 gap-2\"><button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"cityTier === 1 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 1; recalc()\"><span class=\"block text-sm font-medium\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"grid min-w-0 grid-cols-3 gap-1.5 sm:gap-2\"><button type=\"button\" class=\"risk-card risk-card-compact text-center sm:text-left\" x-bind:class=\"cityTier === 1 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 1; recalc()\"><span class=\"block text-xs font-medium sm:text-sm\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -129,7 +129,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"block text-sm font-medium\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"block text-xs font-medium sm:text-sm\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -137,7 +137,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -145,7 +145,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -153,7 +153,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></button> <button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"cityTier === 2 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 2; recalc()\"><span class=\"block text-sm font-medium\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></button> <button type=\"button\" class=\"risk-card risk-card-compact text-center sm:text-left\" x-bind:class=\"cityTier === 2 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 2; recalc()\"><span class=\"block text-xs font-medium sm:text-sm\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -161,7 +161,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"block text-sm font-medium\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"block text-xs font-medium sm:text-sm\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -169,7 +169,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -177,7 +177,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -185,7 +185,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></button> <button type=\"button\" class=\"risk-card text-left\" x-bind:class=\"cityTier === 3 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 3; recalc()\"><span class=\"block text-sm font-medium\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></button> <button type=\"button\" class=\"risk-card risk-card-compact text-center sm:text-left\" x-bind:class=\"cityTier === 3 ? &#39;is-on&#39; : &#39;&#39;\" x-on:click=\"cityTier = 3; recalc()\"><span class=\"block text-xs font-medium sm:text-sm\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -193,7 +193,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"block text-sm font-medium\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"block text-xs font-medium sm:text-sm\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -201,7 +201,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400\" x-show=\"isIN()\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400\" x-show=\"isIN()\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -209,7 +209,7 @@ func FIREPage(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[11px] text-ink/50 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <span class=\"mt-0.5 block text-[10px] text-ink/50 dark:text-zinc-400\" x-show=\"isUS()\" x-cloak>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
