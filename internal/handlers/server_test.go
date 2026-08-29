@@ -42,8 +42,12 @@ func TestHomeStillOK(t *testing.T) {
 	if strings.Contains(rec.Body.String(), `href="/guidance"`) {
 		t.Fatal("sleeves should not be a home chip")
 	}
-	if !strings.Contains(rec.Body.String(), `href="/support"`) {
+	body := rec.Body.String()
+	if !strings.Contains(body, `href="/support"`) {
 		t.Fatal("home nav missing support")
+	}
+	if strings.Contains(body, "If the year helped, UPI is welcome") || strings.Contains(body, "/static/img/upi-qr-code.png") {
+		t.Fatal("home playground should not show the UPI card")
 	}
 }
 
@@ -63,17 +67,11 @@ func TestFIREPageHasPlanLink(t *testing.T) {
 	if !strings.Contains(body, "If the year helped, UPI is welcome") {
 		t.Fatal("FIRE page missing support line")
 	}
-	if !strings.Contains(body, "result-panel-support") || !strings.Contains(body, "Pay with UPI") {
-		t.Fatal("FIRE page missing support card")
+	if !strings.Contains(body, "The longer note") || !strings.Contains(body, `href="/support"`) {
+		t.Fatal("FIRE page missing support link")
 	}
-	if !strings.Contains(body, "/static/img/upi-qr.png") {
-		t.Fatal("FIRE page missing UPI QR")
-	}
-	if !strings.Contains(body, "Paid for FIRE") {
-		t.Fatal("FIRE page missing UPI FIRE note")
-	}
-	if !strings.Contains(body, "upi://pay?") {
-		t.Fatal("FIRE page missing UPI pay link")
+	if !strings.Contains(body, "/static/img/upi-qr-code.png") {
+		t.Fatal("full FIRE page missing UPI QR")
 	}
 	if !strings.Contains(body, "coastLine()") {
 		t.Fatal("FIRE page missing coast line")
@@ -93,7 +91,7 @@ func TestSupportPage(t *testing.T) {
 		t.Fatalf("status=%d", rec.Code)
 	}
 	body := rec.Body.String()
-	if !strings.Contains(body, "If the year landed") || !strings.Contains(body, "/static/img/upi-qr.png") {
+	if !strings.Contains(body, "If the year landed") || !strings.Contains(body, "/static/img/upi-qr-code.png") {
 		t.Fatalf("support page missing copy or QR: %s", body[:min(500, len(body))])
 	}
 	if !strings.Contains(body, `href="/support"`) {

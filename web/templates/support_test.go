@@ -32,7 +32,7 @@ func TestSupportUPIEnv(t *testing.T) {
 }
 
 func TestSupportUPIQR(t *testing.T) {
-	if !strings.Contains(SupportUPIQRSrc, "/static/img/upi-qr.png") {
+	if !strings.Contains(SupportUPIQRSrc, "/static/img/upi-qr-code.png") {
 		t.Fatalf("SupportUPIQRSrc=%q", SupportUPIQRSrc)
 	}
 }

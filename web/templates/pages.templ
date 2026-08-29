@@ -85,7 +85,7 @@ templ Landing(p Page) {
 								<canvas id="fire-chart"></canvas>
 							</div>
 							@fireChartLegend()
-							@fireResultExtras()
+							@fireResultExtras(false)
 							<div class="mt-5 flex flex-col gap-3 border-t border-black/5 pt-5 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
 								<div class="min-w-0">
 									<p class="text-sm font-medium text-ink dark:text-zinc-100">@Tx("want_detail")</p>
@@ -285,7 +285,7 @@ templ About(p Page) {
 	}
 }
 
-templ fireResultExtras() {
+templ fireResultExtras(withSupport bool) {
 	<div class="mt-5 space-y-3 border-t border-black/5 pt-5 dark:border-white/10" x-bind:class="dirty ? 'opacity-50' : ''">
 		<div class="result-panel-moves">
 			<p class="result-kicker text-teal-800 dark:text-teal-200">@Tx("moves_kicker")</p>
@@ -309,8 +309,10 @@ templ fireResultExtras() {
 			<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="shareYear()">@Tx("share_year")</button>
 			<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("crossing_learn")</a>
 		</div>
-		@SupportUPICard()
-		<p class="text-sm"><a href="/support" class="font-medium text-brand hover:underline">@Tx("support_open")</a></p>
+		if withSupport {
+			@SupportUPICard()
+			<p class="text-sm"><a href="/support" class="font-medium text-brand hover:underline">@Tx("support_open")</a></p>
+		}
 		<canvas id="fire-share-card" width="1200" height="630" class="hidden" aria-hidden="true"></canvas>
 	</div>
 }
@@ -321,7 +323,7 @@ templ SupportUPICard() {
 		<p class="mt-1 text-sm text-sky-950/70 dark:text-sky-100/70">@Tx("support_lead")</p>
 		<div class="support-upi-row">
 			<div class="support-upi-qr">
-				<img src={ SupportUPIQRSrc } width="280" height="360" alt="Google Pay UPI QR"/>
+				<img src={ SupportUPIQRSrc } width="488" height="488" alt="Google Pay UPI QR"/>
 			</div>
 			<div class="min-w-0 flex-1">
 				<p class="support-upi-id">

@@ -8,7 +8,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 - Live inputs: maths and charts update in the browser with **no server round-trip**.
 - Numbers stay in the browser. No accounts, no database. Last FIRE inputs can stay in `localStorage` on this device.
 - Optional category-level allocation guidance (never product names).
-- After FIRE results, a UPI support card with the Google Pay QR (`/static/img/upi-qr.png`). Phone: pay link. Desktop: scan the QR or copy the VPA. The UPI remark on the pay link is always “Paid for FIRE — the number”. Not required to see the number. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`).
+- After results on the full FIRE calculator, the UPI card (Google Pay QR, id, pay, copy) plus a link to `/support`. The home playground stays the number. Not required to see the year. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`). Remark “Paid for FIRE — the number”.
 
 Calculators and guidance are public. There is no account.
 
