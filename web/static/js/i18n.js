@@ -27,7 +27,7 @@
 
     hero_kicker: "Financial Independence, Retire Early",
     hero_before: "Know ",
-    hero_after: " that lets you stop.",
+    hero_after: "that lets you stop.",
     hero_sub: "FIRE is a corpus large enough that a small withdrawal covers your yearly spend — so a salary becomes optional. You do not have to retire at 40. Type what you spend and save. See the year you could stop. India in rupees, everywhere else in dollars. No login, no fund pitch.",
     hero_sub_short: "Type what you spend and save. See the year you could stop.",
     chip_product: "Independence, not a product pitch",

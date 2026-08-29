@@ -49,7 +49,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><h1 class=\"relative mt-0 max-w-full break-words font-serif text-[1.55rem] leading-[1.15] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><h1 class=\"relative mt-0 max-w-full font-serif text-[1.45rem] leading-[1.2] tracking-tight sm:mt-4 sm:max-w-3xl sm:text-5xl lg:text-6xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -57,7 +57,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<em class=\"not-italic text-brand\">the number</em>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<em class=\"not-italic text-brand\">the number</em><span class=\"hidden sm:inline\">&nbsp;</span><br class=\"sm:hidden\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
