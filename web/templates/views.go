@@ -19,7 +19,7 @@ func (p Page) MetaDescription() string {
 	if strings.TrimSpace(p.Description) != "" {
 		return p.Description
 	}
-	return "FIRE is Financial Independence, Retire Early — a corpus that can cover your expenses without a salary. Know the number, see the year you could stop. No login, no fund pitch."
+	return "See the year work could become optional. Type what you spend and save — India in rupees. No login, no fund pitch."
 }
 
 type SleeveVM struct {
@@ -86,7 +86,7 @@ func Canonical(path string) string {
 }
 
 func OgImageURL() string {
-	return SiteOrigin + "/static/img/og.png"
+	return SiteOrigin + "/static/img/og.png?v=2"
 }
 
 func JSONLDHTML() string {

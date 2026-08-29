@@ -52,29 +52,31 @@ templ Landing(p Page) {
 					</div>
 					<div id="calc-result" x-show="revealed" x-cloak x-bind:class="resultRevealClass()">
 						<div class="rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950" x-bind:class="dirty ? 'opacity-50' : ''">
-							<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("number_today")</p>
-							<p class="mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl" x-text="fmtINR(result.stillNeed)"></p>
-							<p class="mt-1 text-sm font-medium text-ink dark:text-zinc-100" x-text="stillNeedCopy()"></p>
-							<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text="yearsCopy()"></p>
-							<p class="mt-0.5 text-sm text-ink/70 dark:text-zinc-300" x-text="crossingCopy()"></p>
-							<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-show="coastLine()" x-cloak x-text="coastLine()"></p>
-							<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-text="numberLaterCopy()"></p>
+							<div class="result-hero">
+								<p class="result-kicker">@Tx("number_today")</p>
+								<p class="result-num mt-1 text-3xl sm:text-4xl" x-text="fmtINR(result.stillNeed)"></p>
+								<p class="result-line-gap mt-2" x-text="stillNeedCopy()"></p>
+								<p class="result-line-fi mt-1" x-text="yearsCopy()"></p>
+								<p class="result-line-cross mt-0.5" x-text="crossingCopy()"></p>
+								<p class="result-line-coast mt-0.5" x-show="coastLine()" x-cloak x-text="coastLine()"></p>
+								<p class="result-line-later mt-0.5" x-text="numberLaterCopy()"></p>
+							</div>
 							<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
-								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
-									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
+								<div class="result-tile result-tile-need">
+									<p>@Tx("lifestyle")</p>
 									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lifestyle)"></p>
-									<p class="mt-1 text-[11px] text-ink/65 dark:text-zinc-300">@Tx("later_20")<span class="tabular-nums" x-text="fmtINR(result.lifestyleLater)"></span></p>
+									<p class="mt-1 text-[11px] opacity-75">@Tx("later_20")<span class="tabular-nums" x-text="fmtINR(result.lifestyleLater)"></span></p>
 								</div>
-								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
-									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
+								<div class="result-tile result-tile-have">
+									<p>@Tx("you_have")</p>
 									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.spendableNow)"></p>
 								</div>
-								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
-									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("monthly_in")</p>
+								<div class="result-tile result-tile-sip">
+									<p>@Tx("monthly_in")</p>
 									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
 								</div>
-								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
-									<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("youll_be")</p>
+								<div class="result-tile result-tile-age">
+									<p>@Tx("youll_be")</p>
 									<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="result.reachesFire ? result.fiAge : '—'"></p>
 								</div>
 							</div>
@@ -272,21 +274,21 @@ templ About(p Page) {
 }
 
 templ fireResultExtras() {
-	<div class="mt-5 space-y-5 border-t border-black/5 pt-5 dark:border-white/10" x-bind:class="dirty ? 'opacity-50' : ''">
-		<div>
-			<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("moves_kicker")</p>
-			<ul class="mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200">
+	<div class="mt-5 space-y-3 border-t border-black/5 pt-5 dark:border-white/10" x-bind:class="dirty ? 'opacity-50' : ''">
+		<div class="result-panel-moves">
+			<p class="result-kicker text-teal-800 dark:text-teal-200">@Tx("moves_kicker")</p>
+			<ul class="mt-2 space-y-1.5">
 				<template x-for="row in moveRows()" x-bind:key="row.kind">
-					<li x-text="row.line"></li>
+					<li x-bind:class="row.cls" x-text="row.line"></li>
 				</template>
 			</ul>
 		</div>
-		<div>
-			<p class="text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx("optional_kicker")</p>
-			<p class="mt-1 text-sm text-ink/55 dark:text-zinc-400">@Tx("optional_sub")</p>
-			<ul class="mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200">
+		<div class="result-panel-optional">
+			<p class="result-kicker text-amber-800 dark:text-amber-200">@Tx("optional_kicker")</p>
+			<p class="mt-1 text-sm text-amber-900/70 dark:text-amber-100/70">@Tx("optional_sub")</p>
+			<ul class="mt-2 space-y-1.5">
 				<template x-for="row in optionRows()" x-bind:key="row.kind">
-					<li x-text="row.line"></li>
+					<li class="result-option" x-text="row.line"></li>
 				</template>
 			</ul>
 		</div>

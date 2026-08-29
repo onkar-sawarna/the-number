@@ -197,7 +197,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div id=\"calc-result\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\"><div class=\"rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><p class=\"text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div id=\"calc-result\" x-show=\"revealed\" x-cloak x-bind:class=\"resultRevealClass()\"><div class=\"rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"result-hero\"><p class=\"result-kicker\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -205,7 +205,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl\" x-text=\"fmtINR(result.stillNeed)\"></p><p class=\"mt-1 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"stillNeedCopy()\"></p><p class=\"mt-1 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"yearsCopy()\"></p><p class=\"mt-0.5 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"crossingCopy()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-show=\"coastLine()\" x-cloak x-text=\"coastLine()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"numberLaterCopy()\"></p><div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3\"><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"result-num mt-1 text-3xl sm:text-4xl\" x-text=\"fmtINR(result.stillNeed)\"></p><p class=\"result-line-gap mt-2\" x-text=\"stillNeedCopy()\"></p><p class=\"result-line-fi mt-1\" x-text=\"yearsCopy()\"></p><p class=\"result-line-cross mt-0.5\" x-text=\"crossingCopy()\"></p><p class=\"result-line-coast mt-0.5\" x-show=\"coastLine()\" x-cloak x-text=\"coastLine()\"></p><p class=\"result-line-later mt-0.5\" x-text=\"numberLaterCopy()\"></p></div><div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3\"><div class=\"result-tile result-tile-need\"><p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -213,7 +213,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.lifestyle)\"></p><p class=\"mt-1 text-[11px] text-ink/65 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.lifestyle)\"></p><p class=\"mt-1 text-[11px] opacity-75\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -221,7 +221,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"tabular-nums\" x-text=\"fmtINR(result.lifestyleLater)\"></span></p></div><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"tabular-nums\" x-text=\"fmtINR(result.lifestyleLater)\"></span></p></div><div class=\"result-tile result-tile-have\"><p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -229,7 +229,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.spendableNow)\"></p></div><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.spendableNow)\"></p></div><div class=\"result-tile result-tile-sip\"><p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -237,7 +237,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.monthlyIn)\"></p></div><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"font-serif text-sm tabular-nums sm:text-lg\" x-text=\"fmtINR(result.monthlyIn)\"></p></div><div class=\"result-tile result-tile-age\"><p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -543,7 +543,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 160, Col: 121}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 162, Col: 121}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -561,7 +561,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 162, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 164, Col: 103}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -589,7 +589,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 168, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -602,7 +602,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMin('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 168, Col: 109}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 109}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -615,7 +615,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMax('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 168, Col: 152}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 152}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -628,7 +628,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs("rangeStep('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 168, Col: 197}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 197}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -906,7 +906,7 @@ func featureCard(href, kicker, titleKey, bodyKey string, wide bool) templ.Compon
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(kicker)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 226, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 228, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -1124,7 +1124,7 @@ func fireResultExtras() templ.Component {
 			templ_7745c5c3_Var24 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-5 space-y-5 border-t border-black/5 pt-5 dark:border-white/10\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div><p class=\"text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"mt-5 space-y-3 border-t border-black/5 pt-5 dark:border-white/10\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><div class=\"result-panel-moves\"><p class=\"result-kicker text-teal-800 dark:text-teal-200\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1132,7 +1132,7 @@ func fireResultExtras() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><ul class=\"mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200\"><template x-for=\"row in moveRows()\" x-bind:key=\"row.kind\"><li x-text=\"row.line\"></li></template></ul></div><div><p class=\"text-xs font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><ul class=\"mt-2 space-y-1.5\"><template x-for=\"row in moveRows()\" x-bind:key=\"row.kind\"><li x-bind:class=\"row.cls\" x-text=\"row.line\"></li></template></ul></div><div class=\"result-panel-optional\"><p class=\"result-kicker text-amber-800 dark:text-amber-200\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1140,7 +1140,7 @@ func fireResultExtras() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 text-sm text-ink/55 dark:text-zinc-400\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 text-sm text-amber-900/70 dark:text-amber-100/70\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1148,7 +1148,7 @@ func fireResultExtras() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><ul class=\"mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200\"><template x-for=\"row in optionRows()\" x-bind:key=\"row.kind\"><li x-text=\"row.line\"></li></template></ul></div><div class=\"flex flex-col gap-2 sm:flex-row sm:flex-wrap\"><button type=\"button\" class=\"btn-ghost w-full sm:w-auto\" x-on:click=\"copyPlan()\" x-text=\"copyPlanLabel()\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><ul class=\"mt-2 space-y-1.5\"><template x-for=\"row in optionRows()\" x-bind:key=\"row.kind\"><li class=\"result-option\" x-text=\"row.line\"></li></template></ul></div><div class=\"flex flex-col gap-2 sm:flex-row sm:flex-wrap\"><button type=\"button\" class=\"btn-ghost w-full sm:w-auto\" x-on:click=\"copyPlan()\" x-text=\"copyPlanLabel()\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

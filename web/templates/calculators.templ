@@ -113,46 +113,48 @@ templ FIREPage(p Page) {
 				<div class="min-w-0 lg:col-span-7">
 					@calcWait()
 					<div id="calc-result" class="scroll-mt-28 rounded-2xl border border-black/10 bg-white p-4 shadow-card sm:p-6 dark:border-white/25 dark:bg-zinc-950 lg:sticky lg:top-[calc(var(--app-header-h,5.5rem)+1rem)]" x-show="revealed" x-cloak x-bind:class="resultRevealClass()">
-						@deskHeadline("number_today", "fmtINR(result.stillNeed)", "yearsCopy()")
-						<p class="mt-2 text-sm font-medium text-ink dark:text-zinc-100" x-bind:class="dirty ? 'opacity-50' : ''" x-text="stillNeedCopy()"></p>
-						<p class="mt-2 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="crossingCopy()"></p>
-						<p class="mt-1 text-sm font-medium text-ink dark:text-zinc-100" x-show="coastLine()" x-cloak x-bind:class="dirty ? 'opacity-50' : ''" x-text="coastLine()"></p>
-						<p class="mt-1 hidden text-sm font-medium text-ink dark:text-zinc-100 lg:block" x-bind:class="dirty ? 'opacity-50' : ''" x-text="numberLaterCopy()"></p>
+						<div class="result-hero" x-bind:class="dirty ? 'opacity-50' : ''">
+							@deskHeadline("number_today", "fmtINR(result.stillNeed)", "yearsCopy()")
+							<p class="result-line-gap mt-2" x-text="stillNeedCopy()"></p>
+							<p class="result-line-cross mt-2 lg:mt-1" x-text="crossingCopy()"></p>
+							<p class="result-line-coast mt-1" x-show="coastLine()" x-cloak x-text="coastLine()"></p>
+							<p class="result-line-later mt-1 hidden lg:block" x-text="numberLaterCopy()"></p>
+						</div>
 						<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("lifestyle")</p>
+							<div class="result-tile result-tile-need">
+								<p>@Tx("lifestyle")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lifestyle)"></p>
-								<p class="mt-1 text-[11px] text-ink/65 dark:text-zinc-300">@Tx("later_20")<span class="tabular-nums" x-text="fmtINR(result.lifestyleLater)"></span></p>
+								<p class="mt-1 text-[11px] opacity-75">@Tx("later_20")<span class="tabular-nums" x-text="fmtINR(result.lifestyleLater)"></span></p>
 							</div>
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("house_add")</p>
+							<div class="result-tile result-tile-house">
+								<p>@Tx("house_add")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.houseAdd)"></p>
 							</div>
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("you_have")</p>
+							<div class="result-tile result-tile-have">
+								<p>@Tx("you_have")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.spendableNow)"></p>
 							</div>
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("monthly_in")</p>
+							<div class="result-tile result-tile-sip">
+								<p>@Tx("monthly_in")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.monthlyIn)"></p>
 							</div>
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300">@Tx("jew_kept")</p>
+							<div class="result-tile result-tile-jew">
+								<p>@Tx("jew_kept")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.jewellery)"></p>
-								<p class="mt-1 text-[11px] text-ink/65 dark:text-zinc-400" x-show="result.jewelleryLater > result.jewellery" x-cloak>@Tx("later")<span class="tabular-nums" x-text="fmtINR(result.jewelleryLater)"></span></p>
+								<p class="mt-1 text-[11px] opacity-70" x-show="result.jewelleryLater > result.jewellery" x-cloak>@Tx("later")<span class="tabular-nums" x-text="fmtINR(result.jewelleryLater)"></span></p>
 							</div>
 						</div>
 						<div class="mt-4 grid grid-cols-3 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("lean")</p>
+							<div class="result-tile result-tile-lean">
+								<p class="sm:text-sm">@Tx("lean")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.lean)"></p>
 							</div>
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("regular")</p>
+							<div class="result-tile result-tile-reg">
+								<p class="sm:text-sm">@Tx("regular")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.regular)"></p>
 							</div>
-							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
-								<p class="text-xs text-ink/70 dark:text-zinc-300 sm:text-sm">@Tx("fat")</p>
+							<div class="result-tile result-tile-fat">
+								<p class="sm:text-sm">@Tx("fat")</p>
 								<p class="font-serif text-sm tabular-nums sm:text-lg" x-text="fmtINR(result.fat)"></p>
 							</div>
 						</div>
@@ -373,11 +375,11 @@ templ BudgetPage(p Page) {
 }
 
 templ mobileStickyStat(labelKey, expr, subExpr string) {
-	<div id="calc-sticky-stat" class="sticky z-10 col-span-full -mx-4 border-b border-black/5 bg-paper/95 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-night/95 lg:hidden" style="top: var(--app-header-h, 5.5rem);" x-show="revealed" x-cloak x-bind:class="working ? 'is-working' : ''">
-		<p class="text-[10px] font-semibold uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx(labelKey)</p>
-		<p class="mt-0.5 font-serif text-3xl tabular-nums tracking-tight" x-bind:class="dirty ? 'opacity-50' : ''" x-text={ expr }></p>
+	<div id="calc-sticky-stat" class="sticky z-10 col-span-full -mx-4 border-b border-brand/20 bg-gradient-to-r from-brand/10 via-sky/10 to-paper/95 px-4 py-3 backdrop-blur dark:border-brand/30 dark:from-brand/20 dark:via-sky/10 dark:to-night/95 lg:hidden" style="top: var(--app-header-h, 5.5rem);" x-show="revealed" x-cloak x-bind:class="working ? 'is-working' : ''">
+		<p class="result-kicker text-[10px]">@Tx(labelKey)</p>
+		<p class="result-num mt-0.5 text-3xl" x-bind:class="dirty ? 'opacity-50' : ''" x-text={ expr }></p>
 		if subExpr != "" {
-			<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text={ subExpr }></p>
+			<p class="result-line-fi mt-1" x-text={ subExpr }></p>
 		}
 	</div>
 }
@@ -391,10 +393,10 @@ templ chartKicker(labelKey, expr string) {
 
 templ deskHeadline(labelKey, expr, subExpr string) {
 	<div class="hidden lg:block">
-		<p class="text-xs uppercase tracking-widest text-ink/65 dark:text-zinc-300">@Tx(labelKey)</p>
-		<p class="mt-2 font-serif text-5xl tabular-nums" x-bind:class="dirty ? 'opacity-50' : ''" x-text={ expr }></p>
+		<p class="result-kicker">@Tx(labelKey)</p>
+		<p class="result-num mt-2 text-5xl" x-bind:class="dirty ? 'opacity-50' : ''" x-text={ expr }></p>
 		if subExpr != "" {
-			<p class="mt-2 text-sm text-ink/70 dark:text-zinc-300" x-text={ subExpr }></p>
+			<p class="result-line-fi mt-2" x-text={ subExpr }></p>
 		}
 	</div>
 }

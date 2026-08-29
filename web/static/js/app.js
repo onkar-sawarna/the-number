@@ -1041,17 +1041,28 @@
         if (months >= 12) return this.t("shift_later_y", { n: Math.round(row.deltaYears) });
         return this.t("shift_later_m", { n: months });
       },
+      shiftTone: function (row) {
+        var base = this.result || {};
+        if (base.reachesFire && base.years === 0 && row.reaches && row.years === 0) return "same";
+        if (base.reachesFire && !row.reaches) return "later";
+        if (!base.reachesFire && row.reaches) return "earlier";
+        if (!base.reachesFire && !row.reaches) return "same";
+        var months = Math.round((Number(row.deltaYears) || 0) * 12);
+        if (months === 0) return "same";
+        return months < 0 ? "earlier" : "later";
+      },
       moveRows: function () {
         var rows = this.moves || [];
         var self = this;
         return rows.map(function (row) {
           var shift = self.formatShift(row);
+          var tone = self.shiftTone(row);
           var line;
           if (row.kind === "sip") line = self.t("moves_sip", { amount: window.fmtINR(row.amount), shift: shift });
           else if (row.kind === "return") line = self.t("moves_return", { shift: shift });
           else if (self.housing === "buy") line = self.t("moves_house_rent", { shift: shift });
           else line = self.t("moves_house_buy", { shift: shift });
-          return { kind: row.kind, line: line };
+          return { kind: row.kind, line: line, cls: "result-move" + (tone === "same" ? "" : " is-" + tone) };
         });
       },
       optionLine: function (row) {
