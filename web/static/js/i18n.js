@@ -181,7 +181,7 @@
     share_kicker: "the number",
     share_footer: "Educational, not advice · number.onkarsawarna.dev",
     support_kicker: "Support the workshop",
-    support_lead: "The year stays free. The domain and the box that serves it do not. If it helped, UPI is welcome — not required.",
+    support_lead: "The year stays free. The domain and the box that serves it do not. If it helped, UPI is welcome — not a compulsion.",
     support_lead_world: "The year stays free. The domain and the box that serves it do not. If it helped, a card from anywhere is welcome — not required.",
     support_page_kicker: "Keep it running",
     support_page_h1: "If the year landed.",

@@ -354,7 +354,7 @@ func Copy(key string) string {
 	case "support_kicker":
 		return "Support the workshop"
 	case "support_lead":
-		return "The year stays free. The domain and the box that serves it do not. If it helped, UPI is welcome — not required."
+		return "The year stays free. The domain and the box that serves it do not. If it helped, UPI is welcome — not a compulsion."
 	case "support_lead_world":
 		return "The year stays free. The domain and the box that serves it do not. If it helped, a card from anywhere is welcome — not required."
 	case "support_page_kicker":
