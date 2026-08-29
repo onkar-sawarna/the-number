@@ -102,7 +102,7 @@ func jsonLDDocument() string {
 				"@id":                 SiteOrigin + "/#app",
 				"name":                "the number",
 				"url":                 SiteOrigin + "/",
-				"description":         "A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Nothing is stored.",
+				"description":         "A FIRE calculator that explains the number, then lets you play with it. SIP, EMI, and budget tools too. Numbers stay in your browser.",
 				"applicationCategory": "FinanceApplication",
 				"operatingSystem":     "Any",
 				"browserRequirements": "Requires JavaScript",

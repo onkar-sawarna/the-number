@@ -367,6 +367,105 @@ func TestZeroSavingsZeroReturnNever(t *testing.T) {
 	}
 }
 
+func TestCoastStopsBeforeFIRE(t *testing.T) {
+	in := FIREInput{
+		Age:            30,
+		AnnualExpenses: 120_000,
+		MonthlySavings: 80_000,
+		ExpectedReturn: 12,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	full := FIRE(in)
+	c := Coast(in)
+	if !full.ReachesFire || !c.Reaches {
+		t.Fatalf("should reach: fire=%v coast=%v", full.ReachesFire, c.Reaches)
+	}
+	if c.Already {
+		t.Fatal("zero stash should still need SIPs before coasting")
+	}
+	if c.UntilFire {
+		t.Fatal("80k/mo at 12% should be able to stop before FIRE")
+	}
+	if c.Years <= 0 || c.Years >= full.Years {
+		t.Fatalf("coast years=%v fire=%v", c.Years, full.Years)
+	}
+	if c.LandAge > 60 {
+		t.Fatalf("coast should still land by 60: landAge=%d", c.LandAge)
+	}
+	trial := in
+	trial.StopAfterMonths = int(math.Ceil(c.Years * 12))
+	trial.SkipChart = true
+	stopped := FIRE(trial)
+	if !stopped.ReachesFire {
+		t.Fatalf("stopping after coast months should still land: months=%d", trial.StopAfterMonths)
+	}
+}
+
+func TestCoastDefaultLandsBySixty(t *testing.T) {
+	in := DefaultFIRE()
+	full := FIRE(in)
+	c := Coast(in)
+	if !full.ReachesFire || !c.Reaches {
+		t.Fatalf("default should reach: fire=%v coast=%+v", full.ReachesFire, c)
+	}
+	if c.LandAge > 60 {
+		t.Fatalf("default coast landAge=%d want <= 60", c.LandAge)
+	}
+	if c.Age > full.FIAge {
+		t.Fatalf("cannot stop after FIRE: coast age=%d fi=%d", c.Age, full.FIAge)
+	}
+}
+
+func TestCoastAlreadyWhenStashGrows(t *testing.T) {
+	in := FIREInput{
+		Age:            30,
+		AnnualExpenses: 120_000,
+		StoppedNow:     2_000_000,
+		MonthlySavings: 20_000,
+		ExpectedReturn: 12,
+		Inflation:      0,
+		SWR:            4,
+		Housing:        "rent",
+	}
+	c := Coast(in)
+	if !c.Reaches || !c.Already {
+		t.Fatalf("2L leftover at 12%% should already be coast: %+v", c)
+	}
+}
+
+func TestCoastAlreadyWhenFI(t *testing.T) {
+	in := FIREInput{Age: 40, AnnualExpenses: 1_200_000, CurrentSavings: 40_000_000, SWR: 4, Housing: "rent"}
+	c := Coast(in)
+	if !c.Reaches || !c.Already || c.Age != 40 {
+		t.Fatalf("already FI coast: %+v", c)
+	}
+}
+
+func TestCoastNever(t *testing.T) {
+	in := FIREInput{Age: 30, AnnualExpenses: 1_200_000, ExpectedReturn: 0, Inflation: 0, SWR: 4, Housing: "rent"}
+	c := Coast(in)
+	if c.Reaches {
+		t.Fatalf("empty plan should not coast: %+v", c)
+	}
+}
+
+func TestStopAfterMonthsLengthensYears(t *testing.T) {
+	full := DefaultFIRE()
+	full.SkipChart = true
+	a := FIRE(full)
+	cut := full
+	cut.StopAfterMonths = 24
+	b := FIRE(cut)
+	if !a.ReachesFire {
+		t.Fatal("default should reach")
+	}
+	if b.ReachesFire && b.Years <= a.Years {
+		t.Fatalf("stopping SIPs after 2 years should not be faster: full=%v stop=%v", a.Years, b.Years)
+	}
+}
+
 func TestStepUpShortensYears(t *testing.T) {
 	flat := DefaultFIRE()
 	flat.StepUp = 0

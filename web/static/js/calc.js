@@ -143,6 +143,9 @@
   }
 
   function depositScale(input, month) {
+    var stopAfter = Number(input.stopAfterMonths) || 0;
+    if (stopAfter < 0) return 0;
+    if (stopAfter > 0 && month > stopAfter) return 0;
     var pause = Number(input.pauseMonths) || 0;
     if (pause > 0 && month <= pause) return 0;
     var s = Number(input.contribScale);
@@ -310,7 +313,7 @@
       out.crossingAge = input.age;
     }
     if (fireSet && out.reachesCrossing) {
-      out.chart = fireChart(input, swr, out.years, out.reachesFire);
+      out.chart = maybeChart(input, swr, out.years, out.reachesFire);
       return out;
     }
     var rmLiq = monthlyEffective(RATE_LIQUID);
@@ -357,8 +360,75 @@
       out.years = 0;
       out.jewelleryLater = pots.jewellery;
     }
-    out.chart = fireChart(input, swr, out.years, out.reachesFire);
+    out.chart = maybeChart(input, swr, out.years, out.reachesFire);
     return out;
+  }
+
+  function maybeChart(input, swr, years, reaches) {
+    if (input.skipChart) return [];
+    return fireChart(input, swr, years, reaches);
+  }
+
+  function zeroMonthlies(input) {
+    var o = copyFire(input);
+    o.monthlySavings = 0;
+    o.npsMonthly = 0;
+    o.ppfMonthly = 0;
+    o.epfMonthly = 0;
+    o.foreignMonthly = 0;
+    o.goldMonthly = 0;
+    o.stopAfterMonths = 0;
+    o.skipChart = true;
+    return o;
+  }
+
+  function coast(input) {
+    var fullIn = copyFire(input);
+    fullIn.skipChart = true;
+    var full = fire(fullIn);
+    if (!full.reachesFire) {
+      return { reaches: false, already: false, years: 0, age: 0, landYears: 0, landAge: 0, untilFire: false };
+    }
+    if (full.years === 0) {
+      return { reaches: true, already: true, years: 0, age: input.age, landYears: 0, landAge: input.age, untilFire: false };
+    }
+    var deadline = full.fiAge > 60 ? full.fiAge : 60;
+    var now = fire(zeroMonthlies(input));
+    if (now.reachesFire && now.fiAge <= deadline) {
+      return { reaches: true, already: true, years: 0, age: input.age, landYears: now.years, landAge: now.fiAge, untilFire: false };
+    }
+    if (monthlyIn(input) <= 0) {
+      return { reaches: true, already: true, years: 0, age: input.age, landYears: full.years, landAge: full.fiAge, untilFire: false };
+    }
+    var hi = Math.ceil(full.years * 12);
+    if (hi < 1) hi = 1;
+    var lo = 1;
+    var best = hi;
+    var bestOut = full;
+    while (lo <= hi) {
+      var mid = (lo + hi) >> 1;
+      var trial = copyFire(input);
+      trial.stopAfterMonths = mid;
+      trial.skipChart = true;
+      var out = fire(trial);
+      if (out.reachesFire && out.fiAge <= deadline) {
+        best = mid;
+        bestOut = out;
+        hi = mid - 1;
+      } else {
+        lo = mid + 1;
+      }
+    }
+    var years = best / 12;
+    return {
+      reaches: true,
+      already: false,
+      years: years,
+      age: input.age + Math.round(years),
+      landYears: bestOut.years,
+      landAge: bestOut.fiAge,
+      untilFire: best >= Math.ceil(full.years * 12),
+    };
   }
 
   function sip(input) {
@@ -538,6 +608,7 @@
     formatUSD: formatUSD,
     formatMoney: formatMoney,
     fire: fire,
+    coast: coast,
     yearMoves: yearMoves,
     yearOptions: yearOptions,
     sipBump: sipBump,

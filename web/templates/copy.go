@@ -88,7 +88,7 @@ func Copy(key string) string {
 	case "about_h_number":
 		return "Why this site exists"
 	case "about_p_number":
-		return "I wanted that calculator in rupees, with Indian pots — NPS, EPF, PPF, gold, jewellery you keep, SIPs still running — and dollars if you live elsewhere. Nothing is stored. No scheme names. Type what you spend and save. See the year work could become optional."
+		return "I wanted that calculator in rupees, with Indian pots — NPS, EPF, PPF, gold, jewellery you keep, SIPs still running — and dollars if you live elsewhere. Last numbers stay on this device. No scheme names. Type what you spend and save. See the year work could become optional."
 	case "about_photo_alt":
 		return "Onkar Sawarna"
 	case "try_kicker":
@@ -164,11 +164,15 @@ func Copy(key string) string {
 	case "more_calcs_kicker":
 		return "Also here"
 	case "more_calcs_lead":
-		return "SIP, EMI, emergency, budget, and sleeves for the years to FIRE — after you have the number."
+		return "SIP, EMI, emergency, and budget — after you have the number."
 	case "sleeves_fire":
 		return "Sleeves for your FIRE years →"
 	case "sleeves_fire_sub":
 		return "A category mix for the horizon, never a ticker."
+	case "copy_plan":
+		return "Copy this plan"
+	case "copy_plan_done":
+		return "Link copied"
 	case "card_fire_title":
 		return "The full calculator"
 	case "card_fire_body":
@@ -233,6 +237,16 @@ func Copy(key string) string {
 		return "In 80 years the pots never earn more than you add."
 	case "crossing_none":
 		return "You are not adding, so there is no crossing yet."
+	case "coast_done":
+		return "Already independent — SIPs are optional."
+	case "coast_grow":
+		return "You are not adding. The pots still land in {year}, around age {age}."
+	case "coast_now":
+		return "Stop SIPs today and you still land in {year}, around age {age}."
+	case "coast_until":
+		return "SIPs need to run until independence — no earlier stop on these assumptions."
+	case "coast_line":
+		return "Stop SIPs at age {age} ({year}) and you still land in {land}."
 	case "crossing_learn":
 		return "What the crossing is"
 	case "title_crossing":
@@ -264,7 +278,7 @@ func Copy(key string) string {
 	case "crossing_h_use":
 		return "What to do with it"
 	case "crossing_p_use":
-		return "Treat it as a checkpoint, not a product pitch. If the crossing is far, the levers are the same as FIRE: more going in, a rate you can live with, expenses that do not sprint. If it is close, you are already in the part of the curve that feels slow until it is not. Type your pots on the calculator. See both years. Nothing is stored."
+		return "Treat it as a checkpoint, not a product pitch. If the crossing is far, the levers are the same as FIRE: more going in, a rate you can live with, expenses that do not sprint. If it is close, you are already in the part of the curve that feels slow until it is not. Type your pots on the calculator. See both years. Last Calculate stays on this device."
 	case "crossing_cta":
 		return "See your crossing year"
 	case "jump_crossing":
@@ -778,7 +792,7 @@ func Copy(key string) string {
 	case "disc_h5":
 		return "What we store"
 	case "disc_p5":
-		return "There are no accounts. Calculator inputs stay in your browser and are not written to a server. A theme cookie (theme=dark or light) remembers appearance. A region cookie (region=in or us) remembers India ₹ vs World $. There is no localStorage."
+		return "There are no accounts. Numbers are not written to a server. A theme cookie (theme=dark or light) remembers appearance. A region cookie (region=in or us) remembers India ₹ vs World $. The last FIRE inputs stay in this browser so you do not retype them. A plan link reopens the same boxes. Clear site data to forget them."
 	case "disc_end":
 		return "Not registered investment advice. For educational purposes only."
 	default:

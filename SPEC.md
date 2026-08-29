@@ -6,7 +6,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 
 - Know the FIRE corpus (“the number”) and years until independence.
 - Live inputs: maths and charts update in the browser with **no server round-trip**.
-- Numbers stay in the browser. No accounts, no database.
+- Numbers stay in the browser. No accounts, no database. Last FIRE inputs can stay in `localStorage` on this device.
 - Optional category-level allocation guidance (never product names).
 
 Calculators and guidance are public. There is no account.
@@ -43,7 +43,7 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | GET | `/crossing` | What the crossing is; jewellery is out; it is not FIRE |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |
-| GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate. FIRE accepts the current playground inputs as a query string from home |
+| GET | `/calculators/{fire,sip,emi,emergency,budget}` | Alpine + Chart.js; results update on Calculate. FIRE accepts a plan query string (home handoff or **Copy this plan**) |
 | GET/POST | `/guidance` | Questionnaire / HTMX fragment |
 | GET | `/static/*` | `web/static` |
 | GET | `/robots.txt` | Allow crawlers; points at sitemap |
@@ -54,7 +54,7 @@ Bind `0.0.0.0:$PORT`, default **47321**.
 
 ## Auth and data
 
-No accounts. Nothing is written except optional cookies: theme (`theme=dark|light`) and region (`region=in|us`). India is ₹; World is USD.
+No accounts. Nothing is written to a server. Optional cookies: theme (`theme=dark|light`) and region (`region=in|us`). India is ₹; World is USD. The last FIRE inputs stay in `localStorage` (`tn-fire-v1`) on this device after you use the calculator. A query string on `/calculators/fire` reopens the same plan. Clear site data to forget them.
 
 ## Calculation rules
 
@@ -98,7 +98,9 @@ Monthly contributions add to the matching pot. Optional yearly SIP step-up raise
 
 The **crossing** is the first completed year where spendable pots earn more than you contribute that year (growth = end − start − contributions; jewellery is kept, so it is ignored). Contributions match the monthly adds in the FIRE loop. Crossing is usually before FIRE. No monthly in and a stash already counts as crossed; no monthly in and nothing saved has no crossing. Durable explainer: `/crossing`.
 
-After Calculate, **what moves the year** re-runs FIRE with (1) ₹5,000 / $100 extra monthly SIP, (2) 1% lower expected return, (3) buy vs rent the house. **Salary-optional** re-runs with 40% less going in, half going in, and 24 months of zero deposits then resume (`ContribScale`, `PauseMonths`). The share card is a 1200×630 PNG of the FI year and crossing year — never the corpus.
+**Coast FIRE** is one line: the earliest you can stop SIPs (`StopAfterMonths`) and still reach FIRE by age 60 — or by your FIRE age if that is later. If spendable pots already grow to the number with no further deposits, you can stop today. If you must contribute until independence, the line says so. It is not a second calculator.
+
+After Calculate, **what moves the year** re-runs FIRE with (1) ₹5,000 / $100 extra monthly SIP, (2) 1% lower expected return, (3) buy vs rent the house. **Salary-optional** re-runs with 40% less going in, half going in, and 24 months of zero deposits then resume (`ContribScale`, `PauseMonths`). The share card is a 1200×630 PNG of the FI year and crossing year — never the corpus. **Copy this plan** copies a `/calculators/fire?...` link that reopens the boxes.
 
 Chart: yearly snapshots until ~FIRE+5 years (min 20, max 50; 40 if never). The FIRE chart labels age on the x-axis, pots versus the corpus you need, and marks the independent year.
 
@@ -144,7 +146,7 @@ Sleeves sum to 100. Categories only.
 
 ## HTMX vs Alpine
 
-- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** carries the playground fields as a query string. FIRE results include year-moves, salary-optional scenarios, and a downloadable/shareable year card.
+- **Alpine + Chart.js:** amount boxes (type rupees or `50k` / `2L`), number boxes for age / years / percents, Calculate button for a short working beat then results and charts, dark toggle. Preset chips run Calculate. Home **Open the full FIRE calculator** and **Copy this plan** use the same query string. FIRE results include the coast line, year-moves, salary-optional scenarios, and a downloadable/shareable year card.
 - **HTMX:** guidance POST.
 
 Do not POST on every keystroke.

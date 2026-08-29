@@ -205,7 +205,7 @@ func Landing(p Page) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl\" x-text=\"fmtINR(result.stillNeed)\"></p><p class=\"mt-1 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"stillNeedCopy()\"></p><p class=\"mt-1 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"yearsCopy()\"></p><p class=\"mt-0.5 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"crossingCopy()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"numberLaterCopy()\"></p><div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3\"><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"mt-1 font-serif text-3xl tabular-nums tracking-tight sm:text-4xl\" x-text=\"fmtINR(result.stillNeed)\"></p><p class=\"mt-1 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"stillNeedCopy()\"></p><p class=\"mt-1 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"yearsCopy()\"></p><p class=\"mt-0.5 text-sm text-ink/70 dark:text-zinc-300\" x-text=\"crossingCopy()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-show=\"coastLine()\" x-cloak x-text=\"coastLine()\"></p><p class=\"mt-0.5 text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"numberLaterCopy()\"></p><div class=\"mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3\"><div class=\"rounded-xl bg-paper p-2.5 dark:bg-zinc-800\"><p class=\"text-xs text-ink/70 dark:text-zinc-300\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -342,14 +342,6 @@ func Landing(p Page) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = Tx("tab_budget").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a> <a href=\"/guidance\" class=\"preset-chip inline-flex items-center\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = Tx("tab_sleeves").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1156,7 +1148,15 @@ func fireResultExtras() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><ul class=\"mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200\"><template x-for=\"row in optionRows()\" x-bind:key=\"row.kind\"><li x-text=\"row.line\"></li></template></ul></div><div class=\"flex flex-col gap-2 sm:flex-row sm:flex-wrap\"><button type=\"button\" class=\"btn-ghost w-full sm:w-auto\" x-on:click=\"shareYear()\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><ul class=\"mt-2 space-y-1.5 text-sm text-ink/80 dark:text-zinc-200\"><template x-for=\"row in optionRows()\" x-bind:key=\"row.kind\"><li x-text=\"row.line\"></li></template></ul></div><div class=\"flex flex-col gap-2 sm:flex-row sm:flex-wrap\"><button type=\"button\" class=\"btn-ghost w-full sm:w-auto\" x-on:click=\"copyPlan()\" x-text=\"copyPlanLabel()\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Tx("copy_plan").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button> <button type=\"button\" class=\"btn-ghost w-full sm:w-auto\" x-on:click=\"shareYear()\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

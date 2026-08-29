@@ -478,6 +478,16 @@
     };
   };
 
+  var FIRE_SAVE_KEY = "tn-fire-v1";
+  var FIRE_SAVE_FIELDS = [
+    "age", "annualExpenses", "currentSavings", "monthlySavings",
+    "expectedReturn", "inflation", "swr",
+    "npsNow", "npsMonthly", "ppfNow", "ppfMonthly",
+    "epfNow", "epfMonthly", "foreignNow", "foreignMonthly",
+    "stoppedNow", "goldNow", "goldMonthly", "jewelleryNow",
+    "stepUp", "cityTier", "housing", "region",
+  ];
+
   function bindRegion(self) {
     self.region = currentRegion();
     window.addEventListener("region-change", function (e) {
@@ -520,6 +530,8 @@
       region: "in",
       moves: [],
       options: [],
+      coast: { reaches: false },
+      planCopied: false,
       result: Calc.fire({
         age: 30,
         annualExpenses: 1200000,
@@ -535,12 +547,18 @@
       _chart: null,
       _potsChart: null,
       init: function () {
+        this._booting = true;
         var handed = this.overlayFireQuery();
-        if (!handed) this.applyRegion(currentRegion(), false);
+        var restored = false;
+        if (!handed) restored = this.loadFireSaved();
+        if (!handed && !restored) this.applyRegion(currentRegion(), false);
         this.recalc();
+        this._booting = false;
         bindRegion(this);
-        if (handed) {
+        if (handed || restored) {
           this.revealed = true;
+          this.persistFire();
+          this.syncFireURL();
           var self = this;
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
@@ -688,6 +706,112 @@
         p.set("region", this.region === "us" ? "us" : "in");
         return "/calculators/fire?" + p.toString();
       },
+      persistFire: function () {
+        try {
+          var o = { v: 1 };
+          var self = this;
+          FIRE_SAVE_FIELDS.forEach(function (k) {
+            o[k] = self[k];
+          });
+          localStorage.setItem(FIRE_SAVE_KEY, JSON.stringify(o));
+        } catch (e) {}
+      },
+      loadFireSaved: function () {
+        try {
+          var raw = localStorage.getItem(FIRE_SAVE_KEY);
+          if (!raw) return false;
+          var o = JSON.parse(raw);
+          if (!o || typeof o !== "object") return false;
+          var region = o.region === "us" ? "us" : "in";
+          document.cookie = "region=" + region + "; path=/; max-age=31536000; samesite=lax";
+          document.documentElement.setAttribute("data-region", region);
+          this.region = region;
+          var self = this;
+          function take(field, min, max) {
+            if (!Object.prototype.hasOwnProperty.call(o, field)) return;
+            var n = Number(o[field]);
+            if (!isFinite(n) || n < 0) return;
+            if (n < min) n = min;
+            if (n > max) n = max;
+            self[field] = n;
+          }
+          take("age", 18, 70);
+          take("annualExpenses", 0, this.rangeMax("annualExpenses"));
+          take("currentSavings", 0, this.rangeMax("currentSavings"));
+          take("monthlySavings", 0, this.rangeMax("monthlySavings"));
+          take("stepUp", 0, 20);
+          take("expectedReturn", 0, 20);
+          take("inflation", 0, 15);
+          take("swr", 2, 8);
+          take("npsNow", 0, this.rangeMax("npsNow"));
+          take("npsMonthly", 0, this.rangeMax("npsMonthly"));
+          take("ppfNow", 0, this.rangeMax("ppfNow"));
+          take("ppfMonthly", 0, this.rangeMax("ppfMonthly"));
+          take("epfNow", 0, this.rangeMax("epfNow"));
+          take("epfMonthly", 0, this.rangeMax("epfMonthly"));
+          take("foreignNow", 0, this.rangeMax("foreignNow"));
+          take("foreignMonthly", 0, this.rangeMax("foreignMonthly"));
+          take("stoppedNow", 0, this.rangeMax("stoppedNow"));
+          take("goldNow", 0, this.rangeMax("goldNow"));
+          take("goldMonthly", 0, this.rangeMax("goldMonthly"));
+          take("jewelleryNow", 0, this.rangeMax("jewelleryNow"));
+          take("cityTier", 1, 3);
+          this.cityTier = Math.round(Number(this.cityTier) || 1);
+          if (this.cityTier < 1) this.cityTier = 1;
+          if (this.cityTier > 3) this.cityTier = 3;
+          if (o.housing === "own" || o.housing === "rent" || o.housing === "buy") this.housing = o.housing;
+          return true;
+        } catch (e) {
+          return false;
+        }
+      },
+      planURL: function () {
+        return location.origin + this.fullFireHref();
+      },
+      syncFireURL: function () {
+        if (location.pathname !== "/calculators/fire") return;
+        var next = this.fullFireHref();
+        if (location.pathname + location.search !== next) {
+          try {
+            history.replaceState(null, "", next);
+          } catch (e) {}
+        }
+      },
+      copyPlanLabel: function () {
+        return this.t(this.planCopied ? "copy_plan_done" : "copy_plan");
+      },
+      fallbackCopy: function (text) {
+        var el = document.createElement("textarea");
+        el.value = text;
+        el.setAttribute("readonly", "");
+        el.style.position = "fixed";
+        el.style.left = "-9999px";
+        document.body.appendChild(el);
+        el.select();
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (e) {}
+        el.remove();
+        return ok;
+      },
+      copyPlan: function () {
+        var url = this.planURL();
+        var self = this;
+        var done = function () {
+          self.planCopied = true;
+          setTimeout(function () {
+            self.planCopied = false;
+          }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(done).catch(function () {
+            if (self.fallbackCopy(url)) done();
+          });
+          return;
+        }
+        if (this.fallbackCopy(url)) done();
+      },
       overlayFireQuery: function () {
         var q = new URLSearchParams(location.search);
         var hasRegion = q.get("region") === "us" || q.get("region") === "in";
@@ -802,7 +926,12 @@
         this.result = Calc.fire(inp);
         this.moves = Calc.yearMoves(inp);
         this.options = Calc.yearOptions(inp);
+        this.coast = Calc.coast(inp);
         scheduleDraw(this);
+        if (!this._booting) {
+          this.persistFire();
+          this.syncFireURL();
+        }
       },
       parkedCopy: function () {
         return this.t(this.region === "us" ? "parked_us_copy" : "parked_in_copy");
@@ -840,6 +969,20 @@
         if (this.result.reachesFire && this.result.years === 0) return this.t("already_indep");
         if (!this.result.reachesFire) return this.t("never_indep");
         return this.t("fi_line", { year: this.fiYear(), age: this.result.fiAge });
+      },
+      coastLine: function () {
+        var c = this.coast || {};
+        if (!c.reaches) return "";
+        var r = this.result || {};
+        if (r.reachesFire && r.years === 0) return this.t("coast_done");
+        var land = new Date().getFullYear() + Math.round(Number(c.landYears) || 0);
+        if ((Number(r.monthlyIn) || 0) <= 0) {
+          return this.t("coast_grow", { year: land, age: c.landAge });
+        }
+        if (c.already) return this.t("coast_now", { year: land, age: c.landAge });
+        if (c.untilFire) return this.t("coast_until");
+        var year = new Date().getFullYear() + Math.round(Number(c.years) || 0);
+        return this.t("coast_line", { age: c.age, year: year, land: land });
       },
       crossingCopy: function () {
         var r = this.result || {};
@@ -932,13 +1075,14 @@
       },
       shareText: function () {
         var r = this.result || {};
-        if (r.reachesFire && r.years === 0) return this.t("share_already");
-        if (r.reachesFire && r.reachesCrossing && r.crossingYears > 0) {
-          return this.t("share_fi", { year: this.fiYear(), cross: this.crossingYear() });
-        }
-        if (r.reachesFire) return this.t("share_fi_only", { year: this.fiYear() });
-        if (r.reachesCrossing && r.crossingYears > 0) return this.t("share_cross_only", { year: this.crossingYear() });
-        return this.t("share_never");
+        var line;
+        if (r.reachesFire && r.years === 0) line = this.t("share_already");
+        else if (r.reachesFire && r.reachesCrossing && r.crossingYears > 0) {
+          line = this.t("share_fi", { year: this.fiYear(), cross: this.crossingYear() });
+        } else if (r.reachesFire) line = this.t("share_fi_only", { year: this.fiYear() });
+        else if (r.reachesCrossing && r.crossingYears > 0) line = this.t("share_cross_only", { year: this.crossingYear() });
+        else line = this.t("share_never");
+        return line + "\n" + this.planURL();
       },
       shareHeadline: function () {
         var r = this.result || {};

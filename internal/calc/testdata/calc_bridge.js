@@ -27,6 +27,9 @@ for (const job of jobs) {
     case "fire":
       out.push(Calc.fire(job.input));
       break;
+    case "coast":
+      out.push(Calc.coast(job.input));
+      break;
     case "sip":
       out.push(Calc.sip(job.input));
       break;

@@ -116,6 +116,7 @@ templ FIREPage(p Page) {
 						@deskHeadline("number_today", "fmtINR(result.stillNeed)", "yearsCopy()")
 						<p class="mt-2 text-sm font-medium text-ink dark:text-zinc-100" x-bind:class="dirty ? 'opacity-50' : ''" x-text="stillNeedCopy()"></p>
 						<p class="mt-2 text-sm text-ink/70 dark:text-zinc-300" x-bind:class="dirty ? 'opacity-50' : ''" x-text="crossingCopy()"></p>
+						<p class="mt-1 text-sm font-medium text-ink dark:text-zinc-100" x-show="coastLine()" x-cloak x-bind:class="dirty ? 'opacity-50' : ''" x-text="coastLine()"></p>
 						<p class="mt-1 hidden text-sm font-medium text-ink dark:text-zinc-100 lg:block" x-bind:class="dirty ? 'opacity-50' : ''" x-text="numberLaterCopy()"></p>
 						<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:gap-3" x-bind:class="dirty ? 'opacity-50' : ''">
 							<div class="rounded-xl bg-paper p-2.5 sm:p-3 dark:bg-zinc-800">
@@ -173,10 +174,6 @@ templ FIREPage(p Page) {
 					</div>
 				</div>
 			</form>
-			<p class="mt-6 text-sm text-ink/65 dark:text-zinc-400">
-				<a class="font-medium text-brand hover:underline" href="/guidance" x-bind:href="revealed && result.reachesFire ? ('/guidance?years=' + Math.max(1, Math.round(result.years))) : '/guidance'">@Tx("sleeves_fire")</a>
-				<span> @Tx("sleeves_fire_sub")</span>
-			</p>
 		</div>
 	}
 }

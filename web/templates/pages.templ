@@ -57,6 +57,7 @@ templ Landing(p Page) {
 							<p class="mt-1 text-sm font-medium text-ink dark:text-zinc-100" x-text="stillNeedCopy()"></p>
 							<p class="mt-1 text-sm text-ink/70 dark:text-zinc-300" x-text="yearsCopy()"></p>
 							<p class="mt-0.5 text-sm text-ink/70 dark:text-zinc-300" x-text="crossingCopy()"></p>
+							<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-show="coastLine()" x-cloak x-text="coastLine()"></p>
 							<p class="mt-0.5 text-sm font-medium text-ink dark:text-zinc-100" x-text="numberLaterCopy()"></p>
 							<div class="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4 sm:gap-3">
 								<div class="rounded-xl bg-paper p-2.5 dark:bg-zinc-800">
@@ -104,7 +105,6 @@ templ Landing(p Page) {
 				<a href="/calculators/emi" class="preset-chip inline-flex items-center">@Tx("tab_emi")</a>
 				<a href="/calculators/emergency" class="preset-chip inline-flex items-center">@Tx("tab_emergency")</a>
 				<a href="/calculators/budget" class="preset-chip inline-flex items-center">@Tx("tab_budget")</a>
-				<a href="/guidance" class="preset-chip inline-flex items-center">@Tx("tab_sleeves")</a>
 				<a href="/crossing" class="preset-chip inline-flex items-center">@Tx("jump_crossing")</a>
 			</div>
 		</nav>
@@ -291,6 +291,7 @@ templ fireResultExtras() {
 			</ul>
 		</div>
 		<div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+			<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="copyPlan()" x-text="copyPlanLabel()">@Tx("copy_plan")</button>
 			<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="shareYear()">@Tx("share_year")</button>
 			<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("crossing_learn")</a>
 		</div>

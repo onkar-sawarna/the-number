@@ -36,6 +36,13 @@ func TestGoMatchesCalcJS(t *testing.T) {
 		compareFIRE(t, in, js, goOut)
 	}
 
+	for _, in := range fireFixtures() {
+		var js jsCoast
+		mustUnmarshal(t, next(), &js)
+		goOut := Coast(in)
+		compareCoast(t, in, js, goOut)
+	}
+
 	for _, in := range sipFixtures() {
 		var js jsSIP
 		mustUnmarshal(t, next(), &js)
@@ -119,6 +126,9 @@ func parityJobs() []jsJob {
 	var jobs []jsJob
 	for _, in := range fireFixtures() {
 		jobs = append(jobs, jsJob{Op: "fire", Input: fireToJS(in)})
+	}
+	for _, in := range fireFixtures() {
+		jobs = append(jobs, jsJob{Op: "coast", Input: fireToJS(in)})
 	}
 	for _, in := range sipFixtures() {
 		jobs = append(jobs, jsJob{Op: "sip", Input: map[string]any{
@@ -239,6 +249,31 @@ func fireToJS(in FIREInput) map[string]any {
 		"stoppedNow": in.StoppedNow, "goldNow": in.GoldNow, "goldMonthly": in.GoldMonthly, "jewelleryNow": in.JewelleryNow,
 		"stepUp": in.StepUp, "cityTier": in.CityTier, "housing": in.Housing, "region": in.Region,
 		"contribScale": in.ContribScale, "pauseMonths": in.PauseMonths,
+		"stopAfterMonths": in.StopAfterMonths,
+	}
+}
+
+type jsCoast struct {
+	Reaches   bool    `json:"reaches"`
+	Already   bool    `json:"already"`
+	Years     float64 `json:"years"`
+	Age       int     `json:"age"`
+	LandYears float64 `json:"landYears"`
+	LandAge   int     `json:"landAge"`
+	UntilFire bool    `json:"untilFire"`
+}
+
+func compareCoast(t *testing.T, in FIREInput, js jsCoast, goOut CoastOutput) {
+	t.Helper()
+	label := fireLabel(in) + " coast"
+	if js.Reaches != goOut.Reaches || js.Already != goOut.Already || js.UntilFire != goOut.UntilFire {
+		t.Errorf("%s flags js=%v/%v/%v go=%v/%v/%v", label, js.Reaches, js.Already, js.UntilFire, goOut.Reaches, goOut.Already, goOut.UntilFire)
+	}
+	if js.Age != goOut.Age || js.LandAge != goOut.LandAge {
+		t.Errorf("%s age js=%d/%d go=%d/%d", label, js.Age, js.LandAge, goOut.Age, goOut.LandAge)
+	}
+	if math.Abs(js.Years-goOut.Years) > 0.02 || math.Abs(js.LandYears-goOut.LandYears) > 0.02 {
+		t.Errorf("%s years js=%v land=%v go=%v land=%v", label, js.Years, js.LandYears, goOut.Years, goOut.LandYears)
 	}
 }
 

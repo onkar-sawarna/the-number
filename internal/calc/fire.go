@@ -49,8 +49,10 @@ type FIREInput struct {
 	Housing  string `json:"housing"`   // own | rent | buy
 	Region   string `json:"region"`    // in | us
 
-	ContribScale float64 `json:"contrib_scale"` // 0 = 1 (full). 0.6 = 40% pay cut.
-	PauseMonths  int     `json:"pause_months"`  // first N months, deposits are 0
+	ContribScale    float64 `json:"contrib_scale"`     // 0 = 1 (full). 0.6 = 40% pay cut.
+	PauseMonths     int     `json:"pause_months"`      // first N months, deposits are 0
+	StopAfterMonths int     `json:"stop_after_months"` // 0 = keep contributing. N > 0 = deposits stop after month N.
+	SkipChart       bool    `json:"skip_chart"`        // Coast trials skip the yearly chart.
 }
 
 type firePots struct {
@@ -202,6 +204,12 @@ func ppfAt(in FIREInput, month int) float64 {
 }
 
 func depositScale(in FIREInput, month int) float64 {
+	if in.StopAfterMonths < 0 {
+		return 0
+	}
+	if in.StopAfterMonths > 0 && month > in.StopAfterMonths {
+		return 0
+	}
 	if in.PauseMonths > 0 && month <= in.PauseMonths {
 		return 0
 	}
@@ -287,7 +295,7 @@ func FIRE(in FIREInput) FIREOutput {
 		}
 	}
 	if fireSet && out.ReachesCrossing {
-		out.Chart = fireChart(in, swr, out.Years, out.ReachesFire)
+		out.Chart = maybeChart(in, swr, out.Years, out.ReachesFire)
 		return out
 	}
 
@@ -341,8 +349,113 @@ func FIRE(in FIREInput) FIREOutput {
 		out.Years = 0
 		out.JewelleryLater = pots.jewellery
 	}
-	out.Chart = fireChart(in, swr, out.Years, out.ReachesFire)
+	out.Chart = maybeChart(in, swr, out.Years, out.ReachesFire)
 	return out
+}
+
+func maybeChart(in FIREInput, swr, years float64, reaches bool) []FIREPoint {
+	if in.SkipChart {
+		return nil
+	}
+	return fireChart(in, swr, years, reaches)
+}
+
+// CoastOutput is the earliest you can stop SIPs and still reach FIRE.
+type CoastOutput struct {
+	Reaches   bool    `json:"reaches"`
+	Already   bool    `json:"already"`
+	Years     float64 `json:"years"`
+	Age       int     `json:"age"`
+	LandYears float64 `json:"landYears"`
+	LandAge   int     `json:"landAge"`
+	UntilFire bool    `json:"untilFire"`
+}
+
+func zeroMonthlies(in FIREInput) FIREInput {
+	in.MonthlySavings = 0
+	in.NPSMonthly = 0
+	in.PPFMonthly = 0
+	in.EPFMonthly = 0
+	in.ForeignMonthly = 0
+	in.GoldMonthly = 0
+	in.StopAfterMonths = 0
+	in.SkipChart = true
+	return in
+}
+
+// Coast is the fewest months of contributing after which you can stop SIPs
+// and still reach FIRE within 80 years. Already means you can stop today.
+func Coast(in FIREInput) CoastOutput {
+	fullIn := in
+	fullIn.SkipChart = true
+	full := FIRE(fullIn)
+	if !full.ReachesFire {
+		return CoastOutput{}
+	}
+	if full.Years == 0 {
+		return CoastOutput{Reaches: true, Already: true, Age: in.Age, LandAge: in.Age}
+	}
+	deadline := coastDeadlineAge(full.FIAge)
+	now := FIRE(zeroMonthlies(in))
+	if coastLands(now, deadline) {
+		return CoastOutput{
+			Reaches:   true,
+			Already:   true,
+			Age:       in.Age,
+			LandYears: now.Years,
+			LandAge:   now.FIAge,
+		}
+	}
+	if monthlyIn(in) <= 0 {
+		return CoastOutput{
+			Reaches:   true,
+			Already:   true,
+			Age:       in.Age,
+			LandYears: full.Years,
+			LandAge:   full.FIAge,
+		}
+	}
+	hi := int(math.Ceil(full.Years * 12))
+	if hi < 1 {
+		hi = 1
+	}
+	lo := 1
+	best := hi
+	bestOut := full
+	for lo <= hi {
+		mid := (lo + hi) / 2
+		trial := in
+		trial.StopAfterMonths = mid
+		trial.SkipChart = true
+		out := FIRE(trial)
+		if coastLands(out, deadline) {
+			best = mid
+			bestOut = out
+			hi = mid - 1
+		} else {
+			lo = mid + 1
+		}
+	}
+	years := float64(best) / 12.0
+	return CoastOutput{
+		Reaches:   true,
+		Years:     years,
+		Age:       in.Age + int(math.Round(years)),
+		LandYears: bestOut.Years,
+		LandAge:   bestOut.FIAge,
+		UntilFire: best >= int(math.Ceil(full.Years*12)),
+	}
+}
+
+func coastDeadlineAge(fiAge int) int {
+	if fiAge > 60 {
+		return fiAge
+	}
+	return 60
+}
+
+func coastLands(out FIREOutput, deadlineAge int) bool {
+	return out.ReachesFire && out.FIAge <= deadlineAge
 }
 
 func fireChart(in FIREInput, swr, years float64, reaches bool) []FIREPoint {

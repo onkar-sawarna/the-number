@@ -72,7 +72,7 @@ Module path: `github.com/thenumber/app`.
 
 Go 1.22+, Echo v4, templ, HTMX 2, Alpine.js 3, Tailwind 3.4 (`darkMode: 'class'`), Chart.js 4. No database.
 
-Theme is a cookie (`theme=dark|light`), never `localStorage`. `theme-boot.js` runs in `<head>` to avoid a flash of the wrong theme.
+Theme is a cookie (`theme=dark|light`). `theme-boot.js` runs in `<head>` to avoid a flash of the wrong theme. Last FIRE inputs stay in `localStorage` on this device; they are not sent to the server.
 
 ## Disclaimer
 
