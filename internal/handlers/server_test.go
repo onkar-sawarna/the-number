@@ -60,6 +60,9 @@ func TestFIREPageHasPlanLink(t *testing.T) {
 	if !strings.Contains(body, "If the year helped, UPI is welcome") {
 		t.Fatal("FIRE page missing support line")
 	}
+	if !strings.Contains(body, "result-panel-support") || !strings.Contains(body, "Pay with UPI") {
+		t.Fatal("FIRE page missing support card")
+	}
 	if !strings.Contains(body, "upi://pay?") {
 		t.Fatal("FIRE page missing UPI pay link")
 	}

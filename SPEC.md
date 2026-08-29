@@ -8,7 +8,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 - Live inputs: maths and charts update in the browser with **no server round-trip**.
 - Numbers stay in the browser. No accounts, no database. Last FIRE inputs can stay in `localStorage` on this device.
 - Optional category-level allocation guidance (never product names).
-- After FIRE results, a discreet UPI line to support the workshop. Not required to see the number. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`).
+- After FIRE results, a UPI support card (pay link + copy). Not required to see the number. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`).
 
 Calculators and guidance are public. There is no account.
 

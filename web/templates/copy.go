@@ -345,10 +345,14 @@ func Copy(key string) string {
 		return "the number"
 	case "share_footer":
 		return "Educational, not advice · number.onkarsawarna.dev"
+	case "support_kicker":
+		return "Support the workshop"
 	case "support_lead":
 		return "If the year helped, UPI is welcome — not required."
+	case "support_pay":
+		return "Pay with UPI"
 	case "support_copy":
-		return "Copy UPI"
+		return "Copy UPI ID"
 	case "support_copied":
 		return "Copied"
 	case "already_there":

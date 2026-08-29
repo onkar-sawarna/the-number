@@ -408,7 +408,8 @@
   }
 
   .result-panel-moves,
-  .result-panel-optional {
+  .result-panel-optional,
+  .result-panel-support {
     border-radius: 1rem;
     border: 1px solid transparent;
     padding: 0.9rem;
@@ -432,6 +433,38 @@
   html.dark .result-panel-optional {
     border-color: rgba(251, 191, 36, 0.22);
     background: rgba(120, 53, 15, 0.28);
+  }
+
+  .result-panel-support {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+  }
+
+  html.dark .result-panel-support {
+    border-color: rgba(56, 189, 248, 0.22);
+    background: rgba(12, 74, 110, 0.32);
+  }
+
+  .support-upi-id {
+    margin-top: 0.75rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.88);
+    padding: 0.7rem 0.9rem;
+    font-family: Fraunces, ui-serif, Georgia, serif;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    color: #0f1b33;
+  }
+
+  html.dark .support-upi-id {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e0f2fe;
+  }
+
+  .support-upi-id a {
+    color: inherit;
   }
 
   .result-move {
