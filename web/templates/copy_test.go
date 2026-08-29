@@ -44,7 +44,7 @@ func TestCrossingMeta(t *testing.T) {
 	if !strings.Contains(html, `"@type":"Article"`) || !strings.Contains(html, "/crossing") {
 		t.Fatalf("crossing JSON-LD: %s", html)
 	}
-	if strings.Contains(html, "onkarsawarna@gmail.com") {
+	if strings.Contains(html, "onkarsawarna@gmail.com") || strings.Contains(html, "osamonke2112@gmail.com") {
 		t.Fatal("email must not appear in crossing JSON-LD")
 	}
 }
@@ -63,7 +63,7 @@ func TestJSONLDWebAppAndPerson(t *testing.T) {
 	if !strings.Contains(html, "linkedin.com/in/onkar-sawarna-569615187") {
 		t.Fatal("missing LinkedIn sameAs")
 	}
-	if strings.Contains(html, "onkarsawarna@gmail.com") {
+	if strings.Contains(html, "onkarsawarna@gmail.com") || strings.Contains(html, "osamonke2112@gmail.com") {
 		t.Fatal("email must not appear in JSON-LD")
 	}
 }

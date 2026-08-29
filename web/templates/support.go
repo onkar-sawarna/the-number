@@ -10,7 +10,7 @@ import (
 
 // DefaultSupportUPI is shown after FIRE results when SUPPORT_UPI is unset.
 // Override on the host if this VPA is not the one you use.
-const DefaultSupportUPI = "onkarsawarna@oksbi"
+const DefaultSupportUPI = "onkarsawarna-3@okicici"
 
 func SupportUPI() string {
 	if v := strings.TrimSpace(os.Getenv("SUPPORT_UPI")); v != "" {

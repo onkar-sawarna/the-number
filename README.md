@@ -10,7 +10,7 @@ Live: [https://number.onkarsawarna.dev](https://number.onkarsawarna.dev).
 
 ## License
 
-[PolyForm Noncommercial 1.0.0](LICENSE). Personal and other noncommercial use is allowed. Hosting this for clients, white-labelling it, or selling the engine needs a separate license — email [onkarsawarna@gmail.com](mailto:onkarsawarna@gmail.com). The public site stays free to use in a browser.
+[PolyForm Noncommercial 1.0.0](LICENSE). Personal and other noncommercial use is allowed. Hosting this for clients, white-labelling it, or selling the engine needs a separate license — email [osamonke2112@gmail.com](mailto:osamonke2112@gmail.com). The public site stays free to use in a browser.
 
 ## Run
 
@@ -56,7 +56,7 @@ go test ./internal/calc ./internal/ai
 | `OPENAI_MODEL` | `gpt-4o-mini` | |
 | `ANTHROPIC_API_KEY` | empty | Used only if OpenAI is unset |
 | `ANTHROPIC_MODEL` | `claude-3-5-haiku-latest` | |
-| `SUPPORT_UPI` | `onkarsawarna@oksbi` | VPA shown after FIRE results |
+| `SUPPORT_UPI` | `onkarsawarna-3@okicici` | VPA shown after FIRE results |
 
 No API keys are hardcoded. Without keys, guidance uses the on-device heuristic.
 
