@@ -114,7 +114,7 @@ func Copy(key string) string {
 	case "annual_spend":
 		return "Annual spend"
 	case "parked_cash":
-		return "Parked cash"
+		return "Liquid savings"
 	case "calculate":
 		return "Calculate"
 	case "calculate_working":
@@ -158,9 +158,9 @@ func Copy(key string) string {
 	case "want_detail":
 		return "See each pot today vs later"
 	case "want_detail_in":
-		return "Parked cash, SIPs, gold, NPS, EPF, PPF, jewellery, housing — today’s rupees and the future amount for every sleeve."
+		return "Liquid savings, SIPs, bonds, gold, NPS, EPF, PPF, jewellery, housing — today’s rupees and the future amount for every sleeve."
 	case "want_detail_us":
-		return "Parked cash, invested pots, gold, retirement, jewellery, housing — today’s dollars and the future amount for every sleeve."
+		return "Liquid savings, invested pots, gold, retirement, jewellery, housing — today’s dollars and the future amount for every sleeve."
 	case "open_full":
 		return "Open the full FIRE calculator"
 	case "open":
@@ -180,7 +180,7 @@ func Copy(key string) string {
 	case "card_fire_title":
 		return "The full calculator"
 	case "card_fire_body":
-		return "Parked cash, gold, NPS, EPF, PPF, invested SIPs, housing — every pot, not just three boxes."
+		return "Liquid savings, gold, NPS, EPF, PPF, SIPs and bonds, housing — every pot, not just three boxes."
 	case "card_sip_title":
 		return "What does a monthly plan become?"
 	case "card_sip_body":
@@ -276,7 +276,7 @@ func Copy(key string) string {
 	case "crossing_h_jew":
 		return "Why jewellery is out"
 	case "crossing_p_jew":
-		return "Jewellery grows in net worth at a gold-like rate. You keep it. It does not pay rent. So the crossing, like years-to-FIRE, uses spendable pots only — parked cash, SIPs, gold funds you could sell, NPS, EPF, PPF, foreign stocks. A family stash of gold that will not be sold does not pull the crossing forward."
+		return "Jewellery grows in net worth at a gold-like rate. You keep it. It does not pay rent. So the crossing, like years-to-FIRE, uses spendable pots only — liquid savings, SIPs, bonds, gold funds you could sell, NPS, EPF, PPF, foreign stocks. A family stash of gold that will not be sold does not pull the crossing forward."
 	case "crossing_h_not":
 		return "Why it is not FIRE"
 	case "crossing_p_not":
@@ -422,9 +422,9 @@ func Copy(key string) string {
 	case "fire_h1":
 		return "FIRE number"
 	case "fire_intro_in":
-		return "India plan: invested SIPs at 12%, inflation 6%, withdrawal 4% — 25× expenses. Lean is 20×, Fat is 50×. Parked cash (FDs, liquid funds) sits in the corpus at ~6% and takes no monthly SIP — put running and old SIPs in Invested, next to it. Gold funds ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, foreign stocks, and housing. Step SIPs up 10% a year."
+		return "India plan: invested SIPs, bonds, and other invested pots at 12%, inflation 6%, withdrawal 4% — 25× expenses. Lean is 20×, Fat is 50×. Liquid savings (cash, FDs, liquid funds) sit in the corpus at ~6% and take no monthly SIP — put running SIPs, old SIPs, bonds, and other invested stuff under Invested, next to it. Gold funds ~8% (you could sell). Jewellery grows at ~8% in net worth, but you keep it — it does not shorten years-to-FIRE. Then NPS, EPF, PPF, foreign stocks, and housing. Step SIPs up 10% a year."
 	case "fire_intro_us":
-		return "Parked cash sits in the corpus at ~6% and takes no monthly contribution — running contributions go under Invested, next to it. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then a retirement account and housing. Amounts are in dollars."
+		return "Liquid savings sit in the corpus at ~6% and take no monthly contribution — bonds, brokerage, and running contributions go under Invested, next to it. Gold funds at ~8%. Jewellery grows in net worth; you keep it. Then a retirement account and housing. Amounts are in dollars."
 	case "annual_exp":
 		return "Annual expenses (include rent if you rent)"
 	case "city":
@@ -476,11 +476,13 @@ func Copy(key string) string {
 	case "inf_us":
 		return "Inflation % (World 3%)"
 	case "swr_in":
-		return "Safe withdrawal rate % (4% ≈ 25×)"
+		return "After you stop %"
 	case "swr_us":
-		return "Safe withdrawal rate % (4% ≈ 25×)"
+		return "After you stop %"
+	case "swr_note":
+		return "After you stop, this calculator spends 4% of the corpus each year — that is 25× today’s expenses. Leave 4 unless you mean a thinner or fatter year."
 	case "parked_head":
-		return "Parked · ~6% · no SIP"
+		return "Liquid savings · ~6% · no SIP"
 	case "parked_in":
 		return "Cash, FDs, liquid funds till now"
 	case "parked_us":
@@ -514,9 +516,11 @@ func Copy(key string) string {
 	case "monthly":
 		return "Monthly"
 	case "invested_head":
-		return "Invested · expected return"
+		return "Invested · SIPs, bonds, other"
 	case "old_sips":
-		return "Till now (old SIPs)"
+		return "Till now (old SIPs, bonds, other)"
+	case "old_inv":
+		return "Till now (bonds, brokerage, other)"
 	case "step_note":
 		return "Each year, monthly SIPs and other monthly pots rise by this %. 10% is the usual plan as income grows. 0 keeps today’s amount. PPF stays at the ₹1.5L/year cap."
 	case "house_add":
@@ -532,17 +536,17 @@ func Copy(key string) string {
 	case "fat":
 		return "Fat FIRE"
 	case "parked_us_copy":
-		return "Counts in the corpus at an educational 6% parking rate. No monthly contribution into this pot — SIPs belong under Invested, next to parked."
+		return "Counts in the corpus at an educational 6%. No monthly contribution into this pot — bonds, brokerage, and running contributions go under Invested, next to liquid savings."
 	case "parked_in_copy":
-		return "Counts in the corpus at an educational 6% (cash, FDs, liquid funds). No monthly SIP here — that is not how parked cash works in this calculator. Old SIPs still sitting in funds, and SIPs still running, go under Invested, next to this box."
+		return "Counts in the corpus at an educational 6% (cash, FDs, liquid funds). No monthly SIP here — liquid savings stay idle in this calculator. Old SIPs, bonds, and other invested pots, plus SIPs still running, go under Invested, next to this box."
 	case "gold_copy":
 		return "Educational ~8%. Gold funds and coins you could sell. Not jewellery."
 	case "jew_copy":
 		return "Grows at ~8% like gold, so net worth rises. You keep it — it does not shorten years-to-FIRE."
 	case "inv_us":
-		return "This pot grows at {rate}% — your expected return. Old contributions still invested, plus monthly contributions still running. Lock-ins, employer match, and tax wrappers are ignored — educational only."
+		return "This pot grows at {rate}% — your expected return. Bonds, brokerage, and any other pot already invested, plus monthly contributions still running. Lock-ins, employer match, and tax wrappers are ignored — educational only."
 	case "inv_in":
-		return "This pot grows at {rate}% — your expected return. Old SIPs still in funds, plus SIPs still running. NPS ~9%, EPF ~8.25%, PPF ~7.1% — educational rates, lock-ins ignored. PPF cap is ₹1.5L/year."
+		return "This pot grows at {rate}% — your expected return. Old SIPs, bonds, debt funds, and any other pot already invested, plus SIPs still running. NPS ~9%, EPF ~8.25%, PPF ~7.1% — educational rates, lock-ins ignored. PPF cap is ₹1.5L/year."
 	case "house_line":
 		return "Indicative modest house in a {city} city: {cost}."
 	case "city_t1":
@@ -566,7 +570,7 @@ func Copy(key string) string {
 	case "chart_spend":
 		return "What you have"
 	case "chart_have_hint":
-		return "Spendable pots — cash, SIPs, gold funds, NPS, EPF, PPF. The year comes from this, not jewellery."
+		return "Spendable pots — liquid savings, SIPs, bonds, gold funds, NPS, EPF, PPF. The year comes from this, not jewellery."
 	case "chart_nw":
 		return "Net worth (jewellery kept)"
 	case "chart_nw_hint":
@@ -620,7 +624,7 @@ func Copy(key string) string {
 	case "pots_lead_flat":
 		return "These pots stay about the same on these assumptions."
 	case "chart_parked":
-		return "Parked"
+		return "Liquid savings"
 	case "chart_nps":
 		return "NPS"
 	case "chart_epf":
@@ -630,7 +634,7 @@ func Copy(key string) string {
 	case "chart_foreign":
 		return "Foreign"
 	case "chart_invested_sip":
-		return "Invested SIPs"
+		return "SIPs & bonds"
 	case "chart_gold":
 		return "Gold"
 	case "chart_jew":
