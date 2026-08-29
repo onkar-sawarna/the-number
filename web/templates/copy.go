@@ -13,6 +13,8 @@ func Copy(key string) string {
 		return "Sleeves"
 	case "nav_about":
 		return "About"
+	case "nav_support":
+		return "Support"
 	case "nav_mix":
 		return "Mix"
 	case "theme_light":
@@ -31,6 +33,8 @@ func Copy(key string) string {
 		return "FIRE sleeves"
 	case "jump_about":
 		return "About"
+	case "jump_support":
+		return "Keep it running"
 	case "visit_blog":
 		return "Visit my blogging site"
 	case "tab_fire":
@@ -197,6 +201,8 @@ func Copy(key string) string {
 		return "Home"
 	case "title_about":
 		return "About"
+	case "title_support":
+		return "Support"
 	case "title_disclaimer":
 		return "Disclaimer"
 	case "title_fire":
@@ -349,6 +355,30 @@ func Copy(key string) string {
 		return "Support the workshop"
 	case "support_lead":
 		return "If the year helped, UPI is welcome — not required."
+	case "support_page_kicker":
+		return "Keep it running"
+	case "support_page_h1":
+		return "If the year landed."
+	case "support_page_lede":
+		return "Someone you will never meet typed what they spend and saw a year they could stop. That is the whole point. This stays free — no login, no fund pitch."
+	case "support_h_why":
+		return "Why a UPI at all"
+	case "support_p_why":
+		return "The host sleeps. The domain costs. Evenings go into pots, housing, and the crossing. A coffee is enough. Close the tab and nothing changes."
+	case "support_h_how":
+		return "How"
+	case "support_p_how":
+		return "Scan the Google Pay code from a computer, or pay on your phone. The remark is already Paid for FIRE — the number, so I know it came from here."
+	case "support_page_close":
+		return "Then go back to the calculator. The number is still yours."
+	case "support_meta":
+		return "If the year landed, a UPI keeps this workshop free. No login, no fund pitch."
+	case "support_open":
+		return "The longer note"
+	case "support_scan":
+		return "Scan with any UPI app"
+	case "support_desktop":
+		return "On a computer, scan the code or copy the ID and pay from your phone."
 	case "support_pay":
 		return "Pay with UPI"
 	case "support_copy":

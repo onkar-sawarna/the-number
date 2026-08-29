@@ -9,6 +9,9 @@ func TestCopyKnownKeys(t *testing.T) {
 	if got := Copy("nav_about"); got != "About" {
 		t.Fatalf("Copy(nav_about)=%q", got)
 	}
+	if got := Copy("nav_support"); got != "Support" {
+		t.Fatalf("Copy(nav_support)=%q", got)
+	}
 	if got := Copy("home_about_page"); got != "About me" {
 		t.Fatalf("Copy(home_about_page)=%q", got)
 	}
@@ -32,6 +35,9 @@ func TestCanonical(t *testing.T) {
 	}
 	if Canonical("/crossing") != "https://number.onkarsawarna.dev/crossing" {
 		t.Fatalf("crossing canonical: %s", Canonical("/crossing"))
+	}
+	if Canonical("/support") != "https://number.onkarsawarna.dev/support" {
+		t.Fatalf("support canonical: %s", Canonical("/support"))
 	}
 }
 

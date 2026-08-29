@@ -12,6 +12,12 @@ import (
 // Override on the host if this VPA is not the one you use.
 const DefaultSupportUPI = "onkarsawarna-3@okicici"
 
+// SupportUPINote is the UPI transaction remark (tn) so the credit shows as FIRE.
+const SupportUPINote = "Paid for FIRE — the number"
+
+// SupportUPIQRSrc is the Google Pay QR for DefaultSupportUPI.
+const SupportUPIQRSrc = "/static/img/upi-qr.png?v=1"
+
 func SupportUPI() string {
 	if v := strings.TrimSpace(os.Getenv("SUPPORT_UPI")); v != "" {
 		return v
@@ -19,11 +25,15 @@ func SupportUPI() string {
 	return DefaultSupportUPI
 }
 
-func SupportUPIHref() templ.SafeURL {
+func SupportUPIPayString() string {
 	q := url.Values{}
 	q.Set("pa", SupportUPI())
 	q.Set("pn", "Onkar Sawarna")
 	q.Set("cu", "INR")
-	q.Set("tn", "the number")
-	return templ.SafeURL("upi://pay?" + q.Encode())
+	q.Set("tn", SupportUPINote)
+	return "upi://pay?" + q.Encode()
+}
+
+func SupportUPIHref() templ.SafeURL {
+	return templ.SafeURL(SupportUPIPayString())
 }

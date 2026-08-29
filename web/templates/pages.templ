@@ -277,6 +277,7 @@ templ About(p Page) {
 				<div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
 					<a href="/calculators/fire" class="btn-primary w-full sm:w-auto">@Tx("jump_fire")</a>
 					<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("jump_crossing")</a>
+					<a href="/support" class="btn-ghost w-full sm:w-auto">@Tx("jump_support")</a>
 					<a href="https://www.onkarsawarna.dev/" class="btn-ghost w-full sm:w-auto" rel="noopener noreferrer">@Tx("visit_blog")</a>
 				</div>
 			</div>
@@ -308,19 +309,61 @@ templ fireResultExtras() {
 			<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="shareYear()">@Tx("share_year")</button>
 			<a href="/crossing" class="btn-ghost w-full sm:w-auto">@Tx("crossing_learn")</a>
 		</div>
-		<div class="result-panel-support">
-			<p class="result-kicker text-sky-800 dark:text-sky-200">@Tx("support_kicker")</p>
-			<p class="mt-1 text-sm text-sky-950/70 dark:text-sky-100/70">@Tx("support_lead")</p>
-			<p class="support-upi-id">
-				<a href={ SupportUPIHref() } data-support-upi={ SupportUPI() }>{ SupportUPI() }</a>
-			</p>
-			<div class="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-				<a href={ SupportUPIHref() } class="btn-primary w-full sm:w-auto">@Tx("support_pay")</a>
-				<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="copySupportUPI()" x-text="supportCopyLabel()">@Tx("support_copy")</button>
-			</div>
-		</div>
+		@SupportUPICard()
+		<p class="text-sm"><a href="/support" class="font-medium text-brand hover:underline">@Tx("support_open")</a></p>
 		<canvas id="fire-share-card" width="1200" height="630" class="hidden" aria-hidden="true"></canvas>
 	</div>
+}
+
+templ SupportUPICard() {
+	<div class="result-panel-support" x-data="supportUPI()">
+		<p class="result-kicker text-sky-800 dark:text-sky-200">@Tx("support_kicker")</p>
+		<p class="mt-1 text-sm text-sky-950/70 dark:text-sky-100/70">@Tx("support_lead")</p>
+		<div class="support-upi-row">
+			<div class="support-upi-qr">
+				<img src={ SupportUPIQRSrc } width="280" height="360" alt="Google Pay UPI QR"/>
+			</div>
+			<div class="min-w-0 flex-1">
+				<p class="support-upi-id">
+					<a href={ SupportUPIHref() } data-support-upi={ SupportUPI() }>{ SupportUPI() }</a>
+				</p>
+				<p class="support-upi-note">Note: { SupportUPINote }</p>
+				<p class="support-upi-desktop">@Tx("support_desktop")</p>
+				<div class="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+					<a href={ SupportUPIHref() } class="btn-primary w-full sm:hidden">@Tx("support_pay")</a>
+					<button type="button" class="btn-ghost w-full sm:w-auto" x-on:click="copySupportUPI()" x-text="supportCopyLabel()">@Tx("support_copy")</button>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+templ Support(p Page) {
+	@Layout(p) {
+		<article class="mx-auto max-w-3xl">
+			<p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand sm:text-xs">@Tx("support_page_kicker")</p>
+			<h1 class="mt-3 font-serif text-3xl tracking-tight sm:text-4xl">@Tx("support_page_h1")</h1>
+			<p class="mt-4 max-w-2xl font-serif text-xl leading-snug text-ink/80 dark:text-zinc-200">@Tx("support_page_lede")</p>
+			<div class="mt-10 space-y-8 rounded-3xl border border-brand/20 bg-white/80 p-5 shadow-card sm:p-8 dark:border-brand/30 dark:bg-white/5">
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("support_h_why")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("support_p_why")</p>
+				</section>
+				<section>
+					<h2 class="font-serif text-2xl tracking-tight">@Tx("support_h_how")</h2>
+					<p class="mt-3 leading-relaxed text-ink/80 dark:text-zinc-300">@Tx("support_p_how")</p>
+					<div class="mt-6">
+						@SupportUPICard()
+					</div>
+				</section>
+				<p class="font-serif text-lg leading-snug text-ink/80 dark:text-zinc-200">@Tx("support_page_close")</p>
+				<div class="flex flex-col gap-2 pt-2 sm:flex-row sm:flex-wrap">
+					<a href="/calculators/fire" class="btn-primary w-full sm:w-auto">@Tx("jump_fire")</a>
+					<a href="/" class="btn-ghost w-full sm:w-auto">@Tx("jump_home")</a>
+				</div>
+			</div>
+		</article>
+	}
 }
 
 templ Crossing(p Page) {

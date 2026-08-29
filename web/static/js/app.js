@@ -1677,6 +1677,50 @@
     });
   };
 
+  window.supportUPI = function () {
+    return {
+      supportCopied: false,
+      t: window.t,
+      supportCopyLabel: function () {
+        return this.t(this.supportCopied ? "support_copied" : "support_copy");
+      },
+      fallbackCopy: function (text) {
+        var el = document.createElement("textarea");
+        el.value = text;
+        el.setAttribute("readonly", "");
+        el.style.position = "fixed";
+        el.style.left = "-9999px";
+        document.body.appendChild(el);
+        el.select();
+        var ok = false;
+        try {
+          ok = document.execCommand("copy");
+        } catch (e) {}
+        el.remove();
+        return ok;
+      },
+      copySupportUPI: function () {
+        var el = this.$root.querySelector("[data-support-upi]");
+        var id = el ? (el.getAttribute("data-support-upi") || "").trim() : "";
+        if (!id) return;
+        var self = this;
+        var done = function () {
+          self.supportCopied = true;
+          setTimeout(function () {
+            self.supportCopied = false;
+          }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(id).then(done).catch(function () {
+            if (self.fallbackCopy(id)) done();
+          });
+          return;
+        }
+        if (this.fallbackCopy(id)) done();
+      },
+    };
+  };
+
   window.guideForm = function () {
     var y = parseInt(new URLSearchParams(location.search).get("years") || "10", 10);
     if (!isFinite(y) || y < 1) y = 10;
