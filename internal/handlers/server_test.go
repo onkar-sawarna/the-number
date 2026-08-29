@@ -73,6 +73,12 @@ func TestFIREPageHasPlanLink(t *testing.T) {
 	if !strings.Contains(body, "/static/img/upi-qr-code.png") {
 		t.Fatal("full FIRE page missing UPI QR")
 	}
+	if !strings.Contains(body, "Or pay via card") {
+		t.Fatal("FIRE page missing pay-via-card line")
+	}
+	if !strings.Contains(body, "buymeacoffee.com/onkarsawarna") {
+		t.Fatal("full FIRE page missing World card link")
+	}
 	if !strings.Contains(body, "coastLine()") {
 		t.Fatal("FIRE page missing coast line")
 	}
@@ -93,6 +99,9 @@ func TestSupportPage(t *testing.T) {
 	body := rec.Body.String()
 	if !strings.Contains(body, "If the year landed") || !strings.Contains(body, "/static/img/upi-qr-code.png") {
 		t.Fatalf("support page missing copy or QR: %s", body[:min(500, len(body))])
+	}
+	if !strings.Contains(body, "buymeacoffee.com/onkarsawarna") || !strings.Contains(body, "From outside India") {
+		t.Fatal("support page missing World card path")
 	}
 	if !strings.Contains(body, `href="/support"`) {
 		t.Fatal("nav missing support")

@@ -8,7 +8,7 @@ Personal-finance web app. Not registered investment advice. Every page carries t
 - Live inputs: maths and charts update in the browser with **no server round-trip**.
 - Numbers stay in the browser. No accounts, no database. Last FIRE inputs can stay in `localStorage` on this device.
 - Optional category-level allocation guidance (never product names).
-- After results on the full FIRE calculator, the UPI card (Google Pay QR, id, pay, copy) plus a link to `/support`. The home playground stays the number. Not required to see the year. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`). Remark “Paid for FIRE — the number”.
+- After results on the full FIRE calculator, a support card plus a link to `/support`. India (`region=in`) sees UPI (Google Pay QR, id, pay, copy) and a text link **Or pay via card**. World (`region=us`) sees a card button (Buy Me a Coffee). The home playground stays the number. Not required to see the year. VPA from `SUPPORT_UPI` (default `onkarsawarna-3@okicici`), remark “Paid for FIRE — the number”. Card URL from `SUPPORT_CARD_URL` (default `https://buymeacoffee.com/onkarsawarna`).
 
 Calculators and guidance are public. There is no account.
 
@@ -41,7 +41,7 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | --- | --- | --- |
 | GET | `/` | Landing |
 | GET | `/about` | Who built this; link to the blog |
-| GET | `/support` | Why a UPI; Google Pay QR; keep the workshop running |
+| GET | `/support` | Why a coffee; India UPI + World card; keep the workshop running |
 | GET | `/crossing` | What the crossing is; jewellery is out; it is not FIRE |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |

@@ -36,3 +36,30 @@ func TestSupportUPIQR(t *testing.T) {
 		t.Fatalf("SupportUPIQRSrc=%q", SupportUPIQRSrc)
 	}
 }
+
+func TestSupportCardDefault(t *testing.T) {
+	t.Setenv("SUPPORT_CARD_URL", "")
+	if SupportCardURL() != DefaultSupportCardURL {
+		t.Fatalf("SupportCardURL()=%q", SupportCardURL())
+	}
+	if string(SupportCardHref()) != DefaultSupportCardURL {
+		t.Fatalf("SupportCardHref()=%q", SupportCardHref())
+	}
+}
+
+func TestSupportCardEnv(t *testing.T) {
+	t.Setenv("SUPPORT_CARD_URL", "https://ko-fi.com/onkarsawarna")
+	if SupportCardURL() != "https://ko-fi.com/onkarsawarna" {
+		t.Fatalf("SupportCardURL()=%q", SupportCardURL())
+	}
+	if string(SupportCardHref()) != "https://ko-fi.com/onkarsawarna" {
+		t.Fatalf("SupportCardHref()=%q", SupportCardHref())
+	}
+}
+
+func TestSupportCardRejectsJunk(t *testing.T) {
+	t.Setenv("SUPPORT_CARD_URL", "javascript:alert(1)")
+	if string(SupportCardHref()) != DefaultSupportCardURL {
+		t.Fatalf("unsafe href leaked: %s", SupportCardHref())
+	}
+}

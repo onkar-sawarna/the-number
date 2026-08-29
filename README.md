@@ -56,7 +56,8 @@ go test ./internal/calc ./internal/ai
 | `OPENAI_MODEL` | `gpt-4o-mini` | |
 | `ANTHROPIC_API_KEY` | empty | Used only if OpenAI is unset |
 | `ANTHROPIC_MODEL` | `claude-3-5-haiku-latest` | |
-| `SUPPORT_UPI` | `onkarsawarna-3@okicici` | VPA shown after FIRE results |
+| `SUPPORT_UPI` | `onkarsawarna-3@okicici` | VPA shown after FIRE results (India) |
+| `SUPPORT_CARD_URL` | `https://buymeacoffee.com/onkarsawarna` | Card page for World visitors (https Buy Me a Coffee / Ko-fi / PayPal.me / GitHub Sponsors) |
 
 No API keys are hardcoded. Without keys, guidance uses the on-device heuristic.
 

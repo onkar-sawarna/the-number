@@ -355,6 +355,8 @@ func Copy(key string) string {
 		return "Support the workshop"
 	case "support_lead":
 		return "If the year helped, UPI is welcome — not required."
+	case "support_lead_world":
+		return "If the year helped, a card from anywhere is welcome — not required."
 	case "support_page_kicker":
 		return "Keep it running"
 	case "support_page_h1":
@@ -362,17 +364,21 @@ func Copy(key string) string {
 	case "support_page_lede":
 		return "Someone you will never meet typed what they spend and saw a year they could stop. That is the whole point. This stays free — no login, no fund pitch."
 	case "support_h_why":
-		return "Why a UPI at all"
+		return "Why ask at all"
 	case "support_p_why":
 		return "The host sleeps. The domain costs. Evenings go into pots, housing, and the crossing. A coffee is enough. Close the tab and nothing changes."
 	case "support_h_how":
-		return "How"
+		return "In India"
 	case "support_p_how":
 		return "Scan the Google Pay code from a computer, or pay on your phone. The remark is already Paid for FIRE — the number, so I know it came from here."
+	case "support_h_world":
+		return "From outside India"
+	case "support_p_world":
+		return "A US or UK bank app cannot pay that UPI. Use the card page — same coffee, in a currency your bank knows. Not a fund. Not required."
 	case "support_page_close":
 		return "Then go back to the calculator. The number is still yours."
 	case "support_meta":
-		return "If the year landed, a UPI keeps this workshop free. No login, no fund pitch."
+		return "If the year landed, UPI or a card keeps this workshop free. No login, no fund pitch."
 	case "support_open":
 		return "The longer note"
 	case "support_scan":
@@ -381,6 +387,12 @@ func Copy(key string) string {
 		return "On a computer, scan the code or copy the ID and pay from your phone."
 	case "support_pay":
 		return "Pay with UPI"
+	case "support_card":
+		return "Pay with a card"
+	case "support_card_note":
+		return "Opens Buy Me a Coffee. Close the tab and nothing changes."
+	case "support_via_card":
+		return "Or pay via card"
 	case "support_copy":
 		return "Copy UPI ID"
 	case "support_copied":

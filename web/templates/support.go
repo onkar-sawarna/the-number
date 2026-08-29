@@ -37,3 +37,37 @@ func SupportUPIPayString() string {
 func SupportUPIHref() templ.SafeURL {
 	return templ.SafeURL(SupportUPIPayString())
 }
+
+// DefaultSupportCardURL is the World (non-UPI) coffee page when SUPPORT_CARD_URL is unset.
+// Claim this exact Buy Me a Coffee username or set SUPPORT_CARD_URL to Ko-fi / PayPal.me.
+const DefaultSupportCardURL = "https://buymeacoffee.com/onkarsawarna"
+
+func SupportCardURL() string {
+	if v := strings.TrimSpace(os.Getenv("SUPPORT_CARD_URL")); v != "" {
+		return v
+	}
+	return DefaultSupportCardURL
+}
+
+func supportCardAllowed(raw string) bool {
+	u, err := url.Parse(raw)
+	if err != nil || u.Scheme != "https" {
+		return false
+	}
+	switch strings.ToLower(u.Hostname()) {
+	case "buymeacoffee.com", "www.buymeacoffee.com", "ko-fi.com", "www.ko-fi.com", "paypal.me", "www.paypal.me":
+		return true
+	case "github.com":
+		return strings.HasPrefix(u.Path, "/sponsors/")
+	default:
+		return false
+	}
+}
+
+func SupportCardHref() templ.SafeURL {
+	u := SupportCardURL()
+	if !supportCardAllowed(u) {
+		u = DefaultSupportCardURL
+	}
+	return templ.SafeURL(u)
+}
