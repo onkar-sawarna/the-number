@@ -1272,17 +1272,42 @@
         this._chart = upsertLine(el, this._chart, labels, sets, fireChartOptions(full, this.result, this.t.bind(this)));
         this.drawPots();
       },
-      fireLegend: function () {
-        var full = !!document.getElementById("fire-pots-chart");
-        var sets = full ? this.fullFireSets() : this.homeFireSets();
-        return sets.map(function (s) {
-          var dash = s.borderDash && s.borderDash.length;
-          return {
-            label: s.label,
-            cls: dash ? "h-0 w-4 border-t-2" : "h-2.5 w-2.5 rounded-sm",
-            swatch: dash ? "border-color:" + s.borderColor : "background:" + s.borderColor,
-          };
+      fireStoryLegend: function () {
+        var rows = [
+          {
+            key: "have",
+            label: this.t("chart_spend"),
+            hint: this.t("chart_have_hint"),
+            cls: "legend-swatch-fill",
+            swatch: "background:" + brandLine(),
+          },
+        ];
+        if ((Number(this.jewelleryNow) || 0) > 0) {
+          rows.push({
+            key: "nw",
+            label: this.t("chart_nw"),
+            hint: this.t("chart_nw_hint"),
+            cls: "legend-swatch-line",
+            swatch: "border-color:" + accentLine(),
+          });
+        }
+        rows.push({
+          key: "need",
+          label: this.t("chart_fire"),
+          hint: this.t("chart_need_hint"),
+          cls: "legend-swatch-dash",
+          swatch: "border-color:" + targetLine(),
         });
+        return rows;
+      },
+      firePotLegend: function () {
+        if (!document.getElementById("fire-pots-chart")) return [];
+        var self = this;
+        return this.livePots()
+          .filter(function (d) { return d.key !== "jewellery"; })
+          .map(function (d, i) {
+            return { label: self.t(d.label), swatch: "background:" + potStroke(i) };
+          });
       },
       homeFireSets: function () {
         var sets = [

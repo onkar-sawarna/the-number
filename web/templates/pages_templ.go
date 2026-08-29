@@ -465,7 +465,7 @@ func fireChartLegend() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"mt-2 flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] leading-snug text-ink/70 dark:text-zinc-300\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><template x-for=\"row in fireLegend()\" x-bind:key=\"row.label\"><li class=\"inline-flex items-center gap-1.5\"><span class=\"inline-block shrink-0\" x-bind:class=\"row.cls\" x-bind:style=\"row.swatch\"></span> <span x-text=\"row.label\"></span></li></template></ul>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<ul class=\"mt-3 space-y-2.5\" x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><template x-for=\"row in fireStoryLegend()\" x-bind:key=\"row.key\"><li class=\"flex gap-2.5\"><span class=\"legend-swatch\" x-bind:class=\"row.cls\" x-bind:style=\"row.swatch\"></span><div class=\"min-w-0\"><p class=\"text-sm font-medium text-ink dark:text-zinc-100\" x-text=\"row.label\"></p><p class=\"mt-0.5 text-xs leading-snug text-ink/60 dark:text-zinc-400\" x-text=\"row.hint\"></p></div></li></template></ul><ul class=\"mt-3 flex flex-wrap gap-x-3 gap-y-1.5 text-[11px] leading-snug text-ink/70 dark:text-zinc-300\" x-show=\"firePotLegend().length\" x-cloak x-bind:class=\"dirty ? &#39;opacity-50&#39; : &#39;&#39;\"><template x-for=\"row in firePotLegend()\" x-bind:key=\"row.label\"><li class=\"inline-flex items-center gap-1.5\"><span class=\"legend-swatch legend-swatch-fill\" x-bind:style=\"row.swatch\"></span> <span x-text=\"row.label\"></span></li></template></ul>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -543,7 +543,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs("fmtINR(" + model + ")")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 162, Col: 121}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 173, Col: 121}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -561,7 +561,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 164, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 175, Col: 103}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -589,7 +589,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(model)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 181, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -602,7 +602,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMin('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 109}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 181, Col: 109}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -615,7 +615,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs("rangeMax('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 152}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 181, Col: 152}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -628,7 +628,7 @@ func playRange(labelKey, model string, money bool) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs("rangeStep('" + model + "')")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 170, Col: 197}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 181, Col: 197}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -906,7 +906,7 @@ func featureCard(href, kicker, titleKey, bodyKey string, wide bool) templ.Compon
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(kicker)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 228, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/templates/pages.templ`, Line: 239, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {

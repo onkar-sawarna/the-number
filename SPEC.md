@@ -102,7 +102,7 @@ The **crossing** is the first completed year where spendable pots earn more than
 
 After Calculate, **what moves the year** re-runs FIRE with (1) ₹5,000 / $100 extra monthly SIP, (2) 1% lower expected return, (3) buy vs rent the house. **Salary-optional** re-runs with 40% less going in, half going in, and 24 months of zero deposits then resume (`ContribScale`, `PauseMonths`). The share card is a 1200×630 PNG of the FI year and crossing year — never the corpus. **Copy this plan** copies a `/calculators/fire?...` link that reopens the boxes.
 
-Chart: yearly snapshots until ~FIRE+5 years (min 20, max 50; 40 if never). The FIRE chart labels age on the x-axis, pots versus the corpus you need, and marks the independent year.
+Chart: yearly snapshots until ~FIRE+5 years (min 20, max 50; 40 if never). The FIRE chart labels age on the x-axis, pots versus the corpus you need, and marks the independent year. A key under the chart says what the filled spendable area, the jewellery net-worth line, and the dashed target are.
 
 India defaults: age 30, expenses 12,00,000, other savings 15,00,000, monthly 50,000, return 12%, inflation 6%, SWR 4% (25× expenses), yearly SIP step-up 10%, city tier 1, housing rent, other pots 0. Lean 20×, Fat 50×.
 

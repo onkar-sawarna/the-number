@@ -135,6 +135,31 @@
     animation: calc-pulse 0.7s ease-in-out infinite;
   }
 
+  .legend-swatch {
+    display: inline-block;
+    flex-shrink: 0;
+    margin-top: 0.3rem;
+  }
+
+  .legend-swatch-fill {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 0.2rem;
+  }
+
+  .legend-swatch-line,
+  .legend-swatch-dash {
+    width: 1.15rem;
+    height: 0;
+    margin-top: 0.55rem;
+    border-top-width: 2.5px;
+    border-top-style: solid;
+  }
+
+  .legend-swatch-dash {
+    border-top-style: dashed;
+  }
+
   .fire-chart-box {
     height: 14.5rem;
   }

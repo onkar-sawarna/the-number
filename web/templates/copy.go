@@ -509,14 +509,20 @@ func Copy(key string) string {
 		return " Not added. You’ll keep renting, so put rent inside annual expenses."
 	case "chart_spend":
 		return "What you have"
+	case "chart_have_hint":
+		return "Spendable pots — cash, SIPs, gold funds, NPS, EPF, PPF. The year comes from this, not jewellery."
 	case "chart_nw":
 		return "Net worth (jewellery kept)"
+	case "chart_nw_hint":
+		return "The same pots plus jewellery you keep. It is wealth. It does not pay the year."
 	case "chart_fire":
 		return "What you need"
+	case "chart_need_hint":
+		return "The FIRE corpus that year. It rises with inflation. You are independent where the filled area meets this dashed line."
 	case "chart_stack":
 		return "Your money versus what you need"
 	case "chart_stack_sub":
-		return "Filled areas are money you could spend. The dashed line is the FIRE corpus that year — it rises with inflation. You are independent where they meet."
+		return "The key under the chart is the three lines. Independence is where spendable money meets the dashed line."
 	case "chart_axis_age":
 		return "Your age"
 	case "chart_mark_fi":
