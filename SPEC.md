@@ -41,7 +41,7 @@ Handlers call `internal/calc` and render templates. They must not contain FIRE/S
 | --- | --- | --- |
 | GET | `/` | Landing |
 | GET | `/about` | Who built this; link to the blog |
-| GET | `/support` | Why a coffee; India UPI + World card; keep the workshop running |
+| GET | `/support` | Why money (domain, always-on host, no ads); India UPI + World card |
 | GET | `/crossing` | What the crossing is; jewellery is out; it is not FIRE |
 | GET | `/disclaimer` | Limitations |
 | POST | `/theme` | Cookie also set from JS |

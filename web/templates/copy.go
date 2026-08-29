@@ -354,9 +354,9 @@ func Copy(key string) string {
 	case "support_kicker":
 		return "Support the workshop"
 	case "support_lead":
-		return "If the year helped, UPI is welcome — not required."
+		return "The year stays free. The domain and the box that serves it do not. If it helped, UPI is welcome — not required."
 	case "support_lead_world":
-		return "If the year helped, a card from anywhere is welcome — not required."
+		return "The year stays free. The domain and the box that serves it do not. If it helped, a card from anywhere is welcome — not required."
 	case "support_page_kicker":
 		return "Keep it running"
 	case "support_page_h1":
@@ -364,9 +364,11 @@ func Copy(key string) string {
 	case "support_page_lede":
 		return "Someone you will never meet typed what they spend and saw a year they could stop. That is the whole point. This stays free — no login, no fund pitch."
 	case "support_h_why":
-		return "Why ask at all"
+		return "Why money at all"
 	case "support_p_why":
-		return "The host sleeps. The domain costs. Evenings go into pots, housing, and the crossing. A coffee is enough. Close the tab and nothing changes."
+		return "The calculator is free to use. Keeping it that way is not free. The name on the internet is paid every year. The machine that answers the first tap is paid every month, so you are not staring at a blank page while a cheap host wakes up. There are no ads and no fund taking a cut of the year."
+	case "support_p_why2":
+		return "Evenings still go into parked cash, housing, the crossing, and the chart. A coffee covers a slice of the bill. It is not a product, not a membership, and not advice. Close the tab and nothing is locked."
 	case "support_h_how":
 		return "In India"
 	case "support_p_how":
@@ -378,7 +380,7 @@ func Copy(key string) string {
 	case "support_page_close":
 		return "Then go back to the calculator. The number is still yours."
 	case "support_meta":
-		return "If the year landed, UPI or a card keeps this workshop free. No login, no fund pitch."
+		return "The year stays free. Domain and hosting do not. UPI or a card is welcome — not required. No login, no fund pitch."
 	case "support_open":
 		return "The longer note"
 	case "support_scan":
